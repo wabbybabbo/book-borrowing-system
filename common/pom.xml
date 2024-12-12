@@ -8,9 +8,7 @@
         <artifactId>spring-cloud</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>common</artifactId>
-
     <description>公共模块</description>
 
     <dependencies>

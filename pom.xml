@@ -31,7 +31,7 @@
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <qiniu-sdk-oss.version>7.7.0</qiniu-sdk-oss.version>
         <poi.version>4.1.2</poi.version>
-        <hutool.version>5.8.16</hutool.version>
+        <hutool.version>5.8.34</hutool.version>
     </properties>
 
     <dependencyManagement>

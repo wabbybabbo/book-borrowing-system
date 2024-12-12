@@ -8,9 +8,7 @@
         <artifactId>common-service</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>common-api</artifactId>
-
     <description>对外暴露的微服务接口</description>
 
     <dependencies>

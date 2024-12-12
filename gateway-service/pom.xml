@@ -8,9 +8,7 @@
         <artifactId>spring-cloud</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>gateway-service</artifactId>
-
     <description>微服务网关</description>
 
     <dependencies>

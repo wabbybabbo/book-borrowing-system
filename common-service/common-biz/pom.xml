@@ -7,10 +7,8 @@
         <artifactId>common-service</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <artifactId>common-biz</artifactId>
-
-    <description>公共服务</description>
+    <description>公共微服务的相关业务实现</description>
 
     <dependencies>
         <!--包含SpringMVC、validation、swagger3、hutool、七牛云对象存储-->
