@@ -1,0 +1,16 @@
+package org.example.admin.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.example.admin.pojo.entity.Borrow;
+
+/**
+ * <p>
+ * 借阅记录表 Mapper 接口
+ * </p>
+ *
+ * @author wabbybabbo
+ * @since 2024-04-07
+ */
+public interface BorrowMapper extends BaseMapper<Borrow> {
+
+}

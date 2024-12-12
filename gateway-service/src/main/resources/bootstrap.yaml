@@ -1,0 +1,34 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gateway-service #微服务名称
+  profiles:
+    active: dev
+  cloud:
+    loadbalancer:
+      nacos:
+        enabled: true #是否集成 LoadBalancer
+    nacos:
+      discovery:
+        weight: 1 #权重。取值范围 1 到 100，数值越大，权重越大
+        ip-type: IPv4 #仅使用(IPv4|IPv6)地址进行注册
+        failure-tolerance-enabled: false #是否启用容错配置。开启 nacos 服务发现失败容错能力，该功能会在 nacos 获取实例失败时返回上一次获取的实例，可以在 nacos server 网络不稳定时提供容错能力，不会导致请求全部挂掉
+        username: nacos #nacos认证信息
+        password: nacos #nacos认证信息
+        server-addr: ${nacos.host}:8848 #指定 nacos 服务器地址
+        namespace: public #注册到 nacos 的指定 namespace，默认为 public
+        group: DEFAULT_GROUP #注册到 nacos 的指定 group，默认为 DEFAULT_GROUP
+        cluster-name: DEFAULT #注册到 nacos 的指定 cluster，默认为 DEFAULT
+      #        service: ${spring.application.name}-service #注册到 nacos 上的服务名称，默认值为应用名称 ${spring.application.name}
+      config:
+        refresh-enabled: true #是否开启监听和自动刷新
+        username: nacos #nacos认证信息
+        password: nacos #nacos认证信息
+        server-addr: ${nacos.host}:8848 #nacos服务器地址
+        namespace: public #指定命名空间，默认为 public
+        group: DEFAULT_GROUP #指定分组名称，默认为 DEFAULT_GROUP
+        file-extension: yaml #文件后缀名
+        shared-configs: #共享配置
+          - data-id: shared-swagger-gateway.yaml
+          - data-id: shared-jwt.yaml

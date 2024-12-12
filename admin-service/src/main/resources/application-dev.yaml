@@ -1,0 +1,3 @@
+shared:
+  jdbc:
+    database: book

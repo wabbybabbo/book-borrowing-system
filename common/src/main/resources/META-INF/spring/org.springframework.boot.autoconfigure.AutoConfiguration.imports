@@ -1,0 +1,2 @@
+org.example.common.properties.JwtProperties
+org.example.common.properties.QiniuOssProperties

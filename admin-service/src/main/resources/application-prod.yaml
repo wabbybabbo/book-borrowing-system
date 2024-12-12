@@ -1,0 +1,12 @@
+shared:
+  jdbc:
+    host: 172.25.32.1
+    database: book
+  nacos:
+    host: 172.25.32.1
+  sentinel-dashboard:
+    host: 172.25.32.1
+  redis:
+    host: 172.25.32.1
+  rabbitmq:
+    host: 172.25.32.1

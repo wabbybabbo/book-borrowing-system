@@ -1,0 +1,30 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: common-service #路由规则id，自定义，唯一
+          uri: lb://common-service #路由目标微服务，lb代表负载均衡(loadbalancer)
+          predicates: #路由断言，判断请求是否符合规则，符合则路由到目标
+            - Path=/common-service/** #请求路径规则，匹配以/common-service开头的请求
+          filters:
+            - StripPrefix=1 #从请求路径中删除第一个前缀段。/common-service/some/path -> /some/path
+        - id: client-service
+          uri: lb://client-service
+          predicates:
+            - Path=/client-service/**
+          filters:
+            - StripPrefix=1
+        - id: admin-service
+          uri: lb://admin-service
+          predicates:
+            - Path=/admin-service/**
+          filters:
+            - StripPrefix=1
+
+auth:
+  exclude-paths:
+    - /**/user/register
+    - /**/user/login
+    - /client-service/book/**
+    - /client-service/category/**
+    - /**/api-docs
