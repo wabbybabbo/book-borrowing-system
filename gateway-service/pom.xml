@@ -13,12 +13,6 @@
 
     <description>微服务网关</description>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <!--包含SpringMVC、validation、swagger3、hutool、七牛云对象存储-->
         <dependency>
