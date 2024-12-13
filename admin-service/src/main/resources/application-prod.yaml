@@ -1,12 +1,12 @@
 shared:
   jdbc:
-    host: 172.25.32.1
-    database: book
+    host: localhost
+    db: book
   nacos:
-    host: 172.25.32.1
+    host: localhost
   sentinel-dashboard:
-    host: 172.25.32.1
+    host: localhost
   redis:
-    host: 172.25.32.1
+    host: localhost
   rabbitmq:
-    host: 172.25.32.1
+    host: localhost

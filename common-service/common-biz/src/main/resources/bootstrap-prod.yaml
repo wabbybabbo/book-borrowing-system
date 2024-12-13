@@ -1,2 +1,2 @@
 nacos:
-  host: 172.25.32.1
+  host: localhost

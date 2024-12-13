@@ -20,7 +20,7 @@ spring:
         namespace: public #注册到 nacos 的指定 namespace，默认为 public
         group: DEFAULT_GROUP #注册到 nacos 的指定 group，默认为 DEFAULT_GROUP
         cluster-name: DEFAULT #注册到 nacos 的指定 cluster，默认为 DEFAULT
-      #        service: ${spring.application.name}-service #注册到 nacos 上的服务名称，默认值为应用名称 ${spring.application.name}
+        # service: ${spring.application.name}-service #注册到 nacos 上的服务名称，默认值为应用名称 ${spring.application.name}
       config:
         refresh-enabled: true #是否开启监听和自动刷新
         username: nacos #nacos认证信息
@@ -36,6 +36,6 @@ spring:
           - data-id: shared-mybatis-plus.yaml
           - data-id: shared-sentinel.yaml
           - data-id: shared-feign-sentinel.yaml
-          - data-id: shared-seata.yaml
+          # - data-id: shared-seata.yaml
           - data-id: shared-rabbitmq.yaml
           - data-id: shared-redis-cache.yaml
