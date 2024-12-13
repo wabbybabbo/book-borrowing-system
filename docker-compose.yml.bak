@@ -1,0 +1,161 @@
+version: "1.0.0"
+
+services:
+  mysql:
+    image: mysql:8.4.3-oraclelinux9
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - C:\Users\Administrator\Documents\docker\volumes\mysql\conf:/etc/mysql/conf.d
+      - C:\Users\Administrator\Documents\docker\volumes\mysql\data:/var/lib/mysql
+    networks:
+      - book-network
+  nacos:
+    image: nacos/nacos-server:v2.4.3-slim
+    container_name: nacos
+    ports:
+      - 8848:8848
+      - 9848:9848
+    environment:
+      TZ: Asia/Shanghai
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: 172.20.10.9
+      MYSQL_SERVICE_DB_NAME: nacos
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: root
+    volumes:
+      - C:\Users\Administrator\Documents\docker\volumes\nacos\conf:/home/nacos/conf
+    networks:
+      - book-network
+    depends_on:
+      - mysql
+  seata:
+    image: seataio/seata-server:2.0.0
+    container_name: seata
+    ports:
+      - 7091:7091
+      - 8091:8091
+    environment:
+      TZ: Asia/Shanghai
+      SEATA_IP: 172.20.10.9
+    volumes:
+      - C:\Users\Administrator\Documents\docker\volumes\seata\conf\application.yml:/seata-server/resources/application.yml
+    networks:
+      - book-network
+    depends_on:
+      - nacos
+  redis:
+    image: redis:7.4.1-alpine3.20
+    container_name: redis
+    ports:
+      - 6379:6379
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - C:\Users\Administrator\Documents\docker\volumes\redis\conf:/usr/local/etc/redis
+      - C:\Users\Administrator\Documents\docker\volumes\redis\data:/data
+    networks:
+      - book-network
+  rabbitmq:
+    image: rabbitmq:3.13.7-management-alpine
+    container_name: rabbitmq
+    hostname: myrabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - C:\Users\Administrator\Documents\docker\volumes\rabbitmq:/var/lib/rabbitmq
+    networks:
+      - book-network
+  sentinel-dashboard:
+    image: bladex/sentinel-dashboard:1.8.7
+    container_name: sentinel-dashboard
+    ports:
+      - 8719:8719
+      - 8858:8858
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - book-network
+  nginx:
+    image: nginx:1.26.2-alpine3.20-slim
+    container_name: nginx
+    ports:
+      - 81:81
+      - 82:82
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - C:\Users\Administrator\Documents\docker\volumes\nginx\conf\conf.d:/etc/nginx/conf.d
+      - C:\Users\Administrator\Documents\docker\volumes\nginx\conf\nginx.conf:/etc/nginx/nginx.conf
+      - C:\Users\Administrator\Documents\docker\volumes\nginx\html:/usr/share/nginx/html
+    depends_on:
+      - gateway-service
+    networks:
+      - book-network
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    ports:
+      - 8080:8080
+    networks:
+      - book-network
+    depends_on:
+      - nacos
+      - sentinel-dashboard
+  common-service:
+    build:
+      context: ./common-service
+      dockerfile: Dockerfile
+    container_name: common-service
+    ports:
+      - 8081:8081
+    networks:
+      - book-network
+    depends_on:
+      - nacos
+      - sentinel-dashboard
+  admin-service:
+    build:
+      context: ./admin-service
+      dockerfile: Dockerfile
+    container_name: admin-service
+    ports:
+      - 8082:8082
+    networks:
+      - book-network
+    depends_on:
+      - nacos
+      - seata
+      - sentinel-dashboard
+      - redis
+      - rabbitmq
+      - common-service
+  client-service:
+    build:
+      context: ./client-service
+      dockerfile: Dockerfile
+    container_name: client-service
+    ports:
+      - 8083:8083
+    networks:
+      - book-network
+    depends_on:
+      - nacos
+      - seata
+      - sentinel-dashboard
+      - redis
+      - rabbitmq
+      - common-service
+networks:
+  book-network:
+    name: book-network
