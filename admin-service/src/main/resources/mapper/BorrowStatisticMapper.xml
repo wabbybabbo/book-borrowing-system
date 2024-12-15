@@ -4,8 +4,13 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="org.example.admin.entity.BorrowStatistic">
-        <id column="date" property="date"/>
-        <result column="quantity" property="quantity"/>
+        <id column="date" property="date" />
+        <result column="quantity" property="quantity" />
     </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        date, quantity
+    </sql>
 
 </mapper>
