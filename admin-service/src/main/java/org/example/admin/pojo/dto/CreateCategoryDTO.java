@@ -6,7 +6,7 @@ import lombok.Data;
 import org.example.common.constant.MessageConstant;
 
 @Data
-@Schema(description = "新增图书类别时传递的数据模型", requiredProperties = {"name"})
+@Schema(description = "新增书籍类别时传递的数据模型", requiredProperties = {"name"})
 public class CreateCategoryDTO {
 
     @Schema(description = "类别名称")

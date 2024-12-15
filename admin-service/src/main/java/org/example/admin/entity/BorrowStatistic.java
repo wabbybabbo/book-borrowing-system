@@ -1,4 +1,4 @@
-package org.example.admin.pojo.entity;
+package org.example.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -18,7 +19,7 @@ import java.time.LocalDate;
  * 借阅数量统计表
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-05-05
  */
 @Data
@@ -28,6 +29,7 @@ import java.time.LocalDate;
 @Schema(description = "借阅数量统计表")
 public class BorrowStatistic implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "日期")

@@ -9,16 +9,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
-@Schema(description = "查询借阅图书时响应的数据模型")
+@Schema(description = "查询借阅书籍时响应的数据模型")
 public class BorrowVO implements Serializable {
 
     @Schema(description = "借阅记录ID")
-    private Integer id;
+    private Long id;
 
     @Schema(description = "借阅状态")
     private String status;
 
-    @Schema(description = "书名")
+    @Schema(description = "书籍名称")
     private String bookName;
 
     @Schema(description = "国际标准书号")

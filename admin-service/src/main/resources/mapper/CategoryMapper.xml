@@ -3,7 +3,7 @@
 <mapper namespace="org.example.admin.mapper.CategoryMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.example.admin.pojo.entity.Category">
+    <resultMap id="BaseResultMap" type="org.example.admin.entity.Category">
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="create_time" property="createTime"/>

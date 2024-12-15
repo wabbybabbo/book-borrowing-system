@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 图书表 前端控制器
+ * 书籍信息表 前端控制器
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -29,15 +29,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/book")
-@Tag(name = "图书相关接口")
+@Tag(name = "书籍相关接口")
 public class BookController {
 
     private final IBookService bookService;
 
-    @Operation(summary = "分页查询图书")
+    @Operation(summary = "分页查询书籍信息")
     @GetMapping("/page")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] pageQuery: {}", pageQuery);
+        log.info("[log] 分页查询书籍信息 {}", pageQuery);
         PageResult<BookVO> pageResult = bookService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }

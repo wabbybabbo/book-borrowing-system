@@ -17,15 +17,10 @@ public class CommonClientFallbackFactory implements FallbackFactory<CommonClient
 
     @Override
     public CommonClient create(Throwable cause) {
-        log.info("[log] 远程调用异常原因：{}", cause.toString());
+        log.error("[log] OpenFeign 远程调用异常原因：{}", cause.toString());
 
         //当熔断时，以下方法定义了程序的回退逻辑(备用流程)。
         return new CommonClient() {
-            @Override
-            public String echo(String string) {
-                throw new RuntimeException(SERVER_ACCESS_OVERLOAD);
-            }
-
             @Override
             public String createToken(Map<String, Object> claim) {
                 throw new RuntimeException(SERVER_ACCESS_OVERLOAD);

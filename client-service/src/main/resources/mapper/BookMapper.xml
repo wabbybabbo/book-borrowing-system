@@ -3,7 +3,7 @@
 <mapper namespace="org.example.client.mapper.BookMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.example.client.pojo.entity.Book">
+    <resultMap id="BaseResultMap" type="org.example.client.entity.Book">
         <id column="id" property="id"/>
         <result column="category_id" property="categoryId"/>
         <result column="name" property="name"/>

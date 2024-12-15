@@ -1,6 +1,7 @@
 package org.example.common.controller;
 
 
+import cn.hutool.core.util.StrUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,52 +28,38 @@ public class CommonController implements CommonClient {
     private final JwtUtil jwtUtil;
     private final QiniuOssUtil qiniuOssUtil;
 
-
     @Override
-    @Operation(summary = "打印请求路径中的变量")
-    @GetMapping("/echo/{string}")
-    public String echo(@PathVariable String string) {
-        log.info("[log] PathVariable: {}", string);
-        return string;
-    }
-
-    @Override
-    @Operation(summary = "生成jwt令牌")
+    @Operation(summary = "生成JWT(JSON Web Token)")
     @PostMapping("/token")
     public String createToken(@RequestBody Map<String, Object> claim) {
         return jwtUtil.createToken(claim);
     }
 
-    /**
-     * 文件上传
-     *
-     * @param file 上传文件
-     * @return 文件的请求路径
-     */
     @Override
     @Operation(summary = "文件上传")
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
     public String upload(@RequestPart("file") MultipartFile file) {
-        log.info("[log] 文件上传: {}", file);
+        log.info("[log] 开始上传文件 file: {}", file);
 
         //原始文件名
         String originalFilename = file.getOriginalFilename();
-        //截取原始文件名的后缀 file-name.png
-        String extension = null;
-        if (originalFilename != null) {
-            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        }
         //构造新文件名称
-        String fileName = UUID.randomUUID() + extension;
+        String fileName = UUID.randomUUID().toString();
+        if (StrUtil.isNotBlank(originalFilename)) {
+            //截取原始文件名的后缀
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            fileName += extension;
+        }
 
         byte[] fileBytes;
         try {
             fileBytes = file.getBytes();
         } catch (IOException e) {
-            log.error("[log] IOException: {}", e.getMessage());
+            log.error("[log] 文件上传失败 IOException: {}", e.getMessage());
             throw new RuntimeException(MessageConstant.UPLOAD_FAILED);
         }
         //上传文件,并返回文件的请求路径
         return qiniuOssUtil.upload(fileBytes, fileName);
     }
+
 }

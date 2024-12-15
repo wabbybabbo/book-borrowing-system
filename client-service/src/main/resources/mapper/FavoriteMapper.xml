@@ -3,7 +3,7 @@
 <mapper namespace="org.example.client.mapper.FavoriteMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.example.client.pojo.entity.Favorite">
+    <resultMap id="BaseResultMap" type="org.example.client.entity.Favorite">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
         <result column="book_id" property="bookId"/>

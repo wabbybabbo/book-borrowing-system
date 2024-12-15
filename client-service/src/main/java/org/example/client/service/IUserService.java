@@ -4,15 +4,15 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.client.pojo.dto.UpdateUserDTO;
 import org.example.client.pojo.dto.UserLoginDTO;
 import org.example.client.pojo.dto.UserRegisterDTO;
-import org.example.client.pojo.entity.User;
+import org.example.client.entity.User;
 import org.example.client.pojo.vo.UserVO;
 
 /**
  * <p>
- * 用户表 服务类
+ * 用户信息表 服务类
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 public interface IUserService extends IService<User> {

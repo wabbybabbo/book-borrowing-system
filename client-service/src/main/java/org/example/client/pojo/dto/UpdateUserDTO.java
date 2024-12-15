@@ -10,11 +10,11 @@ public class UpdateUserDTO {
     @Schema(description = "用户名")
     private String name;
 
+    @Schema(description = "账号")
+    private String account;
+
     @Schema(description = "密码")
     private String password;
-
-    @Schema(description = "用户头像图片文件路径")
-    private String imgUrl;
 
     @Schema(description = "性别")
     private String gender;
@@ -25,7 +25,7 @@ public class UpdateUserDTO {
     @Schema(description = "邮箱")
     private String email;
 
-    @Schema(description = "地址")
+    @Schema(description = "联系地址")
     private String address;
 
 }

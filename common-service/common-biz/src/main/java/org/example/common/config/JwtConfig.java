@@ -17,7 +17,7 @@ public class JwtConfig {
 
     @Bean
     public JwtUtil jwtUtil(JwtProperties JwtProperties) {
-        log.info("[log] 开始创建JWT工具类对象：{}", JwtProperties);
+        log.info("[log] 创建JWT工具类对象 {}", JwtProperties);
         return JwtUtil.builder()
                 .key(JwtProperties.getKey())
                 .ttl(JwtProperties.getTtl())

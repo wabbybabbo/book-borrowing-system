@@ -7,12 +7,12 @@ import org.example.common.constant.MessageConstant;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-@Schema(description = "用户归还借阅的图书时传递的数据模型", requiredProperties = {"id", "isbn"})
+@Schema(description = "用户归还借阅的书籍时传递的数据模型", requiredProperties = {"id", "isbn"})
 public class ReturnRegisterDTO {
 
     @Schema(description = "借阅记录ID")
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    private Integer id;
+    private Long id;
 
     @Schema(description = "国际标准书号")
     @Length(min = 13, max = 13, message = MessageConstant.INVALID_ISBN)

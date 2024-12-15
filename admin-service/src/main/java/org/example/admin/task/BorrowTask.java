@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.BorrowMapper;
-import org.example.admin.pojo.entity.Book;
-import org.example.admin.pojo.entity.Borrow;
+import org.example.admin.entity.Book;
+import org.example.admin.entity.Borrow;
 import org.example.common.constant.BorrowStatusConstant;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -41,7 +41,7 @@ public class BorrowTask {
                 .lt("return_date", LocalDate.now());
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
         // 将这些借阅记录的借阅状态更改为'未按时归还'
-        List<Integer> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
+        List<Long> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
         UpdateWrapper<Borrow> updateWrapper = new UpdateWrapper<Borrow>()
                 .set("status", BorrowStatusConstant.RETURN_OVERDUE)
                 .in("id", borrowIds);
@@ -62,12 +62,12 @@ public class BorrowTask {
                 .lt("reserve_date", LocalDate.now());
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
         // 将这些借阅记录的借阅状态更改为'预约已失效'
-        List<Integer> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
+        List<Long> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
         UpdateWrapper<Borrow> updateWrapper1 = new UpdateWrapper<Borrow>()
                 .set("status", BorrowStatusConstant.RESERVE_OVERDUE)
                 .in("id", borrowIds);
         borrowMapper.update(updateWrapper1);
-        // 并更改图书库存 当前库存+1
+        // 并更改书籍库存 当前库存+1
         List<String> isbns = borrows.stream().map(Borrow::getIsbn).collect(Collectors.toList());
         UpdateWrapper<Book> updateWrapper2 = new UpdateWrapper<Book>()
                 .setSql("stock=stock+1")

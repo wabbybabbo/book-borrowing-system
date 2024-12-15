@@ -3,7 +3,7 @@
 <mapper namespace="org.example.admin.mapper.BorrowStatisticMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.example.admin.pojo.entity.BorrowStatistic">
+    <resultMap id="BaseResultMap" type="org.example.admin.entity.BorrowStatistic">
         <id column="date" property="date"/>
         <result column="quantity" property="quantity"/>
     </resultMap>

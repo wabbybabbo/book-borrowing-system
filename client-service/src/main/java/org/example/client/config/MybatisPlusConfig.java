@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 //指定要扫描的Mapper接口类的包路径，这样就不需要在每一个mapper接口类上都添加@Mapper注解
 @MapperScan("org.example.client.mapper")
 public class MybatisPlusConfig {
+
     @Bean
     MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
@@ -24,4 +25,5 @@ public class MybatisPlusConfig {
 
         return interceptor;
     }
+
 }

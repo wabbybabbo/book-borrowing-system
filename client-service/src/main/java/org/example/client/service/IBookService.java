@@ -1,26 +1,26 @@
 package org.example.client.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.example.client.pojo.entity.Book;
+import org.example.client.entity.Book;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BookVO;
 import org.example.common.result.PageResult;
 
 /**
  * <p>
- * 图书表 服务类
+ * 书籍信息表 服务类
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 public interface IBookService extends IService<Book> {
 
     /**
-     * 分页查询图书
+     * 分页查询书籍信息
      *
      * @param pageQuery 分页查询时传递的数据模型
-     * @return 图书列表
+     * @return 书籍信息列表
      */
     PageResult<BookVO> pageQuery(PageQuery pageQuery);
 

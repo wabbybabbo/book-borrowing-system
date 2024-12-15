@@ -20,7 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        log.info("[log] 开始注册自定义拦截器AdminInterceptor...");
+        log.info("[log] 注册自定义拦截器 AdminInterceptor");
 
         registry.addInterceptor(new AdminInterceptor())
                 .excludePathPatterns("/**/api-docs"); //指定这个拦截器不应该拦截哪些路径。

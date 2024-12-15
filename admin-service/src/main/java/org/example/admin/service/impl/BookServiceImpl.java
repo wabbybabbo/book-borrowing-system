@@ -1,16 +1,17 @@
 package org.example.admin.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.entity.Book;
+import org.example.admin.entity.Category;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.CategoryMapper;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
-import org.example.admin.pojo.entity.Book;
-import org.example.admin.pojo.entity.Category;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.BookVO;
 import org.example.admin.service.IBookService;
@@ -19,7 +20,6 @@ import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
 import org.example.common.exception.CheckException;
 import org.example.common.exception.NotFoundException;
-import org.example.common.exception.NullUpdateException;
 import org.example.common.result.PageResult;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
@@ -30,14 +30,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
  * <p>
- * 图书表 服务实现类
+ * 书籍信息表 服务实现类
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -55,8 +56,8 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         Page<Book> page = pageQuery.toMpPage();
         QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>();
         List<String> filterConditions = pageQuery.getFilterConditions();
-        log.info("[log] filterConditions: {}", filterConditions);
-        if (null != filterConditions && !filterConditions.isEmpty()) {
+        log.info("[log] 书籍信息分页查询条件 filterConditions: {}", filterConditions);
+        if (CollUtil.isNotEmpty(filterConditions)) {
             for (String condition : filterConditions) {
                 if (condition.contains("=")) {
                     log.info("[log] = condition: {}", condition);
@@ -75,16 +76,16 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         try {
             bookMapper.selectPage(page, queryWrapper);
         } catch (BadSqlGrammarException e) {
-            log.error("[log] BadSqlGrammarException: {}", e.getMessage());
+            log.error("[log] 书籍信息分页查询失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.FIELD_NOT_FOUND);
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);
         }
         List<Book> records = page.getRecords();
 
-        // 查询所有图书类别名称
+        // 查询所有书籍类别名称
         QueryWrapper<Category> queryWrapper1 = new QueryWrapper<Category>()
                 .select("id", "name");
         List<Category> categories = categoryMapper.selectList(queryWrapper1);
-        Map<Integer, String> categoryMap = new HashMap<>();
+        Map<Long, String> categoryMap = new HashMap<>();
         for (Category category : categories) {
             categoryMap.put(category.getId(), category.getName());
         }
@@ -106,17 +107,17 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
 
     @Override
     public void createBook(MultipartFile file, CreateBookDTO createBookDTO) {
-        // 上传图书封面图片文件
+        // 上传书籍封面图片文件
         String url = commonClient.upload(file);
-        // 构建图书对象
+        // 构建书籍对象
         Book book = new Book();
         BeanUtils.copyProperties(createBookDTO, book);
         book.setImgUrl(url);
-        // 新增图书
+        // 新增书籍信息
         try {
             bookMapper.insert(book);
         } catch (DuplicateKeyException e) {
-            log.error("[log] DuplicateKeyException: {}", e.getMessage());
+            log.error("[log] 新增书籍信息失败 DuplicateKeyException: {}, msg: {}", e.getMessage(), MessageConstant.ISBN_ALREADY_EXISTS);
             throw new AlreadyExistsException(MessageConstant.ISBN_ALREADY_EXISTS);
         }
     }
@@ -125,44 +126,41 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     public void updateBook(MultipartFile file, UpdateBookDTO updateBookDTO) {
         String isbn = updateBookDTO.getIsbn();
         // 检查参数是否合法
-        if (null != isbn && isbn.length() != 13) {
-            log.info("[log] CheckException: {}", MessageConstant.INVALID_ISBN);
+        if (isbn == null || isbn.length() != 13) {
+            log.info("[log] 参数检查不通过 isbn: {}, msg: {}", isbn, MessageConstant.INVALID_ISBN);
             throw new CheckException(MessageConstant.INVALID_ISBN);
         }
-        // 构建图书对象
+        // 构建书籍对象
         Book book = new Book();
         BeanUtils.copyProperties(updateBookDTO, book);
-        if (null != file) {
-            // 上传图书封面图片文件
+        if (Objects.nonNull(file)) {
+            // 上传书籍封面图片文件
             String url = commonClient.upload(file);
             book.setImgUrl(url);
         }
-        // 更改图书信息
+        // 更改书籍信息
         try {
             bookMapper.updateById(book);
         } catch (DuplicateKeyException e) {
-            log.error("[log] DuplicateKeyException: {}", e.getMessage());
+            log.error("[log] 更改书籍信息失败 DuplicateKeyException: {}, msg: {}", e.getMessage(), MessageConstant.ISBN_ALREADY_EXISTS);
             throw new AlreadyExistsException(MessageConstant.ISBN_ALREADY_EXISTS);
-        } catch (BadSqlGrammarException e) {
-            log.error("[log] BadSqlGrammarException: {}", e.getMessage());
-            throw new NullUpdateException(MessageConstant.UPDATE_FIELD_NOT_SET);
         }
     }
 
     @Override
-    public void deleteBook(Integer id) {
+    public void deleteBook(Long id) {
         int updates = bookMapper.deleteById(id);
-        if (0 == updates) {
-            log.error("[log] NotFoundException: {}", MessageConstant.BOOK_NOT_FOUND);
+        if (updates == 0) {
+            log.error("[log] 删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);
             throw new NotFoundException(MessageConstant.BOOK_NOT_FOUND);
         }
     }
 
     @Override
-    public void batchDeleteBooks(List<Integer> ids) {
+    public void batchDeleteBooks(List<Long> ids) {
         int updates = bookMapper.deleteBatchIds(ids);
-        if (0 == updates) {
-            log.error("[log] NotFoundException: {}", MessageConstant.BOOK_NOT_FOUND);
+        if (updates == 0) {
+            log.error("[log] 批量删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);
             throw new NotFoundException(MessageConstant.BOOK_NOT_FOUND);
         }
     }

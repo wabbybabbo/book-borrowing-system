@@ -25,15 +25,14 @@ public class FeignConfig {
      */
     @Bean
     public Logger.Level feignLoggerLevel() {
-        log.info("[log] 正在设置 OpenFeign 日志级别(FULL)...");
+        log.info("[log] 设置 OpenFeign 日志级别为 FULL");
         return Logger.Level.FULL;
     }
 
     @Bean
     public CommonClientFallbackFactory CommonClientFallbackFactory() {
-        log.info("[log] 正在设置 CommonClient 的回退策略工厂...");
+        log.info("[log] 设置 CommonClient 的回退策略工厂");
         return new CommonClientFallbackFactory();
     }
-
 
 }

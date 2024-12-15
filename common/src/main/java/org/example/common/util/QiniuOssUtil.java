@@ -39,14 +39,12 @@ public class QiniuOssUtil {
 
         UploadManager uploadManager = new UploadManager(cfg);
 
-        //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = fileName;
-
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
 
         try {
-            Response response = uploadManager.put(localFilePath, key, upToken);
+            //默认不指定fileName的情况下，以文件内容的hash值作为文件名
+            Response response = uploadManager.put(localFilePath, fileName, upToken);
             //解析上传成功的结果
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
             System.out.println(putRet.key);
@@ -54,24 +52,21 @@ public class QiniuOssUtil {
         } catch (QiniuException ex) {
             ex.printStackTrace();
             if (ex.response != null) {
-                System.err.println(ex.response);
+                log.error("[log] 文件上传失败 response: {}", ex.response);
                 try {
                     String body = ex.response.toString();
-                    System.err.println(body);
+                    log.error("[log] 文件上传失败 body: {}", body);
                 } catch (Exception ignored) {
                 }
             }
         }
 
         //文件访问路径规则 http://CDN测试域名/fileName
-        StringBuilder stringBuilder = new StringBuilder("http://")
-                .append(cdn)
-                .append("/")
-                .append(fileName);
+        String uploadFilePath = "http://" + cdn + "/" + fileName;
 
-        log.info("文件上传到:{}", stringBuilder);
+        log.info("[log] 文件已上传到七牛云 uploadFilePath: {}", uploadFilePath);
 
-        return stringBuilder.toString();
+        return uploadFilePath;
     }
 
     /**
@@ -89,14 +84,12 @@ public class QiniuOssUtil {
 
         UploadManager uploadManager = new UploadManager(cfg);
 
-        //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String key = fileName;
-
         Auth auth = Auth.create(accessKey, secretKey);
         String upToken = auth.uploadToken(bucket);
 
         try {
-            Response response = uploadManager.put(uploadBytes, key, upToken);
+            //默认不指定fileName的情况下，以文件内容的hash值作为文件名
+            Response response = uploadManager.put(uploadBytes, fileName, upToken);
             //解析上传成功的结果
             DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
             System.out.println(putRet.key);
@@ -104,24 +97,21 @@ public class QiniuOssUtil {
         } catch (QiniuException ex) {
             ex.printStackTrace();
             if (ex.response != null) {
-                System.err.println(ex.response);
+                log.error("[log] 文件上传失败 response: {}", ex.response);
                 try {
                     String body = ex.response.toString();
-                    System.err.println(body);
+                    log.error("[log] 文件上传失败 body: {}", body);
                 } catch (Exception ignored) {
                 }
             }
         }
 
         //文件访问路径规则 http://CDN测试域名/fileName
-        StringBuilder stringBuilder = new StringBuilder("http://")
-                .append(cdn)
-                .append("/")
-                .append(fileName);
+        String uploadFilePath = "http://" + cdn + "/" + fileName;
 
-        log.info("文件上传到:{}", stringBuilder);
+        log.info("[log] 文件已上传到七牛云 uploadFilePath: {}", uploadFilePath);
 
-        return stringBuilder.toString();
+        return uploadFilePath;
     }
 
     /**
@@ -134,19 +124,16 @@ public class QiniuOssUtil {
         Configuration cfg = new Configuration(Region.huanan());
         //...其他参数参考类注释
 
-        String key = fileName;
-
         Auth auth = Auth.create(accessKey, secretKey);
         BucketManager bucketManager = new BucketManager(auth, cfg);
         try {
-            bucketManager.delete(bucket, key);
+            bucketManager.delete(bucket, fileName);
+            log.info("[log] 文件已成功删除 fileName: {}", fileName);
         } catch (QiniuException ex) {
             //如果遇到异常，说明删除失败
-            System.err.println(ex.code());
-            System.err.println(ex.response.toString());
+            log.error("[log] 文件删除失败 code: {}, response: {}", ex.code(), ex.response.toString());
         }
 
-        log.info("文件{}已成功删除", fileName);
     }
 
 }

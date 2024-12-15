@@ -8,18 +8,18 @@ import org.example.common.constant.MessageConstant;
 import org.hibernate.validator.constraints.Length;
 
 @Data
-@Schema(description = "新增图书时传递的数据模型", requiredProperties = {"img", "categoryId", "name", "isbn", "author", "publisher"})
+@Schema(description = "新增书籍时传递的数据模型", requiredProperties = {"categoryId", "name", "isbn", "author", "publisher"})
 public class CreateBookDTO {
 
-    @Schema(description = "图书类别ID")
+    @Schema(description = "书籍类别ID")
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    private Integer categoryId;
+    private Long categoryId;
 
-    @Schema(description = "书名")
+    @Schema(description = "书籍名称")
     @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
     private String name;
 
-    @Schema(description = "国际标准书号")
+    @Schema(description = "国际标准书号", pattern = "^[0-9]{13}$", example = "9781234567890")
     @Length(min = 13, max = 13, message = MessageConstant.INVALID_ISBN)
     private String isbn;
 
@@ -34,7 +34,7 @@ public class CreateBookDTO {
     @Schema(description = "描述")
     private String description;
 
-    @Schema(description = "库存数量 默认为0")
+    @Schema(description = "库存数量", defaultValue = "0")
     private Integer stock;
 
 }

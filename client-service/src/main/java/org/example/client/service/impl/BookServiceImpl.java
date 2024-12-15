@@ -1,5 +1,6 @@
 package org.example.client.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -7,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.client.mapper.BookMapper;
 import org.example.client.mapper.CategoryMapper;
-import org.example.client.pojo.entity.Book;
-import org.example.client.pojo.entity.Category;
+import org.example.client.entity.Book;
+import org.example.client.entity.Category;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BookVO;
 import org.example.client.service.IBookService;
@@ -26,10 +27,10 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- * 图书表 服务实现类
+ * 书籍信息表 服务实现类
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -47,8 +48,8 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>()
                 .select("id", "category_id", "name", "img_url", "isbn", "author", "publisher", "description", "stock");
         List<String> filterConditions = pageQuery.getFilterConditions();
-        log.info("[log] filterConditions: {}", filterConditions);
-        if (null != filterConditions && !filterConditions.isEmpty()) {
+        log.info("[log] 书籍信息分页查询条件 filterConditions: {}", filterConditions);
+        if (CollUtil.isNotEmpty(filterConditions)) {
             for (String condition : filterConditions) {
                 if (condition.contains("=")) {
                     log.info("[log] = condition: {}", condition);
@@ -67,15 +68,15 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         try {
             bookMapper.selectPage(page, queryWrapper);
         } catch (BadSqlGrammarException e) {
-            log.error("[log] BadSqlGrammarException: {}", e.getMessage());
+            log.error("[log] 书籍信息分页查询失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.FIELD_NOT_FOUND);
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);
         }
         List<Book> records = page.getRecords();
-        // 查询所有图书类别名称
+        // 查询所有书籍类别名称
         QueryWrapper<Category> queryWrapper1 = new QueryWrapper<Category>()
                 .select("id", "name");
         List<Category> categories = categoryMapper.selectList(queryWrapper1);
-        Map<Integer, String> categoryMap = new HashMap<>();
+        Map<Long, String> categoryMap = new HashMap<>();
         for (Category category : categories) {
             categoryMap.put(category.getId(), category.getName());
         }

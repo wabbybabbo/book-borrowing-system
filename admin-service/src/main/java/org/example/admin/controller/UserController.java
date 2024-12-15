@@ -9,11 +9,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.entity.User;
 import org.example.admin.pojo.dto.CreateUserDTO;
-import org.example.admin.pojo.dto.UserLoginDTO;
-import org.example.admin.pojo.entity.User;
 import org.example.admin.pojo.query.PageQuery;
-import org.example.admin.pojo.vo.UserLoginVO;
 import org.example.admin.service.IUserService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
@@ -30,10 +28,10 @@ import java.util.List;
 
 /**
  * <p>
- * 用户表 前端控制器
+ * 用户信息表 前端控制器
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -46,28 +44,17 @@ public class UserController {
 
     private final IUserService userService;
 
-    @Operation(summary = "用户登录")
-    @GetMapping("/login")
-    public Result<UserLoginVO> login(@ParameterObject @Valid UserLoginDTO userLoginDTO) {
-        log.info("[log] 用户登录 userLoginDTO: {}", userLoginDTO);
-
-        //查询登录用户信息
-        UserLoginVO userLoginVO = userService.login(userLoginDTO);
-
-        return Result.success(MessageConstant.LOGIN_SUCCESS, userLoginVO);
-    }
-
-    @Operation(summary = "分页查询用户")
+    @Operation(summary = "分页查询用户信息")
     //只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存
     @Cacheable(cacheNames = "userCache", key = "'userList'+':'+#pageQuery.current+':'+#pageQuery.size", condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @GetMapping("/page")
     public Result<PageResult<User>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询用户 pageQuery: {}", pageQuery);
+        log.info("[log] 分页查询用户信息 pageQuery: {}", pageQuery);
         PageResult<User> pageResult = userService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "新建用户账号")
+    @Operation(summary = "新建用户信息")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
     public Result createUser(
@@ -77,7 +64,7 @@ public class UserController {
             @RequestPart
             @Valid
             CreateUserDTO createUserDTO) {
-        log.info("[log] 新建用户账号 createUserDTO: {}", createUserDTO);
+        log.info("[log] 新建用户信息 createUserDTO: {}", createUserDTO);
         userService.createUser(file, createUserDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
@@ -88,23 +75,23 @@ public class UserController {
     public Result disableUser(
             @Parameter(description = "用户ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Integer id
+            Long id
     ) {
-        log.info("[log] 禁用用户账号 userId:{}", id);
-        userService.disableUser(id);
+        log.info("[log] 禁用用户账号 id: {}", id);
+        userService.disableAccount(id);
         return Result.success(MessageConstant.DISABLE_SUCCESS);
     }
 
     @Operation(summary = "批量禁用用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/disable/batch")
-    public Result batchDisableUser(
+    public Result batchDisableAccount(
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<Integer> ids
+            List<Long> ids
     ) {
-        log.info("[log] 批量禁用用户账号 userIds:{}", ids);
-        userService.batchDisableUser(ids);
+        log.info("[log] 批量禁用用户账号 ids: {}", ids);
+        userService.batchDisableAccount(ids);
         return Result.success(MessageConstant.DISABLE_SUCCESS);
     }
 
@@ -114,10 +101,10 @@ public class UserController {
     public Result enableUser(
             @Parameter(description = "用户ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Integer id
+            Long id
     ) {
-        log.info("[log] 解禁用户账号 userId:{}", id);
-        userService.enableUser(id);
+        log.info("[log] 解禁用户账号 id: {}", id);
+        userService.enableAccount(id);
         return Result.success(MessageConstant.ENABLE_SUCCESS);
     }
 
@@ -127,10 +114,10 @@ public class UserController {
     public Result batchEnableUser(
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<Integer> ids
+            List<Long> ids
     ) {
-        log.info("[log] 批量解禁用户账号 userIds:{}", ids);
-        userService.batchEnableUser(ids);
+        log.info("[log] 批量解禁用户账号 ids: {}", ids);
+        userService.batchEnableAccount(ids);
         return Result.success(MessageConstant.ENABLE_SUCCESS);
     }
 

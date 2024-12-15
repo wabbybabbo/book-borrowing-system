@@ -7,26 +7,23 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@Schema(description = "用户登录时响应的数据模型")
-public class UserLoginVO {
+@Schema(description = "管理员登录时响应的数据模型")
+public class AdminLoginVO {
 
-    @Schema(description = "用户ID")
-    private Integer id;
+    @Schema(description = "管理员ID")
+    private Long id;
 
-    @Schema(description = "用户角色")
-    private String role;
+    @Schema(description = "头像图片文件路径")
+    private String imgUrl;
 
-    @Schema(description = "用户名")
+    @Schema(description = "管理员名称")
     private String name;
+
+    @Schema(description = "账号")
+    private String account;
 
     @Schema(description = "密码")
     private String password;
-
-    @Schema(description = "用户头像图片文件路径")
-    private String imgUrl;
-
-    @Schema(description = "性别")
-    private String gender;
 
     @Schema(description = "电话号码")
     private String phone;
@@ -34,14 +31,14 @@ public class UserLoginVO {
     @Schema(description = "邮箱")
     private String email;
 
-    @Schema(description = "地址")
+    @Schema(description = "联系地址")
     private String address;
 
     @Schema(description = "账号创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
     private LocalDateTime createTime;
 
-    @Schema(description = "最近信息更改时间")
+    @Schema(description = "最新信息更改时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
     private LocalDateTime updateTime;
 

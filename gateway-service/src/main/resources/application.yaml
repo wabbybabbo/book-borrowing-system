@@ -23,8 +23,8 @@ spring:
 
 auth:
   exclude-paths:
-    - /**/user/register
-    - /**/user/login
+    - /**/login
+    - /client-service/user/register
     - /client-service/book/**
     - /client-service/category/**
     - /**/api-docs

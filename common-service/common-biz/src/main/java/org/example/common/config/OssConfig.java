@@ -17,7 +17,7 @@ public class OssConfig {
 
     @Bean
     public QiniuOssUtil qiniuOssUtil(QiniuOssProperties qiniuOssProperties) {
-        log.info("[log] 开始创建七牛云文件上传工具类对象：{}", qiniuOssProperties);
+        log.info("[log] 创建七牛云文件上传工具类对象 {}", qiniuOssProperties);
         return QiniuOssUtil.builder()
                 .accessKey(qiniuOssProperties.getAccessKey())
                 .secretKey(qiniuOssProperties.getSecretKey())

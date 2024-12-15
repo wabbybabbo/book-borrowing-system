@@ -1,14 +1,14 @@
 package org.example.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.example.admin.pojo.entity.User;
+import org.example.admin.entity.User;
 
 /**
  * <p>
- * 用户表 Mapper 接口
+ * 用户信息表 Mapper 接口
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 public interface UserMapper extends BaseMapper<User> {

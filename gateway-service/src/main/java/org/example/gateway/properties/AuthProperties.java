@@ -10,5 +10,7 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "auth")
 public class AuthProperties {
+
     private List<String> excludePaths;
+
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 收藏记录表 前端控制器
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/favorite")
-@Tag(name = "图书收藏相关接口")
+@Tag(name = "书籍收藏相关接口")
 public class FavoriteController {
 
 }

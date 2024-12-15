@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 public class UserVO {
 
     @Schema(description = "用户ID")
-    private Integer id;
-
-    @Schema(description = "用户角色")
-    private String role;
+    private Long id;
 
     @Schema(description = "用户名")
     private String name;
+
+    @Schema(description = "账号")
+    private String account;
 
     @Schema(description = "密码")
     private String password;
@@ -34,14 +34,14 @@ public class UserVO {
     @Schema(description = "邮箱")
     private String email;
 
-    @Schema(description = "地址")
+    @Schema(description = "联系地址")
     private String address;
 
     @Schema(description = "账号创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
     private LocalDateTime createTime;
 
-    @Schema(description = "最近信息更改时间")
+    @Schema(description = "最新信息更改时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
     private LocalDateTime updateTime;
 

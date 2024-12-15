@@ -3,10 +3,10 @@
 <mapper namespace="org.example.admin.mapper.UserMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.example.admin.pojo.entity.User">
+    <resultMap id="BaseResultMap" type="org.example.admin.entity.User">
         <id column="id" property="id"/>
-        <result column="role" property="role"/>
         <result column="name" property="name"/>
+        <result column="account" property="account"/>
         <result column="password" property="password"/>
         <result column="img_url" property="imgUrl"/>
         <result column="gender" property="gender"/>

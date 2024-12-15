@@ -18,10 +18,10 @@ import java.util.List;
 
 /**
  * <p>
- * 图书类别表 前端控制器
+ * 书籍类别表 前端控制器
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -29,16 +29,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/category")
-@Tag(name = "图书类别相关接口")
+@Tag(name = "书籍类别相关接口")
 public class CategoryController {
 
     private final ICategoryService categoryService;
 
-    @Operation(summary = "查询所有图书类别项目")
+    @Operation(summary = "查询所有书籍类别")
     @Cacheable(cacheNames = "categoryCache", key = "'categoryVOList'")
     @GetMapping
     public Result<List<CategoryVO>> getCategories() {
-        log.info("[log] 查询所有图书类别项目");
+        log.info("[log] 查询所有书籍类别");
         List<CategoryVO> categories = categoryService.getCategories();
         return Result.success(categories);
     }

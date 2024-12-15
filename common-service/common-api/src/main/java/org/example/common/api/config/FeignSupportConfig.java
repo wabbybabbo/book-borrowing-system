@@ -12,9 +12,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 public class FeignSupportConfig {
+
     @Bean
     public Encoder multipartFormEncoder() {
-        log.info("[log] 正在为 OpenFeign 创建所需的编码器，使其支持传递MultipartFile类型参数...");
+        log.info("[log] 为 OpenFeign 创建所需的编码器，使其支持传递 MultipartFile 类型参数");
         return new SpringFormEncoder(new SpringEncoder(new ObjectFactory<HttpMessageConverters>() {
             @Override
             public HttpMessageConverters getObject() throws BeansException {
@@ -22,4 +23,5 @@ public class FeignSupportConfig {
             }
         }));
     }
+
 }

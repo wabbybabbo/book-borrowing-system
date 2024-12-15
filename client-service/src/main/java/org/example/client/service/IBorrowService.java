@@ -2,7 +2,7 @@ package org.example.client.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.client.pojo.dto.CreateBorrowDTO;
-import org.example.client.pojo.entity.Borrow;
+import org.example.client.entity.Borrow;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BorrowVO;
 import org.example.common.result.PageResult;
@@ -14,7 +14,7 @@ import java.util.List;
  * 借阅记录表 服务类
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 public interface IBorrowService extends IService<Borrow> {
@@ -37,23 +37,21 @@ public interface IBorrowService extends IService<Borrow> {
     /**
      * 新增用户的借阅记录
      *
-     * @param createBorrowDTO 新增图书借阅记录时传递的数据模型
+     * @param createBorrowDTO 新增书籍借阅记录时传递的数据模型
      */
     void createBorrow(CreateBorrowDTO createBorrowDTO);
 
     /**
-     * 取消图书借阅记录
+     * 取消书籍借阅预约
      *
      * @param id 借阅记录ID
-     * @return 提示信息
      */
-    void cancelBorrow(Integer id);
+    void cancelBorrow(Long id);
 
     /**
-     * 删除图书借阅记录
+     * 删除书籍借阅记录
      *
      * @param id 借阅记录ID
-     * @return 提示信息
      */
-    void deleteBorrow(Integer id);
+    void deleteBorrow(Long id);
 }

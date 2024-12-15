@@ -1,14 +1,14 @@
 package org.example.client.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.example.client.pojo.entity.Book;
+import org.example.client.entity.Book;
 
 /**
  * <p>
- * 图书表 Mapper 接口
+ * 书籍信息表 Mapper 接口
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 public interface BookMapper extends BaseMapper<Book> {

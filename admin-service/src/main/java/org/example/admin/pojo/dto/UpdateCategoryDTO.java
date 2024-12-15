@@ -7,12 +7,12 @@ import lombok.Data;
 import org.example.common.constant.MessageConstant;
 
 @Data
-@Schema(description = "更改图书类别信息时传递的数据模型", requiredProperties = {"id", "name"})
+@Schema(description = "更改书籍类别信息时传递的数据模型", requiredProperties = {"id", "name"})
 public class UpdateCategoryDTO {
 
-    @Schema(description = "图书类别ID")
+    @Schema(description = "书籍类别ID")
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    private Integer id;
+    private Long id;
 
     @Schema(description = "类别名称")
     @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)

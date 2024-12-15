@@ -5,11 +5,10 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
-import cn.hutool.log.StaticLog;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.example.common.constant.UserInfoConstant;
+import org.example.common.constant.ClaimConstant;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,15 +22,15 @@ public class JwtUtil {
     private int ttl; //token存活时间（单位：小时）
 
     /**
-     * JWT创建
+     * 生成 JWT(JSON Web Token)
      *
-     * @param claim 用户信息
-     * @return token
+     * @param claim 载荷
+     * @return JWT(JSON Web Token)
      */
     public String createToken(Map<String, Object> claim) {
         DateTime now = DateTime.now();
         DateTime expires = now.offsetNew(DateField.HOUR, ttl);
-        Map<String, Object> payload = new HashMap<String, Object>() {
+        Map<String, Object> payload = new HashMap<>() {
             {
                 //签发时间
                 put(JWTPayload.ISSUED_AT, now);
@@ -43,18 +42,22 @@ public class JwtUtil {
                 putAll(claim);
             }
         };
-        log.info("[log] 用户角色 {}", payload.get(UserInfoConstant.USER_ROLE));
         String token = JWTUtil.createToken(payload, key.getBytes());
-        StaticLog.info("[log] 生成JWT token：{}", token);
+        log.info("[log] 生成JWT token: {}", token);
 
         return token;
     }
 
+    /**
+     * 生成 JWT(JSON Web Token)
+     *
+     * @return JWT(JSON Web Token)
+     */
     public String createToken() {
         DateTime now = DateTime.now();
         DateTime expires = now.offsetNew(DateField.HOUR, ttl);
-        ;
-        Map<String, Object> payload = new HashMap<String, Object>() {
+
+        Map<String, Object> payload = new HashMap<>() {
             {
                 //签发时间
                 put(JWTPayload.ISSUED_AT, now);
@@ -65,33 +68,32 @@ public class JwtUtil {
             }
         };
         String token = JWTUtil.createToken(payload, key.getBytes());
-        StaticLog.info("[log] 生成JWT token：{}", token);
+        log.info("[log] 生成JWT token: {}", token);
 
         return token;
     }
 
     /**
-     * JWT解析
+     * 解析 JWT
      *
-     * @param token 加密字符串JWT（JSON Web Token）
-     * @return 用户信息
+     * @param token 加密字符串 JWT
+     * @return 载荷
      */
     public Map<String, String> parseToken(String token) {
         JWT jwt = JWTUtil.parseToken(token);
-        Map<String, String> userInfo = new HashMap<String, String>();
-        userInfo.put(UserInfoConstant.USER_ID, jwt.getPayload(UserInfoConstant.USER_ID).toString());
-        userInfo.put(UserInfoConstant.USER_ROLE, jwt.getPayload(UserInfoConstant.USER_ROLE).toString());
-        return userInfo;
+        Map<String, String> claim = new HashMap<>();
+        claim.put(ClaimConstant.CLIENT_ID, jwt.getPayload(ClaimConstant.CLIENT_ID).toString());
+        return claim;
     }
 
     /**
-     * 验证 JWT token的数据合法性和过期时间
+     * 验证 JWT 的数据合法性和过期时间
      *
-     * @param token 加密字符串
+     * @param token 加密字符串 JWT
      * @return token是否有效
      */
     public boolean validate(String token) {
-        //校验jwt token的数据合法性，也校验了token的过期时间
+        //校验JWT的数据合法性，也校验了JWT的过期时间
         return JWTUtil.parseToken(token)
                 .setKey(key.getBytes())
                 .validate(0);

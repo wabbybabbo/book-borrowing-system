@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * 借阅记录表 前端控制器
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/borrow")
-@Tag(name = "图书借阅相关接口")
+@Tag(name = "书籍借阅相关接口")
 public class BorrowController {
 
     private final IBorrowService borrowService;
@@ -39,7 +39,7 @@ public class BorrowController {
     @Operation(summary = "分页查询用户的借阅记录")
     @GetMapping("/page")
     public Result<PageResult<BorrowVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] pageQuery: {}", pageQuery);
+        log.info("[log] 分页查询用户的借阅记录 {}", pageQuery);
         PageResult<BorrowVO> pageResult = borrowService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -55,31 +55,31 @@ public class BorrowController {
     @Operation(summary = "新增用户的借阅预约记录")
     @PostMapping
     public Result createBorrow(@RequestBody CreateBorrowDTO createBorrowDTO) {
-        log.info("[log] createBorrowDTO: {}", createBorrowDTO);
+        log.info("[log] 新增用户的借阅预约记录 {}", createBorrowDTO);
         borrowService.createBorrow(createBorrowDTO);
         return Result.success(MessageConstant.BORROW_SUCCESS);
     }
 
-    @Operation(summary = "取消图书借阅预约")
+    @Operation(summary = "取消书籍借阅预约")
     @PutMapping
     public Result cancelBorrow(
             @Parameter(description = "借阅记录ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Integer id
+            Long id
     ) {
-        log.info("[log] cancel borrowId: {}", id);
+        log.info("[log] 取消书籍借阅预约 id: {}", id);
         borrowService.cancelBorrow(id);
         return Result.success(MessageConstant.CANCEL_SUCCESS);
     }
 
-    @Operation(summary = "删除图书借阅记录")
+    @Operation(summary = "删除书籍借阅记录")
     @DeleteMapping
     public Result deleteBorrow(
             @Parameter(description = "借阅记录ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Integer id
+            Long id
     ) {
-        log.info("[log] delete borrowId: {}", id);
+        log.info("[log] 删除书籍借阅记录 id: {}", id);
         borrowService.deleteBorrow(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }

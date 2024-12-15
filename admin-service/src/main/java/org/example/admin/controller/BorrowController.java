@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
-import org.example.admin.pojo.entity.Borrow;
+import org.example.admin.entity.Borrow;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
 import org.example.common.constant.MessageConstant;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  * 借阅记录表 前端控制器
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/borrow")
-@Tag(name = "图书借阅相关接口")
+@Tag(name = "书籍借阅相关接口")
 public class BorrowController {
 
     private final IBorrowService borrowService;
@@ -40,7 +40,7 @@ public class BorrowController {
     @Operation(summary = "分页查询借阅记录")
     @GetMapping("/page")
     public Result<PageResult<Borrow>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询借阅记录 pageQuery: {}", pageQuery);
+        log.info("[log] 分页查询借阅记录 {}", pageQuery);
         PageResult<Borrow> pageResult = borrowService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -52,7 +52,7 @@ public class BorrowController {
 //            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
 //            Integer id
 //    ) {
-//        log.info("[log] 查询用户的借阅记录，用户ID：{}", id);
+//        log.info("[log] 查询用户的借阅记录，id: {}", id);
 //        List<Borrow> borrows = borrowService.getBorrows(id);
 //        return Result.success(borrows);
 //    }
@@ -60,11 +60,11 @@ public class BorrowController {
     @Operation(summary = "借阅登记")
     @PutMapping
     public Result borrowRegister(
-            @Parameter(description = "图书借阅记录ID")
+            @Parameter(description = "书籍借阅记录ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Integer id
+            Long id
     ) {
-        log.info("[log] borrowId: {}", id);
+        log.info("[log] 借阅登记 id: {}", id);
         borrowService.borrowRegister(id);
         return Result.success();
     }
@@ -72,7 +72,7 @@ public class BorrowController {
     @Operation(summary = "归还登记")
     @PutMapping("/return")
     public Result returnRegister(@RequestBody @Valid ReturnRegisterDTO returnRegisterDTO) {
-        log.info("[log] returnRegisterDTO: {}", returnRegisterDTO);
+        log.info("[log] 归还登记 {}", returnRegisterDTO);
         borrowService.returnRegister(returnRegisterDTO);
         return Result.success();
     }

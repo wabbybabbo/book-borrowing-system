@@ -1,16 +1,17 @@
 package org.example.admin.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.entity.Book;
+import org.example.admin.entity.Borrow;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.BorrowMapper;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
-import org.example.admin.pojo.entity.Book;
-import org.example.admin.pojo.entity.Borrow;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
 import org.example.common.constant.BorrowStatusConstant;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
  * 借阅记录表 服务实现类
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -48,8 +49,8 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         Page<Borrow> page = pageQuery.toMpPage();
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>();
         List<String> filterConditions = pageQuery.getFilterConditions();
-        log.info("[log] filterConditions: {}", filterConditions);
-        if (null != filterConditions && !filterConditions.isEmpty()) {
+        log.info("[log] 借阅记录分页查询条件 filterConditions: {}", filterConditions);
+        if (CollUtil.isNotEmpty(filterConditions)) {
             for (String condition : filterConditions) {
                 if (condition.contains("=")) {
                     log.info("[log] = condition: {}", condition);
@@ -68,7 +69,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         try {
             borrowMapper.selectPage(page, queryWrapper);
         } catch (BadSqlGrammarException e) {
-            log.error("[log] BadSqlGrammarException: {}", e.getMessage());
+            log.error("[log] 借阅记录分页查询失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.FIELD_NOT_FOUND);
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);
         }
 
@@ -80,7 +81,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     }
 
     @Override
-    public List<Borrow> getBorrows(Integer id) {
+    public List<Borrow> getBorrows(Long id) {
         // 构建查询条件
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
                 .eq("user_id", id);
@@ -97,7 +98,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Override
     @Transactional
     public void returnRegister(ReturnRegisterDTO returnRegisterDTO) {
-        // 更改图书库存 当前库存+1
+        // 更改书籍库存 当前库存+1
         UpdateWrapper<Book> updateWrapper = new UpdateWrapper<Book>()
                 .setSql("stock=stock+1")
                 .eq("isbn", returnRegisterDTO.getIsbn());
@@ -110,7 +111,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     }
 
     @Override
-    public void borrowRegister(Integer id) {
+    public void borrowRegister(Long id) {
         // 构建借阅记录对象
         Borrow borrow = new Borrow();
         borrow.setId(id);
@@ -118,7 +119,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         // 更改借阅状态
         borrowMapper.updateById(borrow);
         // 发送消息，异步调用统计方法
-        rabbitTemplate.convertAndSend("amq.direct", "increment", "");
+        rabbitTemplate.convertAndSend("amq.direct", "statistic", "");
     }
 
 }

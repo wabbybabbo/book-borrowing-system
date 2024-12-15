@@ -8,22 +8,22 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-@Schema(description = "查询图书时响应的数据模型")
+@Schema(description = "查询书籍信息时响应的数据模型")
 public class BookVO implements Serializable {
 
-    @Schema(description = "图书ID")
-    private Integer id;
+    @Schema(description = "书籍ID")
+    private Long id;
 
-    @Schema(description = "图书类别ID")
-    private Integer categoryId;
+    @Schema(description = "书籍类别ID")
+    private Long categoryId;
 
-    @Schema(description = "图书类别")
+    @Schema(description = "书籍类名")
     private String categoryName;
 
-    @Schema(description = "书名")
+    @Schema(description = "书籍名称")
     private String name;
 
-    @Schema(description = "图书封面图片文件路径")
+    @Schema(description = "书籍封面图片文件路径")
     private String imgUrl;
 
     @Schema(description = "国际标准书号")

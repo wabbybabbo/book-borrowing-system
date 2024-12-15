@@ -29,10 +29,10 @@ import java.util.List;
 
 /**
  * <p>
- * 图书表 前端控制器
+ * 书籍信息表 前端控制器
  * </p>
  *
- * @author wabbybabbo
+ * @author zhengjunpeng
  * @since 2024-04-07
  */
 @Slf4j
@@ -40,74 +40,74 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/book")
-@Tag(name = "图书相关接口")
+@Tag(name = "书籍相关接口")
 public class BookController {
 
     private final IBookService bookService;
 
-    @Operation(summary = "分页查询图书")
+    @Operation(summary = "分页查询书籍信息")
     //只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存
     @Cacheable(cacheNames = "bookCache", key = "'bookList'+':'+#pageQuery.current+':'+#pageQuery.size", condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @GetMapping("/page")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询图书 pageQuery: {}", pageQuery);
+        log.info("[log] 分页查询书籍信息 {}", pageQuery);
         PageResult<BookVO> pageResult = bookService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "新建图书")
+    @Operation(summary = "新建书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
     public Result createBook(
-            @Parameter(description = "图书封面图片文件")
+            @Parameter(description = "书籍封面图片文件")
             @RequestPart("file")
             @NotNull(message = MessageConstant.FIELD_NOT_BLANK)
             MultipartFile file,
             @RequestPart
             @Valid
             CreateBookDTO createBookDTO) {
-        log.info("[log] 新建图书 createBookDTO: {}", createBookDTO);
+        log.info("[log] 新建书籍信息 {}", createBookDTO);
         bookService.createBook(file, createBookDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
 
-    @Operation(summary = "更改图书信息")
+    @Operation(summary = "更改书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
     public Result updateBook(
-            @Parameter(description = "图书封面图片文件")
+            @Parameter(description = "书籍封面图片文件")
             @RequestPart(value = "file", required = false)
             MultipartFile file,
             @RequestPart
             @Valid
             UpdateBookDTO updateBookDTO) {
-        log.info("[log] 更改图书信息 updateBookDTO: {}", updateBookDTO);
+        log.info("[log] 更改书籍信息 {}", updateBookDTO);
         bookService.updateBook(file, updateBookDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
 
-    @Operation(summary = "删除图书")
+    @Operation(summary = "删除书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @DeleteMapping
     public Result deleteBook(
-            @Parameter(description = "图书ID")
+            @Parameter(description = "书籍ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Integer id
+            Long id
     ) {
-        log.info("[log] 删除图书 bookId: {}", id);
+        log.info("[log] 删除书籍信息 id: {}", id);
         bookService.deleteBook(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 
-    @Operation(summary = "批量删除图书")
+    @Operation(summary = "批量删除书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @DeleteMapping("/batch")
     public Result batchDeleteBooks(
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<Integer> ids
+            List<Long> ids
     ) {
-        log.info("[log] 批量删除图书 bookIds: {}", ids);
+        log.info("[log] 批量删除书籍信息 ids: {}", ids);
         bookService.batchDeleteBooks(ids);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }

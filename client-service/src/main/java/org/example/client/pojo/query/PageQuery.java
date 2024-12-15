@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Schema(description = "分页查询时传递的数据模型")
@@ -34,7 +35,7 @@ public class PageQuery {
         // 设置排序条件
         if (StringUtils.isNotBlank(sortBy)) {
             page.addOrder(new OrderItem().setColumn(sortBy).setAsc(isAsc));
-        } else if (items != null) {
+        } else if (Objects.nonNull(items)) {
             page.addOrder(items);
         }
         return page;

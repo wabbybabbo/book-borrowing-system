@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * FeignClient注解属性说明：
- * name等同value 指定被调用的服务名(spring.application.name)
+ * name等同value 指定被调用的服务名(spring.application.account)
  * path 定义访问接口时的统一前缀
  * fallbackFactory定义当调用远程服务失败时的回退策略
  */
@@ -25,15 +25,11 @@ import java.util.Map;
 )
 public interface CommonClient {
 
-    //http://common-service的ip地址/common/echo/{string}
-    @GetMapping("/echo/{string}")
-    String echo(@PathVariable("string") String string);
-
     /**
-     * 生成 JWT令牌
+     * 生成 JWT(JSON Web Token)
      *
      * @param claim 载荷
-     * @return JWT token
+     * @return JWT(JSON Web Token)
      */
     @PostMapping("/token")
     String createToken(@RequestBody Map<String, Object> claim);
