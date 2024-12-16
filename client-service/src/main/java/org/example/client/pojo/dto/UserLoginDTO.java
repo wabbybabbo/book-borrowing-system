@@ -2,20 +2,23 @@ package org.example.client.pojo.dto;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.example.common.constant.MessageConstant;
-import org.hibernate.validator.constraints.Length;
+import org.example.common.constant.RegexpConstant;
+
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
-@Schema(description = "用户登录时传递的数据模型", requiredProperties = {"account", "password"})
+@Schema(description = "用户登录时传递的数据模型")
 public class UserLoginDTO {
 
-    @Schema(description = "账号 4-16位")
-    @Length(min = 4, max = 16, message = MessageConstant.INVALID_ACCOUNT)
+    @Schema(description = "账号", pattern = RegexpConstant.ACCOUNT, requiredMode = REQUIRED, example = "guest")
+    @Pattern(regexp = RegexpConstant.ACCOUNT, message = MessageConstant.INVALID_ACCOUNT)
     private String account;
 
-    @Schema(description = "密码 4-16位")
-    @Length(min = 4, max = 16, message = MessageConstant.INVALID_PASSWORD)
+    @Schema(description = "密码", pattern = RegexpConstant.PASSWORD, requiredMode = REQUIRED, example = "guest")
+    @Pattern(regexp = RegexpConstant.PASSWORD, message = MessageConstant.INVALID_PASSWORD)
     private String password;
 
 }

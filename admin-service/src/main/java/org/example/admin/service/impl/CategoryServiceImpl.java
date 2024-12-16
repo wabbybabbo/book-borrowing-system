@@ -1,15 +1,16 @@
 package org.example.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.entity.Category;
 import org.example.admin.mapper.CategoryMapper;
 import org.example.admin.pojo.dto.CreateCategoryDTO;
 import org.example.admin.pojo.dto.UpdateCategoryDTO;
-import org.example.admin.entity.Category;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.ICategoryService;
 import org.example.common.constant.MessageConstant;
@@ -17,7 +18,6 @@ import org.example.common.exception.AlreadyExistsException;
 import org.example.common.exception.NotAllowedException;
 import org.example.common.exception.NotFoundException;
 import org.example.common.result.PageResult;
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.BadSqlGrammarException;
@@ -44,7 +44,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public PageResult<Category> pageQuery(PageQuery pageQuery) {
         // 构建分页查询条件
         Page<Category> page = pageQuery.toMpPage();
-        QueryWrapper<Category> queryWrapper = new QueryWrapper<Category>();
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
         List<String> filterConditions = pageQuery.getFilterConditions();
         log.info("[log] 书籍类别分页查询条件 filterConditions: {}", filterConditions);
         if (CollUtil.isNotEmpty(filterConditions)) {
@@ -103,7 +103,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public void updateCategory(UpdateCategoryDTO updateCategoryDTO) {
         // 构建书籍类别对象
         Category category = new Category();
-        BeanUtils.copyProperties(updateCategoryDTO, category);
+        BeanUtil.copyProperties(updateCategoryDTO, category);
         // 更改书籍类别信息
         try {
             categoryMapper.updateById(category);
@@ -120,7 +120,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             categoryMapper.deleteById(id);
         } catch (DataIntegrityViolationException e) {
             log.error("[log] 删除书籍类别失败 DataIntegrityViolationException: {}, msg: {}", e.getMessage(), MessageConstant.CATEGORY_ALREADY_EXISTS);
-            throw new NotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_BOOK);
+            throw new NotAllowedException(MessageConstant.BOOK_REFERENCES_CATEGORY);
         }
     }
 
@@ -131,7 +131,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
             categoryMapper.deleteBatchIds(ids);
         } catch (DataIntegrityViolationException e) {
             log.error("[log] 批量删除书籍类别失败 DataIntegrityViolationException: {}, msg: {}", e.getMessage(), MessageConstant.CATEGORY_ALREADY_EXISTS);
-            throw new NotAllowedException(MessageConstant.CATEGORY_BE_RELATED_BY_BOOK);
+            throw new NotAllowedException(MessageConstant.BOOK_REFERENCES_CATEGORY);
         }
     }
 

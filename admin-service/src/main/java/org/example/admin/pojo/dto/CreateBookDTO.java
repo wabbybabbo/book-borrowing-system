@@ -1,37 +1,39 @@
 package org.example.admin.pojo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.example.common.constant.MessageConstant;
-import org.hibernate.validator.constraints.Length;
+import org.example.common.constant.RegexpConstant;
+
+import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 @Data
-@Schema(description = "新增书籍时传递的数据模型", requiredProperties = {"categoryId", "name", "isbn", "author", "publisher"})
+@Schema(description = "新增书籍时传递的数据模型")
 public class CreateBookDTO {
 
-    @Schema(description = "书籍类别ID")
+    @Schema(description = "书籍类别ID", requiredMode = REQUIRED)
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
     private Long categoryId;
 
-    @Schema(description = "书籍名称")
-    @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+    @Schema(description = "书籍名称", pattern = RegexpConstant.BOOK_NAME, requiredMode = REQUIRED, example = "Vue.js 设计与实现")
+    @Pattern(regexp = RegexpConstant.BOOK_NAME, message = MessageConstant.INVALID_BOOK_NAME)
     private String name;
 
-    @Schema(description = "国际标准书号", pattern = "^[0-9]{13}$", example = "9781234567890")
-    @Length(min = 13, max = 13, message = MessageConstant.INVALID_ISBN)
+    @Schema(description = "国际标准书号", pattern = RegexpConstant.ISBN, requiredMode = REQUIRED, example = "9787115583864")
+    @Pattern(regexp = RegexpConstant.ISBN, message = MessageConstant.INVALID_ISBN)
     private String isbn;
 
-    @Schema(description = "作者")
-    @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+    @Schema(description = "作者", pattern = RegexpConstant.AUTHOR, requiredMode = REQUIRED, example = "霍春阳")
+    @Pattern(regexp = RegexpConstant.AUTHOR, message = MessageConstant.INVALID_AUTHOR_NAME)
     private String author;
 
-    @Schema(description = "出版社")
-    @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+    @Schema(description = "出版社", pattern = RegexpConstant.PUBLISHER, requiredMode = REQUIRED, example = "人民邮电出版社")
+    @Pattern(regexp = RegexpConstant.PUBLISHER, message = MessageConstant.INVALID_PUBLISHER)
     private String publisher;
 
-    @Schema(description = "描述")
+    @Schema(description = "描述", example = "基于 Vue.js 3\n深入解析 Vue.js 设计细节")
     private String description;
 
     @Schema(description = "库存数量", defaultValue = "0")

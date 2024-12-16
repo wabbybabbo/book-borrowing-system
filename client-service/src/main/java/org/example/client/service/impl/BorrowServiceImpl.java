@@ -1,5 +1,6 @@
 package org.example.client.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -22,7 +23,6 @@ import org.example.common.exception.CheckException;
 import org.example.common.exception.NotAllowedException;
 import org.example.common.exception.NotFoundException;
 import org.example.common.result.PageResult;
-import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,7 +84,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         //转化为VO
         List<BorrowVO> borrowVOList = records.stream().map(borrow -> {
             BorrowVO borrowVO = new BorrowVO();
-            BeanUtils.copyProperties(borrow, borrowVO);
+            BeanUtil.copyProperties(borrow, borrowVO);
             if (!borrowVO.getStatus().equals(BorrowStatusConstant.RETURNED)) {
                 borrowVO.setUpdateTime(null);
             }
@@ -109,7 +109,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         // 转化为BorrowVO
         return borrows.stream().map(borrow -> {
             BorrowVO borrowVO = new BorrowVO();
-            BeanUtils.copyProperties(borrow, borrowVO);
+            BeanUtil.copyProperties(borrow, borrowVO);
             if (!borrowVO.getStatus().equals(BorrowStatusConstant.RETURNED)) {
                 borrowVO.setUpdateTime(null);
             }
@@ -130,7 +130,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         }
         // 查询书籍库存
         QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>()
-                .select("stock", "name")
+                .select("name", "stock")
                 .eq("isbn", isbn);
         Book book = bookMapper.selectOne(queryWrapper);
         if (Objects.isNull(book)) {
@@ -146,7 +146,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         bookMapper.update(updateWrapper);
         // 新增用户借阅记录
         Borrow borrow = new Borrow();
-        BeanUtils.copyProperties(createBorrowDTO, borrow);
+        BeanUtil.copyProperties(createBorrowDTO, borrow);
         borrow.setBookName(book.getName());
         borrow.setUserId(UserContext.getUserId());
         borrowMapper.insert(borrow);

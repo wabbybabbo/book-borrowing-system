@@ -1,8 +1,11 @@
 package org.example.common.exception;
 
+import lombok.NoArgsConstructor;
+
 /**
  * 参数检查异常
  */
+@NoArgsConstructor
 public class CheckException extends BaseException {
 
     public CheckException(String msg) {

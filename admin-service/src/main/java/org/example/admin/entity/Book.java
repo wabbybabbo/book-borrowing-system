@@ -36,7 +36,7 @@ public class Book implements Serializable {
     private Long id;
 
     @Schema(description = "书籍类别ID")
-    private Integer categoryId;
+    private Long categoryId;
 
     @Schema(description = "书籍名称")
     private String name;

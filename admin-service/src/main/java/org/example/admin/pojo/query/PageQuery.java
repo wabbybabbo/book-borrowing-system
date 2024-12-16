@@ -13,10 +13,10 @@ import java.util.List;
 @Schema(description = "分页查询时传递的数据模型")
 public class PageQuery {
 
-    @Schema(description = "当前页号 默认为1")
+    @Schema(description = "当前页号", defaultValue = "1")
     private Integer current = 1;
 
-    @Schema(description = "每页显示记录数 默认为10")
+    @Schema(description = "每页显示记录数", defaultValue = "10")
     private Integer size = 10;
 
     @Schema(description = "筛选条件", example = "category_id=1,title~vue")
@@ -25,7 +25,7 @@ public class PageQuery {
     @Schema(description = "排序字段")
     private String sortBy = "";
 
-    @Schema(description = "是否升序 默认升序")
+    @Schema(description = "是否升序", defaultValue = "true")
     private Boolean isAsc = true;
 
     public <T> Page<T> toMpPage(OrderItem... items) {

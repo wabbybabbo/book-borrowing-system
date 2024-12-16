@@ -34,7 +34,7 @@ public class BorrowStatisticServiceImpl extends ServiceImpl<BorrowStatisticMappe
     public PageResult<BorrowStatistic> pageQuery(PageQuery pageQuery) {
         // 构建分页查询条件
         Page<BorrowStatistic> page = pageQuery.toMpPage();
-        QueryWrapper<BorrowStatistic> queryWrapper = new QueryWrapper<BorrowStatistic>();
+        QueryWrapper<BorrowStatistic> queryWrapper = new QueryWrapper<>();
 
         // 分页查询
         try {

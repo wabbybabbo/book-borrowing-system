@@ -1,22 +1,22 @@
 package org.example.client.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.client.mapper.BookMapper;
-import org.example.client.mapper.CategoryMapper;
 import org.example.client.entity.Book;
 import org.example.client.entity.Category;
+import org.example.client.mapper.BookMapper;
+import org.example.client.mapper.CategoryMapper;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BookVO;
 import org.example.client.service.IBookService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.NotFoundException;
 import org.example.common.result.PageResult;
-import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 
@@ -83,7 +83,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         //转化为VO
         List<BookVO> bookVOList = records.stream().map(book -> {
             BookVO bookVO = new BookVO();
-            BeanUtils.copyProperties(book, bookVO);
+            BeanUtil.copyProperties(book, bookVO);
             bookVO.setCategoryName(categoryMap.get(book.getCategoryId()));
             return bookVO;
         }).collect(Collectors.toList());

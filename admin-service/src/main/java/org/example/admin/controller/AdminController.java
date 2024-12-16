@@ -71,7 +71,7 @@ public class AdminController {
     @Operation(summary = "新建管理员信息")
     @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
-    public Result createAccount(
+    public Result createAdmin(
             @Parameter(description = "管理员头像图片文件")
             @RequestPart(value = "file", required = false)
             MultipartFile file,

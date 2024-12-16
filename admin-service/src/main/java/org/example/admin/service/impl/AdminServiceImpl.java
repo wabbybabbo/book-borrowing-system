@@ -1,8 +1,7 @@
 package org.example.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,14 +20,12 @@ import org.example.admin.service.IAdminService;
 import org.example.common.api.client.CommonClient;
 import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.ClaimConstant;
-import org.example.common.constant.GenderConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
 import org.example.common.exception.CheckException;
+import org.example.common.exception.MissingValueException;
 import org.example.common.exception.NotFoundException;
-import org.example.common.exception.NullUpdateException;
 import org.example.common.result.PageResult;
-import org.springframework.beans.BeanUtils;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,14 +49,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     private final CommonClient commonClient;
     private final AdminMapper adminMapper;
-    // 电子邮箱验证正则表达式
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
 
     @Override
     public AdminLoginVO login(AdminLoginDTO adminLoginDTO) {
         String account = adminLoginDTO.getAccount();
         String password = adminLoginDTO.getPassword();
-        // 查询登录的管理员信息是否存在
+        // 查询账号是否存在
         QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
                 .eq("account", account);
         if (!adminMapper.exists(queryWrapper1)) {
@@ -73,7 +68,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         if (Objects.isNull(admin)) {
             throw new NotFoundException(MessageConstant.PASSWORD_ERROR);
         }
-        // 判断该管理员账号是否被禁用
+        // 判断该账号是否被禁用
         if (admin.getStatus().equals(AccountStatusConstant.DISABLE)) {
             log.info("[log] 该管理员账号被禁用 status: {}", admin.getStatus());
             throw new CheckException(MessageConstant.ACCOUNT_LOCKED);
@@ -82,12 +77,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         // 构建管理员信息载荷
         HashMap<String, Object> adminInfo = new HashMap<>();
         adminInfo.put(ClaimConstant.CLIENT_ID, admin.getId());
-        // 成功获取到登录管理员信息后，远程调用服务，生成JWT
+        // 远程调用服务，生成JWT
         String token = commonClient.createToken(adminInfo);
 
         // 构建AdminLoginVO
         AdminLoginVO adminLoginVO = new AdminLoginVO();
-        BeanUtils.copyProperties(admin, adminLoginVO);
+        BeanUtil.copyProperties(admin, adminLoginVO);
         adminLoginVO.setToken(token);
 
         return adminLoginVO;
@@ -97,7 +92,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public PageResult<Admin> pageQuery(PageQuery pageQuery) {
         // 构建分页查询条件
         Page<Admin> page = pageQuery.toMpPage();
-        QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>();
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         List<String> filterConditions = pageQuery.getFilterConditions();
         log.info("[log] filterConditions: {}", filterConditions);
         if (CollUtil.isNotEmpty(filterConditions)) {
@@ -132,44 +127,36 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Override
     public void createAdmin(MultipartFile file, CreateAdminDTO createAdminDTO) {
+        String account = createAdminDTO.getAccount();
         String phone = createAdminDTO.getPhone();
         String email = createAdminDTO.getEmail();
-        // 查询管理员账号是否已存在
-        QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
-                .eq("account", createAdminDTO.getAccount());
-        if (adminMapper.exists(queryWrapper1)) {
-            throw new AlreadyExistsException(MessageConstant.USERNAME_ALREADY_EXISTS);
+        // 查询账号是否已存在
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
+                .eq("account", account);
+        if (adminMapper.exists(queryWrapper)) {
+            throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
-        // 检查参数是否合法
-        if (phone != null) {
-            if (phone.length() != 11) {
-                log.info("[log] 参数检查不通过 phone: {}, msg: {}", phone, MessageConstant.INVALID_PHONE);
-                throw new CheckException(MessageConstant.INVALID_PHONE);
-            }
+        if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
-            QueryWrapper<Admin> queryWrapper2 = new QueryWrapper<Admin>()
+            QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
                     .eq("phone", phone);
-            if (adminMapper.exists(queryWrapper2)) {
+            if (adminMapper.exists(queryWrapper1)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
-        if (email != null) {
-            if (!ReUtil.isMatch(EMAIL_REGEX, email)) {
-                log.info("[log] 参数检查不通过 email: {}, msg: {}", phone, MessageConstant.INVALID_EMAIL);
-                throw new CheckException(MessageConstant.INVALID_EMAIL);
-            }
+        if (Objects.nonNull(email)) {
             // 查询电子邮箱是否已存在
-            QueryWrapper<Admin> queryWrapper3 = new QueryWrapper<Admin>()
+            QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
                     .eq("email", email);
-            if (adminMapper.exists(queryWrapper3)) {
+            if (adminMapper.exists(queryWrapper1)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
         }
         // 构建管理员对象
         Admin admin = new Admin();
-        BeanUtils.copyProperties(createAdminDTO, admin);
+        BeanUtil.copyProperties(createAdminDTO, admin);
         if (Objects.nonNull(file)) {
-            // 上传书籍封面图片文件
+            // 上传头像图片文件
             String url = commonClient.upload(file);
             admin.setImgUrl(url);
         }
@@ -179,69 +166,48 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
 
     @Override
     public void updateAdmin(UpdateAdminDTO updateAdminDTO) {
+        // 检查Bean对象中字段是否全空
+        if(BeanUtil.isEmpty(updateAdminDTO)){
+            throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);
+        }
         long adminId = AdminContext.getAdminId();
-        String name = updateAdminDTO.getName();
         String account = updateAdminDTO.getAccount();
-        String gender = updateAdminDTO.getGender();
         String phone = updateAdminDTO.getPhone();
         String email = updateAdminDTO.getEmail();
-        // 检查账号是否已存在
-        QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
-                .eq("account", account)
-                .ne("id", adminId);
-        if (adminMapper.exists(queryWrapper1)) {
-            throw new AlreadyExistsException(MessageConstant.USERNAME_ALREADY_EXISTS);
-        }
-        // 检查参数是否合法
-        if (StrUtil.isNotBlank(name)) {
-            if (name.length() < 2 || name.length() > 8) {
-                log.info("[log] 参数检查不通过 name: {}, msg: {}", phone, MessageConstant.INVALID_ADMIN_NAME);
-                throw new CheckException(MessageConstant.INVALID_ADMIN_NAME);
+        // 验证参数值在数据库中的唯一性
+        if (Objects.nonNull(account)) {
+            // 查询账号是否已存在
+            QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
+                    .eq("account", account)
+                    .ne("id", adminId);
+            if (adminMapper.exists(queryWrapper)) {
+                throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
             }
         }
-        if (StrUtil.isNotBlank(gender)) {
-            if (!(gender.equals(GenderConstant.MALE) || gender.equals(GenderConstant.FEMALE))) {
-                log.info("[log] 参数检查不通过 gender: {}, msg: {}", gender, MessageConstant.INVALID_GENDER);
-                throw new CheckException(MessageConstant.INVALID_GENDER);
-            }
-        }
-        if (StrUtil.isNotBlank(phone)) {
-            if (phone.length() != 11) {
-                log.info("[log] 参数检查不通过 phone: {}, msg: {}", phone, MessageConstant.INVALID_PHONE);
-                throw new CheckException(MessageConstant.INVALID_PHONE);
-            }
-            // 检查电话号码是否已存在
-            QueryWrapper<Admin> queryWrapper2 = new QueryWrapper<Admin>()
+        if (Objects.nonNull(phone)) {
+            // 查询电话号码是否已存在
+            QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
                     .eq("phone", phone)
                     .ne("id", adminId);
-            if (adminMapper.exists(queryWrapper2)) {
+            if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
-        if (StrUtil.isNotBlank(email)) {
-            if (!ReUtil.isMatch(EMAIL_REGEX, email)) {
-                log.info("[log] 参数检查不通过 email: {}, msg: {}", email, MessageConstant.INVALID_EMAIL);
-                throw new CheckException(MessageConstant.INVALID_EMAIL);
-            }
-            // 检查邮箱是否已存在
-            QueryWrapper<Admin> queryWrapper3 = new QueryWrapper<Admin>()
+        if (Objects.nonNull(email)) {
+            // 查询邮箱是否已存在
+            QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
                     .eq("email", email)
                     .ne("id", adminId);
-            if (adminMapper.exists(queryWrapper3)) {
+            if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
         }
         // 构建管理员对象
         Admin admin = new Admin();
-        BeanUtils.copyProperties(updateAdminDTO, admin);
+        BeanUtil.copyProperties(updateAdminDTO, admin);
         admin.setId(adminId);
         // 更改管理员信息
-        try {
-            adminMapper.updateById(admin);
-        } catch (BadSqlGrammarException e) {
-            log.error("[log] 更改管理员信息失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.UPDATE_FIELD_NOT_SET);
-            throw new NullUpdateException(MessageConstant.UPDATE_FIELD_NOT_SET);
-        }
+        adminMapper.updateById(admin);
     }
 
     @Override

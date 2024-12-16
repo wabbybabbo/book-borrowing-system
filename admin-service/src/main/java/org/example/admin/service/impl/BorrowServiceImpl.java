@@ -47,7 +47,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     public PageResult<Borrow> pageQuery(PageQuery pageQuery) {
         // 构建分页查询条件
         Page<Borrow> page = pageQuery.toMpPage();
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>();
+        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<>();
         List<String> filterConditions = pageQuery.getFilterConditions();
         log.info("[log] 借阅记录分页查询条件 filterConditions: {}", filterConditions);
         if (CollUtil.isNotEmpty(filterConditions)) {

@@ -1,5 +1,6 @@
 package org.example.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,10 +19,8 @@ import org.example.admin.service.IBookService;
 import org.example.common.api.client.CommonClient;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
-import org.example.common.exception.CheckException;
 import org.example.common.exception.NotFoundException;
 import org.example.common.result.PageResult;
-import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
@@ -54,7 +53,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     public PageResult<BookVO> pageQuery(PageQuery pageQuery) {
         // 构建分页查询条件
         Page<Book> page = pageQuery.toMpPage();
-        QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>();
+        QueryWrapper<Book> queryWrapper = new QueryWrapper<>();
         List<String> filterConditions = pageQuery.getFilterConditions();
         log.info("[log] 书籍信息分页查询条件 filterConditions: {}", filterConditions);
         if (CollUtil.isNotEmpty(filterConditions)) {
@@ -93,7 +92,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         //转化为VO
         List<BookVO> bookVOList = records.stream().map(book -> {
             BookVO bookVO = new BookVO();
-            BeanUtils.copyProperties(book, bookVO);
+            BeanUtil.copyProperties(book, bookVO);
             bookVO.setCategoryName(categoryMap.get(book.getCategoryId()));
             return bookVO;
         }).collect(Collectors.toList());
@@ -111,7 +110,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         String url = commonClient.upload(file);
         // 构建书籍对象
         Book book = new Book();
-        BeanUtils.copyProperties(createBookDTO, book);
+        BeanUtil.copyProperties(createBookDTO, book);
         book.setImgUrl(url);
         // 新增书籍信息
         try {
@@ -124,15 +123,9 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
 
     @Override
     public void updateBook(MultipartFile file, UpdateBookDTO updateBookDTO) {
-        String isbn = updateBookDTO.getIsbn();
-        // 检查参数是否合法
-        if (isbn == null || isbn.length() != 13) {
-            log.info("[log] 参数检查不通过 isbn: {}, msg: {}", isbn, MessageConstant.INVALID_ISBN);
-            throw new CheckException(MessageConstant.INVALID_ISBN);
-        }
         // 构建书籍对象
         Book book = new Book();
-        BeanUtils.copyProperties(updateBookDTO, book);
+        BeanUtil.copyProperties(updateBookDTO, book);
         if (Objects.nonNull(file)) {
             // 上传书籍封面图片文件
             String url = commonClient.upload(file);

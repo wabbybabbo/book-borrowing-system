@@ -1,7 +1,6 @@
 package org.example.client.service.impl;
 
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +16,11 @@ import org.example.client.service.IUserService;
 import org.example.common.api.client.CommonClient;
 import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.ClaimConstant;
-import org.example.common.constant.GenderConstant;
 import org.example.common.constant.MessageConstant;
-import org.example.common.exception.*;
-import org.springframework.beans.BeanUtils;
-import org.springframework.jdbc.BadSqlGrammarException;
+import org.example.common.exception.AlreadyExistsException;
+import org.example.common.exception.MissingValueException;
+import org.example.common.exception.NotAllowedException;
+import org.example.common.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -42,14 +41,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     private final UserMapper userMapper;
     private final CommonClient commonClient;
-    // 电子邮箱验证正则表达式
-    private static final String EMAIL_REGEX = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
 
     @Override
     public UserVO login(UserLoginDTO userLoginDTO) {
         String account = userLoginDTO.getAccount();
         String password = userLoginDTO.getPassword();
-        // 查询用户是否存在
+        // 查询账号是否存在
         QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
                 .eq("account", account);
         if (!userMapper.exists(queryWrapper1)) {
@@ -72,12 +69,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 构建用户信息载荷
         HashMap<String, Object> userInfo = new HashMap<>();
         userInfo.put(ClaimConstant.CLIENT_ID, user.getId());
-        // 成功获取到登录用户信息后，远程调用服务，生成JWT
+        // 远程调用服务，生成JWT
         String token = commonClient.createToken(userInfo);
 
         // 构建UserVO
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user, userVO);
+        BeanUtil.copyProperties(user, userVO);
         userVO.setToken(token);
 
         return userVO;
@@ -85,27 +82,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
-        String gender = userRegisterDTO.getGender();
         String phone = userRegisterDTO.getPhone();
         String email = userRegisterDTO.getEmail();
         // 查询账号是否已存在
         QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
                 .eq("account", userRegisterDTO.getAccount());
         if (userMapper.exists(queryWrapper1)) {
-            throw new AlreadyExistsException(MessageConstant.USERNAME_ALREADY_EXISTS);
+            throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
-        // 检查参数是否合法
-        if (gender != null) {
-            if (!(gender.equals(GenderConstant.MALE) || gender.equals(GenderConstant.FEMALE))) {
-                log.info("[log] 参数检查不通过 gender: {}, msg: {}", gender, MessageConstant.INVALID_GENDER);
-                throw new CheckException(MessageConstant.INVALID_GENDER);
-            }
-        }
-        if (phone != null) {
-            if (phone.length() != 11) {
-                log.info("[log] 参数检查不通过 phone: {}, msg: {}", phone, MessageConstant.INVALID_PHONE);
-                throw new CheckException(MessageConstant.INVALID_PHONE);
-            }
+        // 检查参数值在数据库中的唯一性
+        if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
             QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
                     .eq("phone", phone);
@@ -113,11 +99,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
-        if (email != null) {
-            if (!ReUtil.isMatch(EMAIL_REGEX, email)) {
-                log.info("[log] 参数检查不通过 email: {}, msg: {}", email, MessageConstant.INVALID_EMAIL);
-                throw new CheckException(MessageConstant.INVALID_EMAIL);
-            }
+        if (Objects.nonNull(email)) {
             // 查询电子邮箱是否已存在
             QueryWrapper<User> queryWrapper3 = new QueryWrapper<User>()
                     .eq("email", email);
@@ -127,76 +109,55 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 构建用户对象
         User user = new User();
-        BeanUtils.copyProperties(userRegisterDTO, user);
-        // 新增用户
+        BeanUtil.copyProperties(userRegisterDTO, user);
+        // 新增用户信息
         userMapper.insert(user);
     }
 
     @Override
     public void updateUser(UpdateUserDTO updateUserDTO) {
+        // 检查Bean对象中字段是否全空
+        if(BeanUtil.isEmpty(updateUserDTO)){
+            throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);
+        }
         long userId = UserContext.getUserId();
-        String name = updateUserDTO.getName();
         String account = updateUserDTO.getAccount();
-        String gender = updateUserDTO.getGender();
         String phone = updateUserDTO.getPhone();
         String email = updateUserDTO.getEmail();
-        // 检查账号是否已存在
-        QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
-                .eq("account", account)
-                .ne("id", userId);
-        if (userMapper.exists(queryWrapper1)) {
-            throw new AlreadyExistsException(MessageConstant.USERNAME_ALREADY_EXISTS);
-        }
-        // 检查参数是否合法
-        if (StrUtil.isNotBlank(name)) {
-            if (name.length() < 2 || name.length() > 8) {
-                log.info("[log] 参数检查不通过 name: {}, msg: {}", phone, MessageConstant.INVALID_USER_NAME);
-                throw new CheckException(MessageConstant.INVALID_USER_NAME);
+        // 检查参数值在数据库中的唯一性
+        if (Objects.nonNull(account)) {
+            // 检查账号是否已存在
+            QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
+                    .eq("account", account)
+                    .ne("id", userId);
+            if (userMapper.exists(queryWrapper)) {
+                throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
             }
         }
-        if (gender != null) {
-            if (!(gender.equals(GenderConstant.MALE) || gender.equals(GenderConstant.FEMALE))) {
-                log.info("[log] 参数检查不通过 gender: {}, msg: {}", gender, MessageConstant.INVALID_GENDER);
-                throw new CheckException(MessageConstant.INVALID_GENDER);
-            }
-        }
-        if (StrUtil.isNotBlank(phone)) {
-            if (phone.length() != 11) {
-                log.info("[log] 参数检查不通过 phone: {}, msg: {}", phone, MessageConstant.INVALID_PHONE);
-                throw new CheckException(MessageConstant.INVALID_PHONE);
-            }
+        if (Objects.nonNull(phone)) {
             // 检查电话号码是否已存在
-            QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
+            QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
                     .eq("phone", phone)
                     .ne("id", userId);
-            if (userMapper.exists(queryWrapper2)) {
+            if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
-        if (email != null) {
-            if (!ReUtil.isMatch(EMAIL_REGEX, email)) {
-                log.info("[log] 参数检查不通过 email: {}, msg: {}", email, MessageConstant.INVALID_EMAIL);
-                throw new CheckException(MessageConstant.INVALID_EMAIL);
-            }
+        if (Objects.nonNull(email)) {
             // 检查邮箱是否已存在
-            QueryWrapper<User> queryWrapper3 = new QueryWrapper<User>()
+            QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
                     .eq("email", email)
                     .ne("id", userId);
-            if (userMapper.exists(queryWrapper3)) {
+            if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
         }
         // 构建用户对象
         User user = new User();
-        BeanUtils.copyProperties(updateUserDTO, user);
+        BeanUtil.copyProperties(updateUserDTO, user);
         user.setId(userId);
         // 更改用户信息
-        try {
-            userMapper.updateById(user);
-        } catch (BadSqlGrammarException e) {
-            log.error("[log] 更改用户信息失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.UPDATE_FIELD_NOT_SET);
-            throw new NullUpdateException(MessageConstant.UPDATE_FIELD_NOT_SET);
-        }
+        userMapper.updateById(user);
     }
 
 }
