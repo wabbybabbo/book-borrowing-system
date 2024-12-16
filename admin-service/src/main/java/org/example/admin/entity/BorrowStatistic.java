@@ -38,7 +38,6 @@ public class BorrowStatistic implements Serializable {
     private LocalDate date;
 
     @Schema(description = "借阅数量")
-    @TableField("quantity")
     private Integer quantity;
 
 

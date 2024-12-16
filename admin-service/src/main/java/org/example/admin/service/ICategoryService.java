@@ -1,10 +1,11 @@
 package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.admin.entity.Category;
 import org.example.admin.pojo.dto.CreateCategoryDTO;
 import org.example.admin.pojo.dto.UpdateCategoryDTO;
-import org.example.admin.entity.Category;
 import org.example.admin.pojo.query.PageQuery;
+import org.example.admin.pojo.vo.CategoryVO;
 import org.example.common.result.PageResult;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public interface ICategoryService extends IService<Category> {
      *
      * @return 书籍类别列表
      */
-    List<Category> getCategories();
+    List<CategoryVO> getCategories();
 
     /**
      * 更改书籍类别信息

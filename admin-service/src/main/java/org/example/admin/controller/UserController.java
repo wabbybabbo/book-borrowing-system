@@ -72,7 +72,7 @@ public class UserController {
     @Operation(summary = "禁用用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/disable")
-    public Result disableUser(
+    public Result disableAccount(
             @Parameter(description = "用户ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
@@ -98,7 +98,7 @@ public class UserController {
     @Operation(summary = "解禁用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/enable")
-    public Result enableUser(
+    public Result enableAccount(
             @Parameter(description = "用户ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
@@ -111,7 +111,7 @@ public class UserController {
     @Operation(summary = "批量解禁用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/enable/batch")
-    public Result batchEnableUser(
+    public Result batchEnableAccount(
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
             List<Long> ids

@@ -12,6 +12,7 @@ import org.example.admin.mapper.CategoryMapper;
 import org.example.admin.pojo.dto.CreateCategoryDTO;
 import org.example.admin.pojo.dto.UpdateCategoryDTO;
 import org.example.admin.pojo.query.PageQuery;
+import org.example.admin.pojo.vo.CategoryVO;
 import org.example.admin.service.ICategoryService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
@@ -92,11 +93,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public List<Category> getCategories() {
-        // 构建查询条件
-        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+    public List<CategoryVO> getCategories() {
         // 查询所有书籍类别名称
-        return categoryMapper.selectList(queryWrapper);
+        return categoryMapper.getCategories();
     }
 
     @Override

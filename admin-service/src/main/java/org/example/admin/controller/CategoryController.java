@@ -9,10 +9,11 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.entity.Category;
 import org.example.admin.pojo.dto.CreateCategoryDTO;
 import org.example.admin.pojo.dto.UpdateCategoryDTO;
-import org.example.admin.entity.Category;
 import org.example.admin.pojo.query.PageQuery;
+import org.example.admin.pojo.vo.CategoryVO;
 import org.example.admin.service.ICategoryService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
@@ -53,14 +54,14 @@ public class CategoryController {
         return Result.success(pageResult);
     }
 
-//    @Operation(summary = "查询所有书籍类别")
-//    @Cacheable(cacheNames = "categoryCache", key = "'categoryList'")
-//    @GetMapping
-//    public Result<List<Category>> getCategories() {
-//        log.info("[log] 查询所有书籍类别");
-//        List<Category> categories = categoryService.getCategories();
-//        return Result.success(categories);
-//    }
+    @Operation(summary = "查询所有书籍类别")
+    @Cacheable(cacheNames = "categoryCache", key = "'categoryVOList'")
+    @GetMapping
+    public Result<List<CategoryVO>> getCategories() {
+        log.info("[log] 查询所有书籍类别");
+        List<CategoryVO> categories = categoryService.getCategories();
+        return Result.success(categories);
+    }
 
     @Operation(summary = "新建书籍类别")
     @CacheEvict(cacheNames = "categoryCache", allEntries = true)

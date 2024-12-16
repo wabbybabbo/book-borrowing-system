@@ -1,9 +1,9 @@
 package org.example.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,43 +36,38 @@ public class Admin implements Serializable {
     private Long id;
 
     @Schema(description = "管理员名称")
-    @TableField("name")
     private String name;
 
     @Schema(description = "账号")
-    @TableField("account")
     private String account;
 
     @Schema(description = "密码")
-    @TableField("password")
     private String password;
 
     @Schema(description = "头像图片文件路径")
-    @TableField("img_url")
     private String imgUrl;
 
+    @Schema(description = "性别")
+    private String gender;
+
     @Schema(description = "电话号码")
-    @TableField("phone")
     private String phone;
 
     @Schema(description = "邮箱")
-    @TableField("email")
     private String email;
 
     @Schema(description = "联系地址")
-    @TableField("address")
     private String address;
 
     @Schema(description = "账号状态")
-    @TableField("status")
     private String status;
 
     @Schema(description = "创建时间")
-    @TableField("create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
     private LocalDateTime createTime;
 
     @Schema(description = "更新时间")
-    @TableField("update_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
     private LocalDateTime updateTime;
 
 

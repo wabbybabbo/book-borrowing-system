@@ -3,6 +3,9 @@ package org.example.admin.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Select;
 import org.example.admin.entity.Category;
+import org.example.admin.pojo.vo.CategoryVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,12 +18,11 @@ import org.example.admin.entity.Category;
 public interface CategoryMapper extends BaseMapper<Category> {
 
     /**
-     * 根据categoryName查询categoryId
+     * 查询所有书籍类别
      *
-     * @param categoryName 书籍类别名
-     * @return categoryId
+     * @return 书籍类别列表
      */
-    @Select("select id from category where name=#{categoryName}")
-    Integer selectIdByName(String categoryName);
+    @Select("select id, name from category")
+    List<CategoryVO> getCategories();
 
 }
