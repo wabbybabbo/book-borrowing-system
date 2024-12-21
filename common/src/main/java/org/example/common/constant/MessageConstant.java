@@ -24,6 +24,7 @@ public class MessageConstant {
     public static final String BORROW_NOT_FOUND = "书籍借阅记录不存在";
     //public static final String CATEGORY_NOT_FOUND = "书籍类别不存在";
     public static final String FIELD_NOT_FOUND = "筛选字段不存在";
+    public static final String CAPTCHA_NOT_FOUND = "验证码已过期";
 
     public static final String EMAIL_ALREADY_EXISTS = "邮箱已存在";
     public static final String CATEGORY_ALREADY_EXISTS = "书籍类别已存在";
@@ -32,7 +33,7 @@ public class MessageConstant {
     public static final String PHONE_ALREADY_EXISTS = "电话号码已存在";
 
     public static final String INVALID_ISBN = "ISBN应为978或979开头的13位数字";
-    public static final String INVALID_PHONE = "电话号码应为不以0开头的11位数字";
+    public static final String INVALID_PHONE = "电话号码应为以1开头的11位数字，并且第二位数字不能为012";
     public static final String INVALID_EMAIL = "电子邮箱格式不正确";
     public static final String INVALID_ADMIN_NAME = "管理员名称应为2~16位，并且不含空白字符";
     public static final String INVALID_USER_NAME = "用户名应为2~16位，并且不含空白字符";
@@ -48,7 +49,9 @@ public class MessageConstant {
     public static final String RETURN_DATE_BEFORE_RESERVATION = "归还日期不能早于预定日期";
 
     public static final String UPLOAD_FAILED = "文件上传失败";
+    public static final String CREATE_CAPTCHA_FAILED = "获取图形验证码失败";
     public static final String PASSWORD_ERROR = "密码错误";
+    public static final String CAPTCHA_ERROR = "验证码错误";
 
     public static final String CANCELLATION_IS_NOT_ALLOWED = "状态不为“已预约”的借阅记录不允许进行取消操作";
     public static final String DELETION_IS_NOT_ALLOWED = "状态不为“已取消”或“已归还”的借阅记录不允许进行删除操作";

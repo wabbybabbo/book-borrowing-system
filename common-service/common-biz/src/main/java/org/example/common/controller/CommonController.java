@@ -6,8 +6,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.common.api.client.CommonClient;
+import org.example.common.client.CommonClient;
 import org.example.common.constant.MessageConstant;
+import org.example.common.exception.ServiceException;
 import org.example.common.util.JwtUtil;
 import org.example.common.util.QiniuOssUtil;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/common")
-@Tag(name = "公共接口")
+@Tag(name = "公共服务接口")
 public class CommonController implements CommonClient {
 
     private final JwtUtil jwtUtil;
@@ -56,7 +57,7 @@ public class CommonController implements CommonClient {
             fileBytes = file.getBytes();
         } catch (IOException e) {
             log.error("[log] 文件上传失败 IOException: {}", e.getMessage());
-            throw new RuntimeException(MessageConstant.UPLOAD_FAILED);
+            throw new ServiceException(MessageConstant.UPLOAD_FAILED);
         }
         //上传文件,并返回文件的请求路径
         return qiniuOssUtil.upload(fileBytes, fileName);

@@ -30,5 +30,6 @@ spring:
         group: DEFAULT_GROUP #指定分组名称，默认为 DEFAULT_GROUP
         file-extension: yaml #文件后缀名
         shared-configs: #共享配置
+          - data-id: shared-log.yaml
           - data-id: shared-swagger-gateway.yaml
           - data-id: shared-jwt.yaml

@@ -9,8 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableDiscoveryClient //开启服务注册发现功能
-//开启OpenFeign功能，basePackages指定Feign接口所在的包路径
-@EnableFeignClients(basePackages = "org.example.common.api.client")
+@EnableFeignClients(basePackages = "org.example.common.client") //开启Feign功能，basePackages指定Feign接口所在的包路径
 @EnableTransactionManagement //开启注解方式的事务管理
 @EnableScheduling //开启任务调度
 public class AdminApplication {

@@ -2,11 +2,16 @@ package org.example.client.handler;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.example.common.exception.BaseException;
+import org.example.common.exception.ServiceException;
 import org.example.common.result.Result;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 全局异常处理器
@@ -24,8 +29,8 @@ public class GlobalExceptionHandler {
      * @return 响应提示信息
      */
     @ExceptionHandler //捕获和处理特定的异常类型
-    public Result exceptionHandler(BaseException e) {
-        log.error("[log] 业务异常 BaseException: {}", e.getMessage());
+    public Result<Object> exceptionHandler(ServiceException e) {
+        log.error("[log] 业务异常 ServiceException: {}", e.getMessage());
         return Result.error(e.getMessage());
     }
 
@@ -36,18 +41,20 @@ public class GlobalExceptionHandler {
      * @return 响应提示信息
      */
     @ExceptionHandler
-    public Result exceptionHandler(MethodArgumentNotValidException e) {
-        log.info("[log] 参数校验不通过");
-        StringBuilder stringBuilder = new StringBuilder();
-        e.getFieldErrors().forEach((error) -> {
-            log.info("[log] 对象: {}, 字段: {}, 拒绝值: {}, 提示信息: {}, ",
-                    error.getObjectName(),
-                    error.getField(),
-                    error.getRejectedValue(),
-                    error.getDefaultMessage());
-            stringBuilder.append(error.getDefaultMessage()).append(";");
-        });
-        return Result.error(stringBuilder.toString());
+    public Result<Object> exceptionHandler(MethodArgumentNotValidException e) {
+        List<FieldError> fieldErrors = e.getFieldErrors();
+        String logInfo = fieldErrors.stream()
+                .map(fieldError -> "\n对象: " + fieldError.getObjectName()
+                        + ", 字段: " + fieldError.getField()
+                        + ", 拒绝值: " + fieldError.getRejectedValue()
+                        + ", 提示信息: " + fieldError.getDefaultMessage()
+                )
+                .collect(Collectors.joining("; "));
+        log.info("[log] 参数校验不通过 {}", logInfo);
+        String message = fieldErrors.stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining("；"));
+        return Result.error(message);
     }
 
     /**
@@ -55,7 +62,7 @@ public class GlobalExceptionHandler {
      * @return 响应提示信息
      */
     @ExceptionHandler
-    public Result exceptionHandler(ConstraintViolationException e) {
+    public Result<Object> exceptionHandler(ConstraintViolationException e) {
         log.error("[log] ConstraintViolationException: {}", e.toString());
         return Result.error(e.getMessage());
     }

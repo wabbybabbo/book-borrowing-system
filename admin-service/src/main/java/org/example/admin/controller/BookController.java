@@ -58,14 +58,14 @@ public class BookController {
     @Operation(summary = "新建书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
-    public Result createBook(
-            @Parameter(description = "书籍封面图片文件")
+    public Result<Object> createBook(
+            @Parameter(description = "书籍封面图片文件", required = true)
             @RequestPart("file")
             @NotNull(message = MessageConstant.FIELD_NOT_BLANK)
             MultipartFile file,
-            @RequestPart
-            @Valid
-            CreateBookDTO createBookDTO) {
+            @RequestPart @Valid
+            CreateBookDTO createBookDTO
+    ) {
         log.info("[log] 新建书籍信息 {}", createBookDTO);
         bookService.createBook(file, createBookDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
@@ -74,13 +74,13 @@ public class BookController {
     @Operation(summary = "更改书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
-    public Result updateBook(
+    public Result<Object> updateBook(
             @Parameter(description = "书籍封面图片文件")
             @RequestPart(value = "file", required = false)
             MultipartFile file,
-            @RequestPart
-            @Valid
-            UpdateBookDTO updateBookDTO) {
+            @RequestPart @Valid
+            UpdateBookDTO updateBookDTO
+    ) {
         log.info("[log] 更改书籍信息 {}", updateBookDTO);
         bookService.updateBook(file, updateBookDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
@@ -89,8 +89,8 @@ public class BookController {
     @Operation(summary = "删除书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @DeleteMapping
-    public Result deleteBook(
-            @Parameter(description = "书籍ID")
+    public Result<Object> deleteBook(
+            @Parameter(description = "书籍ID", required = true)
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
     ) {
@@ -102,7 +102,8 @@ public class BookController {
     @Operation(summary = "批量删除书籍信息")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @DeleteMapping("/batch")
-    public Result batchDeleteBooks(
+    public Result<Object> batchDeleteBooks(
+            @Parameter(description = "书籍ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
             List<Long> ids

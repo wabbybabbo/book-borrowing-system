@@ -36,6 +36,7 @@ public interface IUserService extends IService<User> {
      * 更改用户信息
      *
      * @param updateUserDTO 更改用户信息时传递的数据模型
+     * @param id            用户ID
      */
-    void updateUser(UpdateUserDTO updateUserDTO);
+    void updateUser(UpdateUserDTO updateUserDTO, String id);
 }

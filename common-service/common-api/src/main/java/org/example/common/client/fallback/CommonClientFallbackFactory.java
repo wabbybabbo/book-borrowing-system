@@ -1,7 +1,7 @@
-package org.example.common.api.client.fallback;
+package org.example.common.client.fallback;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.common.api.client.CommonClient;
+import org.example.common.client.CommonClient;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.web.multipart.MultipartFile;
 

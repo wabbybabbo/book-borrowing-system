@@ -4,6 +4,7 @@ package org.example.client.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.example.client.pojo.dto.CreateBorrowDTO;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BorrowVO;
 import org.example.client.service.IBorrowService;
+import org.example.common.constant.ClaimConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
 import org.example.common.result.Result;
@@ -38,9 +40,15 @@ public class BorrowController {
 
     @Operation(summary = "分页查询用户的借阅记录")
     @GetMapping("/page")
-    public Result<PageResult<BorrowVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询用户的借阅记录 {}", pageQuery);
-        PageResult<BorrowVO> pageResult = borrowService.pageQuery(pageQuery);
+    public Result<PageResult<BorrowVO>> pageQuery(
+            @ParameterObject
+            PageQuery pageQuery,
+            @Parameter(description = "用户ID")
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            String id
+    ) {
+        log.info("[log] 分页查询用户的借阅记录 {}, id: {}", pageQuery, id);
+        PageResult<BorrowVO> pageResult = borrowService.pageQuery(pageQuery, id);
         return Result.success(pageResult);
     }
 
@@ -54,16 +62,22 @@ public class BorrowController {
 
     @Operation(summary = "新增用户的借阅预约记录")
     @PostMapping
-    public Result createBorrow(@RequestBody CreateBorrowDTO createBorrowDTO) {
-        log.info("[log] 新增用户的借阅预约记录 {}", createBorrowDTO);
-        borrowService.createBorrow(createBorrowDTO);
+    public Result<Object> createBorrow(
+            @RequestBody @Valid
+            CreateBorrowDTO createBorrowDTO,
+            @Parameter(description = "用户ID", required = true)
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            String id
+    ) {
+        log.info("[log] 新增用户的借阅预约记录 {}, id: {}", createBorrowDTO, id);
+        borrowService.createBorrow(createBorrowDTO, id);
         return Result.success(MessageConstant.BORROW_SUCCESS);
     }
 
     @Operation(summary = "取消书籍借阅预约")
     @PutMapping
-    public Result cancelBorrow(
-            @Parameter(description = "借阅记录ID")
+    public Result<Object> cancelBorrow(
+            @Parameter(description = "借阅记录ID", required = true)
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
     ) {
@@ -74,8 +88,8 @@ public class BorrowController {
 
     @Operation(summary = "删除书籍借阅记录")
     @DeleteMapping
-    public Result deleteBorrow(
-            @Parameter(description = "借阅记录ID")
+    public Result<Object> deleteBorrow(
+            @Parameter(description = "借阅记录ID", required = true)
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
     ) {

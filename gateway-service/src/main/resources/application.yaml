@@ -23,8 +23,9 @@ spring:
 
 auth:
   exclude-paths:
+    - /**/captcha
     - /**/login
     - /client-service/user/register
-    - /client-service/book/**
-    - /client-service/category/**
+    - /client-service/book/page
+    - /client-service/category
     - /**/api-docs

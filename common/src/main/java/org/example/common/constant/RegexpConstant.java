@@ -13,7 +13,7 @@ public class RegexpConstant {
     public static final String ACCOUNT = "^\\w{4,16}$";
     public static final String PASSWORD = "^\\w{4,16}$";
     public static final String GENDER = "^[" + MALE + FEMALE + "]$";
-    public static final String PHONE = "^[1-9][0-9]{10}$";
+    public static final String PHONE = "^1[3456789]\\d{9}$";
     public static final String EMAIL = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
     /**
      * 匹配规则：

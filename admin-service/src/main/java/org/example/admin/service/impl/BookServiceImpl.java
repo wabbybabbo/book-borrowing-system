@@ -16,7 +16,7 @@ import org.example.admin.pojo.dto.UpdateBookDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.BookVO;
 import org.example.admin.service.IBookService;
-import org.example.common.api.client.CommonClient;
+import org.example.common.client.CommonClient;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
 import org.example.common.exception.NotFoundException;

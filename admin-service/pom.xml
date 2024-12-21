@@ -82,11 +82,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-        <!--SpringBoot内置缓存解决方案，帮助开发者快速开启缓存技术，并使用缓存技术进行数据的快速操作-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

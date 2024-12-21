@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.client.context.UserContext;
 import org.example.client.entity.Book;
 import org.example.client.entity.Borrow;
 import org.example.client.mapper.BookMapper;
@@ -49,12 +48,12 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     private final BookMapper bookMapper;
 
     @Override
-    public PageResult<BorrowVO> pageQuery(PageQuery pageQuery) {
+    public PageResult<BorrowVO> pageQuery(PageQuery pageQuery, String id) {
         // 构建分页查询条件
         Page<Borrow> page = pageQuery.toMpPage();
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
                 .select("id", "status", "book_name", "isbn", "reserve_date", "return_date", "update_time")
-                .eq("user_id", UserContext.getUserId());
+                .eq("user_id", id);
         List<String> filterConditions = pageQuery.getFilterConditions();
         log.info("[log] 借阅记录分页查询条件 filterConditions: {}", filterConditions);
         if (CollUtil.isNotEmpty(filterConditions)) {
@@ -99,11 +98,11 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     }
 
     @Override
-    public List<BorrowVO> getBorrows() {
+    public List<BorrowVO> getBorrows(String id) {
         // 构建查询条件
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
                 .select("id", "status", "book_name", "isbn", "reserve_date", "return_date", "update_time")
-                .eq("user_id", UserContext.getUserId());
+                .eq("user_id", id);
         // 查询用户的借阅记录
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
         // 转化为BorrowVO
@@ -119,16 +118,22 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
 
     @Override
     @Transactional
-    public void createBorrow(CreateBorrowDTO createBorrowDTO) {
-        String isbn = createBorrowDTO.getIsbn();
+    public void createBorrow(CreateBorrowDTO createBorrowDTO, String id) {
+        // 检查参数是否合法
+        Long userId = null;
+        try {
+            userId = Long.valueOf(id);
+        } catch (NumberFormatException e) {
+            log.error("[log] 用户id应为数字类型 userId: {}, NumberFormatException: {}", userId, e.getMessage());
+        }
         LocalDate reserveDate = createBorrowDTO.getReserveDate();
         LocalDate returnDate = createBorrowDTO.getReturnDate();
-        // 检查参数是否合法
         if (returnDate.isBefore(reserveDate)) {
             log.info("[log] 参数检查不通过 reserveDate: {}, returnDate: {}, msg: {}", reserveDate, returnDate, MessageConstant.RETURN_DATE_BEFORE_RESERVATION);
             throw new CheckException(MessageConstant.RETURN_DATE_BEFORE_RESERVATION);
         }
         // 查询书籍库存
+        String isbn = createBorrowDTO.getIsbn();
         QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>()
                 .select("name", "stock")
                 .eq("isbn", isbn);
@@ -148,7 +153,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         Borrow borrow = new Borrow();
         BeanUtil.copyProperties(createBorrowDTO, borrow);
         borrow.setBookName(book.getName());
-        borrow.setUserId(UserContext.getUserId());
+        borrow.setUserId(userId);
         borrowMapper.insert(borrow);
     }
 

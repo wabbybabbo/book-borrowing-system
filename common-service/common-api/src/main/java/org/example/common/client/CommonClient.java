@@ -1,12 +1,14 @@
-package org.example.common.api.client;
+package org.example.common.client;
 
 
-import org.example.common.api.client.fallback.CommonClientFallbackFactory;
-import org.example.common.api.config.FeignConfig;
-import org.example.common.api.config.FeignSupportConfig;
+import org.example.common.client.fallback.CommonClientFallbackFactory;
+import org.example.common.config.FeignConfig;
+import org.example.common.config.FeignSupportConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
@@ -38,7 +40,7 @@ public interface CommonClient {
      * 文件上传
      *
      * @param file 上传文件
-     * @return 文件的请求路径
+     * @return 上传文件的请求路径
      */
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
     String upload(@RequestPart("file") MultipartFile file);

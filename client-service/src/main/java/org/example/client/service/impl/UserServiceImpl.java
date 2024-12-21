@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.client.context.UserContext;
 import org.example.client.entity.User;
 import org.example.client.mapper.UserMapper;
 import org.example.client.pojo.dto.UpdateUserDTO;
@@ -13,7 +12,7 @@ import org.example.client.pojo.dto.UserLoginDTO;
 import org.example.client.pojo.dto.UserRegisterDTO;
 import org.example.client.pojo.vo.UserVO;
 import org.example.client.service.IUserService;
-import org.example.common.api.client.CommonClient;
+import org.example.common.client.CommonClient;
 import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.ClaimConstant;
 import org.example.common.constant.MessageConstant;
@@ -44,15 +43,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public UserVO login(UserLoginDTO userLoginDTO) {
-        String account = userLoginDTO.getAccount();
-        String password = userLoginDTO.getPassword();
         // 查询账号是否存在
+        String account = userLoginDTO.getAccount();
         QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
                 .eq("account", account);
         if (!userMapper.exists(queryWrapper1)) {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
         // 查询密码是否正确
+        String password = userLoginDTO.getPassword();
         QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
                 .eq("account", account)
                 .eq("password", password);
@@ -82,15 +81,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public void register(UserRegisterDTO userRegisterDTO) {
-        String phone = userRegisterDTO.getPhone();
-        String email = userRegisterDTO.getEmail();
         // 查询账号是否已存在
+        String account = userRegisterDTO.getAccount();
         QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
-                .eq("account", userRegisterDTO.getAccount());
+                .eq("account", account);
         if (userMapper.exists(queryWrapper1)) {
             throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
         // 检查参数值在数据库中的唯一性
+        String phone = userRegisterDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
             QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
@@ -99,6 +98,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
+        String email = userRegisterDTO.getEmail();
         if (Objects.nonNull(email)) {
             // 查询电子邮箱是否已存在
             QueryWrapper<User> queryWrapper3 = new QueryWrapper<User>()
@@ -115,16 +115,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void updateUser(UpdateUserDTO updateUserDTO) {
+    public void updateUser(UpdateUserDTO updateUserDTO, String id) {
+        Long userId = null;
+        try {
+            userId = Long.valueOf(id);
+        } catch (NumberFormatException e) {
+            log.error("[log] 用户id应为数字类型 userId: {}, NumberFormatException: {}", userId, e.getMessage());
+        }
         // 检查Bean对象中字段是否全空
         if(BeanUtil.isEmpty(updateUserDTO)){
             throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);
         }
-        long userId = UserContext.getUserId();
-        String account = updateUserDTO.getAccount();
-        String phone = updateUserDTO.getPhone();
-        String email = updateUserDTO.getEmail();
         // 检查参数值在数据库中的唯一性
+        String account = updateUserDTO.getAccount();
         if (Objects.nonNull(account)) {
             // 检查账号是否已存在
             QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
@@ -134,6 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
             }
         }
+        String phone = updateUserDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 检查电话号码是否已存在
             QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
@@ -143,6 +147,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
+        String email = updateUserDTO.getEmail();
         if (Objects.nonNull(email)) {
             // 检查邮箱是否已存在
             QueryWrapper<User> queryWrapper = new QueryWrapper<User>()

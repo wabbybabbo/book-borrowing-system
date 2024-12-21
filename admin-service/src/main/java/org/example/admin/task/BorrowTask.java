@@ -40,6 +40,9 @@ public class BorrowTask {
                 .eq("status", BorrowStatusConstant.BORROW)
                 .lt("return_date", LocalDate.now());
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
+
+        if(borrows.isEmpty()) return;
+
         // 将这些借阅记录的借阅状态更改为'未按时归还'
         List<Long> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
         UpdateWrapper<Borrow> updateWrapper = new UpdateWrapper<Borrow>()
@@ -61,6 +64,9 @@ public class BorrowTask {
                 .eq("status", BorrowStatusConstant.RESERVED)
                 .lt("reserve_date", LocalDate.now());
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
+
+        if(borrows.isEmpty()) return;
+
         // 将这些借阅记录的借阅状态更改为'预约已失效'
         List<Long> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
         UpdateWrapper<Borrow> updateWrapper1 = new UpdateWrapper<Borrow>()

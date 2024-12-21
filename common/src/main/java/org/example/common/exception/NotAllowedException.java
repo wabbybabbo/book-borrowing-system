@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
  * 操作拒绝异常
  */
 @NoArgsConstructor
-public class NotAllowedException extends BaseException {
+public class NotAllowedException extends ServiceException {
 
     public NotAllowedException(String msg) {
         super(msg);

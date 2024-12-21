@@ -13,7 +13,7 @@ import org.example.admin.mapper.UserMapper;
 import org.example.admin.pojo.dto.CreateUserDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IUserService;
-import org.example.common.api.client.CommonClient;
+import org.example.common.client.CommonClient;
 import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
@@ -81,14 +81,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public void createUser(MultipartFile file, CreateUserDTO createUserDTO) {
-        String phone = createUserDTO.getPhone();
-        String email = createUserDTO.getEmail();
         // 查询账号是否已存在
+        String account = createUserDTO.getAccount();
         QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
-                .eq("account", createUserDTO.getAccount());
+                .eq("account", account);
         if (userMapper.exists(queryWrapper1)) {
             throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
+        String phone = createUserDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
             QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
@@ -97,6 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
+        String email = createUserDTO.getEmail();
         if (Objects.nonNull(email)) {
             // 查询电子邮箱是否已存在
             QueryWrapper<User> queryWrapper3 = new QueryWrapper<User>()

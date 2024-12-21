@@ -66,7 +66,7 @@ public class CategoryController {
     @Operation(summary = "新建书籍类别")
     @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @PostMapping
-    public Result createCategory(@RequestBody @Valid CreateCategoryDTO createCategoryDTO) {
+    public Result<Object> createCategory(@RequestBody @Valid CreateCategoryDTO createCategoryDTO) {
         log.info("[log] 新建书籍类别 {}", createCategoryDTO);
         categoryService.createCategory(createCategoryDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
@@ -75,7 +75,7 @@ public class CategoryController {
     @Operation(summary = "更改书籍类别信息")
     @CacheEvict(cacheNames = {"categoryCache", "bookCache"}, allEntries = true)
     @PutMapping
-    public Result updateCategory(@RequestBody @Valid UpdateCategoryDTO updateCategoryDTO) {
+    public Result<Object> updateCategory(@RequestBody @Valid UpdateCategoryDTO updateCategoryDTO) {
         log.info("[log] 更改书籍类别信息 {}", updateCategoryDTO);
         categoryService.updateCategory(updateCategoryDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
@@ -84,8 +84,8 @@ public class CategoryController {
     @Operation(summary = "删除书籍类别")
     @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @DeleteMapping
-    public Result deleteCategory(
-            @Parameter(description = "书籍类别ID")
+    public Result<Object> deleteCategory(
+            @Parameter(description = "书籍类别ID", required = true)
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
     ) {
@@ -97,7 +97,8 @@ public class CategoryController {
     @Operation(summary = "批量删除书籍类别")
     @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @DeleteMapping("/batch")
-    public Result batchDeleteCategories(
+    public Result<Object> batchDeleteCategories(
+            @Parameter(description = "书籍类别ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
             List<Long> ids

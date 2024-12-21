@@ -1,5 +1,6 @@
 package org.example.common.util;
 
+import cn.hutool.core.net.url.UrlBuilder;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
@@ -29,7 +30,7 @@ public class QiniuOssUtil {
      *
      * @param localFilePath 本地文件路径
      * @param fileName      上传文件名
-     * @return 文件上传路径
+     * @return 上传文件访问路径
      */
     public String upload(String localFilePath, String fileName) {
         //构造一个带指定 Region 对象的配置类
@@ -61,12 +62,15 @@ public class QiniuOssUtil {
             }
         }
 
-        //文件访问路径规则 http://CDN测试域名/fileName
-        String uploadFilePath = "http://" + cdn + "/" + fileName;
+        // http://CDN测试域名/fileName
+        String uploadFileUrl = UrlBuilder.of()
+                .setScheme("http")
+                .setHost(cdn)
+                .addPath(fileName)
+                .build();
+        log.info("[log] 文件已上传到七牛云 uploadFileUrl: {}", uploadFileUrl);
 
-        log.info("[log] 文件已上传到七牛云 uploadFilePath: {}", uploadFilePath);
-
-        return uploadFilePath;
+        return uploadFileUrl;
     }
 
     /**
@@ -74,7 +78,7 @@ public class QiniuOssUtil {
      *
      * @param uploadBytes 上传文件的字节数组
      * @param fileName    上传文件名
-     * @return 文件上传路径
+     * @return 上传文件访问路径
      */
     public String upload(byte[] uploadBytes, String fileName) {
         //构造一个带指定 Region 对象的配置类
@@ -106,12 +110,15 @@ public class QiniuOssUtil {
             }
         }
 
-        //文件访问路径规则 http://CDN测试域名/fileName
-        String uploadFilePath = "http://" + cdn + "/" + fileName;
+        // http://CDN测试域名/fileName
+        String uploadFileUrl = UrlBuilder.of()
+                .setScheme("http")
+                .setHost(cdn)
+                .addPath(fileName)
+                .build();
+        log.info("[log] 文件已上传到七牛云 uploadFileUrl: {}", uploadFileUrl);
 
-        log.info("[log] 文件已上传到七牛云 uploadFilePath: {}", uploadFilePath);
-
-        return uploadFilePath;
+        return uploadFileUrl;
     }
 
     /**

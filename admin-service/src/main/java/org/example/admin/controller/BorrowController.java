@@ -59,8 +59,8 @@ public class BorrowController {
 
     @Operation(summary = "借阅登记")
     @PutMapping
-    public Result borrowRegister(
-            @Parameter(description = "书籍借阅记录ID")
+    public Result<Object> borrowRegister(
+            @Parameter(description = "书籍借阅记录ID", required = true)
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
     ) {
@@ -71,7 +71,7 @@ public class BorrowController {
 
     @Operation(summary = "归还登记")
     @PutMapping("/return")
-    public Result returnRegister(@RequestBody @Valid ReturnRegisterDTO returnRegisterDTO) {
+    public Result<Object> returnRegister(@RequestBody @Valid ReturnRegisterDTO returnRegisterDTO) {
         log.info("[log] 归还登记 {}", returnRegisterDTO);
         borrowService.returnRegister(returnRegisterDTO);
         return Result.success();

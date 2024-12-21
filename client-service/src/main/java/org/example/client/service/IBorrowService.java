@@ -23,23 +23,26 @@ public interface IBorrowService extends IService<Borrow> {
      * 分页查询用户的借阅记录
      *
      * @param pageQuery 分页查询时传递的数据模型
+     * @param id        用户ID
      * @return 借阅记录列表
      */
-    PageResult<BorrowVO> pageQuery(PageQuery pageQuery);
+    PageResult<BorrowVO> pageQuery(PageQuery pageQuery, String id);
 
     /**
      * 查询用户所有的借阅记录
      *
+     * @param id 用户ID
      * @return 用户的借阅记录列表
      */
-    List<BorrowVO> getBorrows();
+    List<BorrowVO> getBorrows(String id);
 
     /**
      * 新增用户的借阅记录
      *
      * @param createBorrowDTO 新增书籍借阅记录时传递的数据模型
+     * @param id              用户ID
      */
-    void createBorrow(CreateBorrowDTO createBorrowDTO);
+    void createBorrow(CreateBorrowDTO createBorrowDTO, String id);
 
     /**
      * 取消书籍借阅预约

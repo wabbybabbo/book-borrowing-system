@@ -28,7 +28,7 @@ public class UpdateAdminDTO {
     @Pattern(regexp = RegexpConstant.GENDER, message = MessageConstant.INVALID_GENDER)
     private String gender;
 
-    @Schema(description = "电话号码", pattern = RegexpConstant.PHONE, example = "12345678901")
+    @Schema(description = "电话号码", pattern = RegexpConstant.PHONE, example = "19876543210")
     @Pattern(regexp = RegexpConstant.PHONE, message = MessageConstant.INVALID_PHONE)
     private String phone;
 

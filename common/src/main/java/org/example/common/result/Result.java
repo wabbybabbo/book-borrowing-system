@@ -19,14 +19,14 @@ public class Result<T> implements Serializable {
     @Schema(description = "响应数据")
     private T data;
 
-    public static Result success() {
-        Result result = new Result();
+    public static <T> Result<T> success() {
+        Result<T> result = new Result<>();
         result.code = 1;
         return result;
     }
 
-    public static Result success(String msg) {
-        Result result = new Result();
+    public static <T> Result<T> success(String msg) {
+        Result<T> result = new Result<>();
         result.code = 1;
         result.msg = msg;
         return result;
@@ -47,8 +47,8 @@ public class Result<T> implements Serializable {
         return result;
     }
 
-    public static Result error(String msg) {
-        Result result = new Result();
+    public static <T> Result<T> error(String msg) {
+        Result<T> result = new Result<>();
         result.code = 0;
         result.msg = msg;
         return result;

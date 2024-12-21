@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
  * 业务异常
  */
 @NoArgsConstructor
-public class BaseException extends RuntimeException {
+public class ServiceException extends RuntimeException {
 
-    public BaseException(String msg) {
+    public ServiceException(String msg) {
         super(msg);
     }
 

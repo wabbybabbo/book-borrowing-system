@@ -10,8 +10,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
 
 /**
  * Redis 缓存配置
@@ -24,9 +22,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 public class RedisCacheConfig {
 
     /**
-     * 自定义 RedisCacheManager
-     * <p>
-     * 修改 Redis 序列化方式，默认 JdkSerializationRedisSerializer
+     * 配置RedisCache管理器
      *
      * @param redisConnectionFactory {@link RedisConnectionFactory}
      * @param cacheProperties        {@link CacheProperties}
@@ -34,42 +30,29 @@ public class RedisCacheConfig {
      */
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory, CacheProperties cacheProperties) {
-        return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
-                .cacheDefaults(redisCacheConfiguration(cacheProperties))
-                .build();
-    }
-
-    /**
-     * 自定义 RedisCacheConfiguration
-     *
-     * @param cacheProperties {@link CacheProperties}
-     * @return {@link RedisCacheConfiguration}
-     */
-    @Bean
-    RedisCacheConfiguration redisCacheConfiguration(CacheProperties cacheProperties) {
-
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
-
-        config = config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));
-//        config = config.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));
-
+        // 自定义 RedisCacheConfiguration
+        RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig();
+        // cacheConfig = cacheConfig.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));//修改Redis值序列化方式，默认StringSerializationRedisSerializer
+        // cacheConfig = cacheConfig.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));//修改Redis值序列化方式，默认JdkSerializationRedisSerializer
         CacheProperties.Redis redisProperties = cacheProperties.getRedis();
-
         if (redisProperties.getTimeToLive() != null) {
             log.info("[log] 设置缓存的过期时间：{}s", redisProperties.getTimeToLive().getSeconds());
-            config = config.entryTtl(redisProperties.getTimeToLive());//设置缓存的过期时间
+            cacheConfig = cacheConfig.entryTtl(redisProperties.getTimeToLive());//设置缓存的过期时间
         }
         if (!redisProperties.isCacheNullValues()) {
             log.info("[log] 取消设置缓存空值");
-            config = config.disableCachingNullValues();//取消设置缓存空值
+            cacheConfig = cacheConfig.disableCachingNullValues();//取消设置缓存空值
         }
         if (!redisProperties.isUseKeyPrefix()) {
             log.info("[log] 取消设置缓存键的前缀");
-            config = config.disableKeyPrefix();//取消设置缓存键的前缀
+            cacheConfig = cacheConfig.disableKeyPrefix();//取消设置缓存键的前缀
         }
-        config = config.computePrefixWith(name -> name + ":");//覆盖默认key双冒号  CacheKeyPrefix#prefixed
-        return config;
+        cacheConfig = cacheConfig.computePrefixWith(cacheName -> cacheName + ":");//覆盖默认key双冒号  CacheKeyPrefix#prefixed
+
+        return RedisCacheManager
+                .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
+                .cacheDefaults(cacheConfig)
+                .build();
     }
 
 }
-

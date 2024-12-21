@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
  * 在配置类中，开发者可以通过使用@Bean注解来定义Bean。
  * 当Spring容器启动时，它会扫描这些配置类，并自动调用被@Bean标注的方法，将该方法返回的对象注册为一个Bean实例到Spring的应用上下文中。
  */
-@Configuration
 @Slf4j
+@Configuration
 public class JwtConfig {
 
     @Bean

@@ -49,7 +49,7 @@ public class UserController {
     @Cacheable(cacheNames = "userCache", key = "'userList'+':'+#pageQuery.current+':'+#pageQuery.size", condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @GetMapping("/page")
     public Result<PageResult<User>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询用户信息 pageQuery: {}", pageQuery);
+        log.info("[log] 分页查询用户信息 {}", pageQuery);
         PageResult<User> pageResult = userService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -57,14 +57,13 @@ public class UserController {
     @Operation(summary = "新建用户信息")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
-    public Result createUser(
+    public Result<Object> createUser(
             @Parameter(description = "用户头像图片文件")
             @RequestPart(value = "file", required = false)
             MultipartFile file,
-            @RequestPart
-            @Valid
+            @RequestPart @Valid
             CreateUserDTO createUserDTO) {
-        log.info("[log] 新建用户信息 createUserDTO: {}", createUserDTO);
+        log.info("[log] 新建用户信息 {}", createUserDTO);
         userService.createUser(file, createUserDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
@@ -72,8 +71,8 @@ public class UserController {
     @Operation(summary = "禁用用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/disable")
-    public Result disableAccount(
-            @Parameter(description = "用户ID")
+    public Result<Object> disableAccount(
+            @Parameter(description = "用户ID", required = true)
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
     ) {
@@ -85,7 +84,8 @@ public class UserController {
     @Operation(summary = "批量禁用用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/disable/batch")
-    public Result batchDisableAccount(
+    public Result<Object> batchDisableAccount(
+            @Parameter(description = "用户ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
             List<Long> ids
@@ -98,8 +98,8 @@ public class UserController {
     @Operation(summary = "解禁用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/enable")
-    public Result enableAccount(
-            @Parameter(description = "用户ID")
+    public Result<Object> enableAccount(
+            @Parameter(description = "用户ID", required = true)
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             Long id
     ) {
@@ -111,7 +111,8 @@ public class UserController {
     @Operation(summary = "批量解禁用户账号")
     @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/enable/batch")
-    public Result batchEnableAccount(
+    public Result<Object> batchEnableAccount(
+            @Parameter(description = "用户ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
             List<Long> ids

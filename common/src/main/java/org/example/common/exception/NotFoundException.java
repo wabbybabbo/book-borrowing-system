@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
  * 不存在异常
  */
 @NoArgsConstructor
-public class NotFoundException extends BaseException {
+public class NotFoundException extends ServiceException {
 
     public NotFoundException(String msg) {
         super(msg);
