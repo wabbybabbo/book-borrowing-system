@@ -33,10 +33,10 @@ public class Book implements Serializable {
 
     @Schema(description = "书籍ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     @Schema(description = "书籍类别ID")
-    private Long categoryId;
+    private String categoryId;
 
     @Schema(description = "书籍名称")
     private String name;

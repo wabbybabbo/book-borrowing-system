@@ -15,7 +15,7 @@ public class ReturnRegisterDTO {
 
     @Schema(description = "借阅记录ID", requiredMode = REQUIRED)
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    private Long id;
+    private String id;
 
     @Schema(description = "国际标准书号", pattern = RegexpConstant.ISBN, requiredMode = REQUIRED, example = "9787115583864")
     @Pattern(regexp = RegexpConstant.ISBN, message = MessageConstant.INVALID_ISBN)

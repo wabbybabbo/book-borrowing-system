@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class AdminLoginVO {
 
     @Schema(description = "管理员ID")
-    private Long id;
+    private String id;
 
     @Schema(description = "头像图片文件路径")
     private String imgUrl;

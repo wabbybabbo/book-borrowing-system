@@ -33,13 +33,13 @@ public class Favorite implements Serializable {
 
     @Schema(description = "收藏记录ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     @Schema(description = "用户ID")
-    private Long userId;
+    private String userId;
 
     @Schema(description = "书籍ID")
-    private Long bookId;
+    private String bookId;
 
     @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")

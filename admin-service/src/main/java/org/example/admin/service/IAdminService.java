@@ -78,27 +78,27 @@ public interface IAdminService extends IService<Admin> {
      *
      * @param id 管理员ID
      */
-    void disableAccount(Long id);
+    void disableAccount(String id);
 
     /**
      * 解禁管理员账号
      *
      * @param id 管理员ID
      */
-    void enableAccount(Long id);
+    void enableAccount(String id);
 
     /**
      * 批量禁用管理员账号
      *
      * @param ids 管理员ID列表
      */
-    void batchDisableAccount(List<Long> ids);
+    void batchDisableAccount(List<String> ids);
 
     /**
      * 批量解禁管理员账号
      *
      * @param ids 管理员ID列表
      */
-    void batchEnableAccount(List<Long> ids);
+    void batchEnableAccount(List<String> ids);
 
 }

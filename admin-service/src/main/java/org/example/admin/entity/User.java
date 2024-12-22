@@ -33,7 +33,7 @@ public class User implements Serializable {
 
     @Schema(description = "用户ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     @Schema(description = "用户名")
     private String name;

@@ -33,7 +33,7 @@ public class Admin implements Serializable {
 
     @Schema(description = "管理员ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     @Schema(description = "管理员名称")
     private String name;

@@ -49,12 +49,12 @@ public interface IBorrowService extends IService<Borrow> {
      *
      * @param id 借阅记录ID
      */
-    void cancelBorrow(Long id);
+    void cancelBorrow(String id);
 
     /**
      * 删除书籍借阅记录
      *
      * @param id 借阅记录ID
      */
-    void deleteBorrow(Long id);
+    void deleteBorrow(String id);
 }

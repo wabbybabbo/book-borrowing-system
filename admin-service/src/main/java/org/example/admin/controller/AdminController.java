@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Admin;
@@ -111,8 +110,8 @@ public class AdminController {
     @PutMapping("/disable")
     public Result<Object> disableAccount(
             @Parameter(description = "管理员ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 禁用管理员账号 id: {}", id);
         adminService.disableAccount(id);
@@ -136,8 +135,8 @@ public class AdminController {
     @PutMapping("/enable")
     public Result<Object> enableAccount(
             @Parameter(description = "管理员ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 解禁管理员账号 id: {}", id);
         adminService.enableAccount(id);

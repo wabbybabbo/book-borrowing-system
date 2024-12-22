@@ -119,7 +119,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void disableAccount(Long id) {
+    public void disableAccount(String id) {
         // 禁用用户账号
         User user = new User();
         user.setId(id);
@@ -128,7 +128,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void enableAccount(Long id) {
+    public void enableAccount(String id) {
         // 解禁用户账号
         User user = new User();
         user.setId(id);
@@ -137,7 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void batchDisableAccount(List<Long> ids) {
+    public void batchDisableAccount(List<String> ids) {
         // 批量禁用用户账号
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>()
                 .set("status", AccountStatusConstant.DISABLE)
@@ -146,7 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void batchEnableAccount(List<Long> ids) {
+    public void batchEnableAccount(List<String> ids) {
         // 批量解禁用户账号
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>()
                 .set("status", AccountStatusConstant.ENABLE)

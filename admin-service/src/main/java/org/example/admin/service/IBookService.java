@@ -50,13 +50,13 @@ public interface IBookService extends IService<Book> {
      *
      * @param id 书籍ID
      */
-    void deleteBook(Long id);
+    void deleteBook(String id);
 
     /**
      * 批量删除书籍信息
      *
      * @param ids 书籍ID列表
      */
-    void batchDeleteBooks(List<Long> ids);
+    void batchDeleteBooks(List<String> ids);
 
 }

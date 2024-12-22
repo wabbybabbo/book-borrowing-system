@@ -14,7 +14,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 public class BatchDisableAccountDTO {
 
     @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-    @Schema(description = "管理员ID列表", requiredMode = REQUIRED, type = "long[]", example = "1,2,3")
-    private List<Long> ids;
+    @Schema(description = "管理员ID列表", requiredMode = REQUIRED, type = "string[]", example = "1,2,3")
+    private List<String> ids;
 
 }

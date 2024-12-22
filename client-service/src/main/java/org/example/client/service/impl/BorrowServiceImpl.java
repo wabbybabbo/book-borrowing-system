@@ -120,12 +120,6 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Transactional
     public void createBorrow(CreateBorrowDTO createBorrowDTO, String id) {
         // 检查参数是否合法
-        Long userId = null;
-        try {
-            userId = Long.valueOf(id);
-        } catch (NumberFormatException e) {
-            log.error("[log] 用户id应为数字类型 userId: {}, NumberFormatException: {}", userId, e.getMessage());
-        }
         LocalDate reserveDate = createBorrowDTO.getReserveDate();
         LocalDate returnDate = createBorrowDTO.getReturnDate();
         if (returnDate.isBefore(reserveDate)) {
@@ -153,12 +147,12 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         Borrow borrow = new Borrow();
         BeanUtil.copyProperties(createBorrowDTO, borrow);
         borrow.setBookName(book.getName());
-        borrow.setUserId(userId);
+        borrow.setUserId(id);
         borrowMapper.insert(borrow);
     }
 
     @Override
-    public void deleteBorrow(Long id) {
+    public void deleteBorrow(String id) {
         // 查询该借阅记录的借阅状态
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
                 .select("isbn", "status")
@@ -180,7 +174,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
 
     @Override
     @Transactional
-    public void cancelBorrow(Long id) {
+    public void cancelBorrow(String id) {
         // 查询该借阅记录的借阅状态
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
                 .select("isbn", "status")

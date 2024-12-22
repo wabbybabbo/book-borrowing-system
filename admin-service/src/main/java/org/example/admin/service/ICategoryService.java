@@ -45,14 +45,14 @@ public interface ICategoryService extends IService<Category> {
      *
      * @param id 书籍类别ID
      */
-    void deleteCategory(Long id);
+    void deleteCategory(String id);
 
     /**
      * 批量删除书籍类别
      *
      * @param ids 书籍类别ID列表
      */
-    void batchDeleteCategories(List<Long> ids);
+    void batchDeleteCategories(List<String> ids);
 
     /**
      * 分页查询书籍类别

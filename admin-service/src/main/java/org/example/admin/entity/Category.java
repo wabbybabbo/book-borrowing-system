@@ -33,7 +33,7 @@ public class Category implements Serializable {
 
     @Schema(description = "书籍类别ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     @Schema(description = "类别名称")
     private String name;

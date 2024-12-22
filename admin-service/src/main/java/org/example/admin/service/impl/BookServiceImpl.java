@@ -84,7 +84,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         QueryWrapper<Category> queryWrapper1 = new QueryWrapper<Category>()
                 .select("id", "name");
         List<Category> categories = categoryMapper.selectList(queryWrapper1);
-        Map<Long, String> categoryMap = new HashMap<>();
+        Map<String, String> categoryMap = new HashMap<>();
         for (Category category : categories) {
             categoryMap.put(category.getId(), category.getName());
         }
@@ -141,7 +141,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     }
 
     @Override
-    public void deleteBook(Long id) {
+    public void deleteBook(String id) {
         int updates = bookMapper.deleteById(id);
         if (updates == 0) {
             log.error("[log] 删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);
@@ -150,7 +150,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     }
 
     @Override
-    public void batchDeleteBooks(List<Long> ids) {
+    public void batchDeleteBooks(List<String> ids) {
         int updates = bookMapper.deleteBatchIds(ids);
         if (updates == 0) {
             log.error("[log] 批量删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);

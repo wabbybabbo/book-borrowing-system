@@ -32,7 +32,7 @@ public interface IBorrowService extends IService<Borrow> {
      * @param id 用户ID
      * @return 用户的借阅记录列表
      */
-    List<Borrow> getBorrows(Long id);
+    List<Borrow> getBorrows(String id);
 
     /**
      * 归还登记
@@ -46,6 +46,6 @@ public interface IBorrowService extends IService<Borrow> {
      *
      * @param id 书籍借阅记录ID
      */
-    void borrowRegister(Long id);
+    void borrowRegister(String id);
 
 }

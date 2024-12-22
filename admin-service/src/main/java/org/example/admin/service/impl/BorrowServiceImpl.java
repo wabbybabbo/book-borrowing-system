@@ -81,7 +81,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     }
 
     @Override
-    public List<Borrow> getBorrows(Long id) {
+    public List<Borrow> getBorrows(String id) {
         // 构建查询条件
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
                 .eq("user_id", id);
@@ -111,7 +111,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     }
 
     @Override
-    public void borrowRegister(Long id) {
+    public void borrowRegister(String id) {
         // 构建借阅记录对象
         Borrow borrow = new Borrow();
         borrow.setId(id);

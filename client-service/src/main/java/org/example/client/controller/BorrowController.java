@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.client.pojo.dto.CreateBorrowDTO;
@@ -78,8 +78,8 @@ public class BorrowController {
     @PutMapping
     public Result<Object> cancelBorrow(
             @Parameter(description = "借阅记录ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 取消书籍借阅预约 id: {}", id);
         borrowService.cancelBorrow(id);
@@ -90,8 +90,8 @@ public class BorrowController {
     @DeleteMapping
     public Result<Object> deleteBorrow(
             @Parameter(description = "借阅记录ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 删除书籍借阅记录 id: {}", id);
         borrowService.deleteBorrow(id);

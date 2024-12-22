@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.User;
@@ -73,8 +73,8 @@ public class UserController {
     @PutMapping("/disable")
     public Result<Object> disableAccount(
             @Parameter(description = "用户ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 禁用用户账号 id: {}", id);
         userService.disableAccount(id);
@@ -88,7 +88,7 @@ public class UserController {
             @Parameter(description = "用户ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<Long> ids
+            List<String> ids
     ) {
         log.info("[log] 批量禁用用户账号 ids: {}", ids);
         userService.batchDisableAccount(ids);
@@ -100,8 +100,8 @@ public class UserController {
     @PutMapping("/enable")
     public Result<Object> enableAccount(
             @Parameter(description = "用户ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 解禁用户账号 id: {}", id);
         userService.enableAccount(id);
@@ -115,7 +115,7 @@ public class UserController {
             @Parameter(description = "用户ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<Long> ids
+            List<String> ids
     ) {
         log.info("[log] 批量解禁用户账号 ids: {}", ids);
         userService.batchEnableAccount(ids);

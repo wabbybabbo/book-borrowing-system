@@ -116,12 +116,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public void updateUser(UpdateUserDTO updateUserDTO, String id) {
-        Long userId = null;
-        try {
-            userId = Long.valueOf(id);
-        } catch (NumberFormatException e) {
-            log.error("[log] 用户id应为数字类型 userId: {}, NumberFormatException: {}", userId, e.getMessage());
-        }
         // 检查Bean对象中字段是否全空
         if(BeanUtil.isEmpty(updateUserDTO)){
             throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);
@@ -132,7 +126,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             // 检查账号是否已存在
             QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
                     .eq("account", account)
-                    .ne("id", userId);
+                    .ne("id", id);
             if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
             }
@@ -142,7 +136,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             // 检查电话号码是否已存在
             QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
                     .eq("phone", phone)
-                    .ne("id", userId);
+                    .ne("id", id);
             if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
@@ -152,7 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             // 检查邮箱是否已存在
             QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
                     .eq("email", email)
-                    .ne("id", userId);
+                    .ne("id", id);
             if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
@@ -160,7 +154,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 构建用户对象
         User user = new User();
         BeanUtil.copyProperties(updateUserDTO, user);
-        user.setId(userId);
+        user.setId(id);
         // 更改用户信息
         userMapper.updateById(user);
     }

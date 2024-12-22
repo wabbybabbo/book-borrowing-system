@@ -44,7 +44,7 @@ public class BorrowTask {
         if(borrows.isEmpty()) return;
 
         // 将这些借阅记录的借阅状态更改为'未按时归还'
-        List<Long> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
+        List<String> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
         UpdateWrapper<Borrow> updateWrapper = new UpdateWrapper<Borrow>()
                 .set("status", BorrowStatusConstant.RETURN_OVERDUE)
                 .in("id", borrowIds);
@@ -68,7 +68,7 @@ public class BorrowTask {
         if(borrows.isEmpty()) return;
 
         // 将这些借阅记录的借阅状态更改为'预约已失效'
-        List<Long> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
+        List<String> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
         UpdateWrapper<Borrow> updateWrapper1 = new UpdateWrapper<Borrow>()
                 .set("status", BorrowStatusConstant.RESERVE_OVERDUE)
                 .in("id", borrowIds);

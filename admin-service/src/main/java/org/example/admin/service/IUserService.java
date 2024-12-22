@@ -40,27 +40,27 @@ public interface IUserService extends IService<User> {
      *
      * @param id 用户ID
      */
-    void disableAccount(Long id);
+    void disableAccount(String id);
 
     /**
      * 解禁用户账号
      *
      * @param id 用户ID
      */
-    void enableAccount(Long id);
+    void enableAccount(String id);
 
     /**
      * 批量禁用用户账号
      *
      * @param ids 用户ID列表
      */
-    void batchDisableAccount(List<Long> ids);
+    void batchDisableAccount(List<String> ids);
 
     /**
      * 批量解禁用户账号
      *
      * @param ids 用户ID列表
      */
-    void batchEnableAccount(List<Long> ids);
+    void batchEnableAccount(List<String> ids);
 
 }

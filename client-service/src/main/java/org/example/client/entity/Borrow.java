@@ -34,10 +34,10 @@ public class Borrow implements Serializable {
 
     @Schema(description = "借阅记录ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private Long id;
+    private String id;
 
     @Schema(description = "用户ID")
-    private Long userId;
+    private String userId;
 
     @Schema(description = "借阅状态")
     private String status;

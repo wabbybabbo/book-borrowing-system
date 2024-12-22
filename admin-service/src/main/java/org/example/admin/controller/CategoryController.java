@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Category;
@@ -86,8 +86,8 @@ public class CategoryController {
     @DeleteMapping
     public Result<Object> deleteCategory(
             @Parameter(description = "书籍类别ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 删除书籍类别 id: {}", id);
         categoryService.deleteCategory(id);
@@ -101,7 +101,7 @@ public class CategoryController {
             @Parameter(description = "书籍类别ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<Long> ids
+            List<String> ids
     ) {
         log.info("[log] 批量删除书籍类别 ids: {}", ids);
         categoryService.batchDeleteCategories(ids);

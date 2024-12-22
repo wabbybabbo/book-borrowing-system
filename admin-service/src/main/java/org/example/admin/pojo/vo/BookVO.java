@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 public class BookVO implements Serializable {
 
     @Schema(description = "书籍ID")
-    private Long id;
+    private String id;
 
     @Schema(description = "书籍类别ID")
-    private Long categoryId;
+    private String categoryId;
 
     @Schema(description = "书籍类名")
     private String categoryName;

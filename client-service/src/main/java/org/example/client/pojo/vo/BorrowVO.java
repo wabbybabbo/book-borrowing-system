@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class BorrowVO implements Serializable {
 
     @Schema(description = "借阅记录ID")
-    private Long id;
+    private String id;
 
     @Schema(description = "借阅状态")
     private String status;

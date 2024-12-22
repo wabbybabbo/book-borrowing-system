@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -91,8 +92,8 @@ public class BookController {
     @DeleteMapping
     public Result<Object> deleteBook(
             @Parameter(description = "书籍ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 删除书籍信息 id: {}", id);
         bookService.deleteBook(id);
@@ -106,7 +107,7 @@ public class BookController {
             @Parameter(description = "书籍ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<Long> ids
+            List<String> ids
     ) {
         log.info("[log] 批量删除书籍信息 ids: {}", ids);
         bookService.batchDeleteBooks(ids);

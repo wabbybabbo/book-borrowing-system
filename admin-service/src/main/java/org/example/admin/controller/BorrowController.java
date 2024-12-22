@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.admin.pojo.dto.ReturnRegisterDTO;
 import org.example.admin.entity.Borrow;
+import org.example.admin.pojo.dto.ReturnRegisterDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
 import org.example.common.constant.MessageConstant;
@@ -61,8 +61,8 @@ public class BorrowController {
     @PutMapping
     public Result<Object> borrowRegister(
             @Parameter(description = "书籍借阅记录ID", required = true)
-            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-            Long id
+            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            String id
     ) {
         log.info("[log] 借阅登记 id: {}", id);
         borrowService.borrowRegister(id);

@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class CategoryVO implements Serializable {
 
     @Schema(description = "书籍类别ID")
-    private Long id;
+    private String id;
 
     @Schema(description = "类别名称")
     private String name;

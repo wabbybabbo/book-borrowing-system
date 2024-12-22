@@ -15,7 +15,7 @@ public class UpdateCategoryDTO {
 
     @Schema(description = "书籍类别ID", requiredMode = REQUIRED)
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    private Long id;
+    private String id;
 
     @Schema(description = "类别名称", pattern = RegexpConstant.CATEGORY_NAME, requiredMode = REQUIRED, example = "计算机科学与技术")
     @Pattern(regexp = RegexpConstant.CATEGORY_NAME, message = MessageConstant.INVALID_CATEGORY_NAME)

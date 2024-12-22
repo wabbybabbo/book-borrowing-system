@@ -113,7 +113,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public void deleteCategory(Long id) {
+    public void deleteCategory(String id) {
         // 删除书籍类别
         try {
             categoryMapper.deleteById(id);
@@ -124,7 +124,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public void batchDeleteCategories(List<Long> ids) {
+    public void batchDeleteCategories(List<String> ids) {
         // 批量删除书籍类别
         try {
             categoryMapper.deleteBatchIds(ids);

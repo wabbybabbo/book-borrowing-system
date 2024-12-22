@@ -76,7 +76,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         QueryWrapper<Category> queryWrapper1 = new QueryWrapper<Category>()
                 .select("id", "name");
         List<Category> categories = categoryMapper.selectList(queryWrapper1);
-        Map<Long, String> categoryMap = new HashMap<>();
+        Map<String, String> categoryMap = new HashMap<>();
         for (Category category : categories) {
             categoryMap.put(category.getId(), category.getName());
         }

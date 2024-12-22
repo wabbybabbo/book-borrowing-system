@@ -15,11 +15,11 @@ public class UpdateBookDTO {
 
     @Schema(description = "书籍ID", requiredMode = REQUIRED)
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    private Long id;
+    private String id;
 
     @Schema(description = "书籍类别ID")
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    private Long categoryId;
+    private String categoryId;
 
     @Schema(description = "书籍名称", pattern = RegexpConstant.BOOK_NAME, example = "Vue.js 设计与实现")
     @Pattern(regexp = RegexpConstant.BOOK_NAME, message = MessageConstant.INVALID_BOOK_NAME)

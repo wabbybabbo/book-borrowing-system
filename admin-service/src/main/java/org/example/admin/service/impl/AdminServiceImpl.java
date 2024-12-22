@@ -213,19 +213,13 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         if (BeanUtil.isEmpty(updateAdminDTO)) {
             throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);
         }
-        Long adminId = null;
-        try {
-            adminId = Long.valueOf(id);
-        } catch (NumberFormatException e) {
-            log.error("[log] 管理员id应为数字类型 adminId: {}, NumberFormatException: {}", adminId, e.getMessage());
-        }
         // 验证参数值在数据库中的唯一性
         String account = updateAdminDTO.getAccount();
         if (Objects.nonNull(account)) {
             // 查询账号是否已存在
             QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
                     .eq("account", account)
-                    .ne("id", adminId);
+                    .ne("id", id);
             if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
             }
@@ -235,7 +229,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             // 查询电话号码是否已存在
             QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
                     .eq("phone", phone)
-                    .ne("id", adminId);
+                    .ne("id", id);
             if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
@@ -245,7 +239,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             // 查询邮箱是否已存在
             QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
                     .eq("email", email)
-                    .ne("id", adminId);
+                    .ne("id", id);
             if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
@@ -253,13 +247,13 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         // 构建管理员对象
         Admin admin = new Admin();
         BeanUtil.copyProperties(updateAdminDTO, admin);
-        admin.setId(adminId);
+        admin.setId(id);
         // 更改管理员信息
         adminMapper.updateById(admin);
     }
 
     @Override
-    public void disableAccount(Long id) {
+    public void disableAccount(String id) {
         // 禁用管理员账号
         Admin admin = new Admin();
         admin.setId(id);
@@ -268,7 +262,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public void enableAccount(Long id) {
+    public void enableAccount(String id) {
         // 解禁管理员账号
         Admin admin = new Admin();
         admin.setId(id);
@@ -277,7 +271,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public void batchDisableAccount(List<Long> ids) {
+    public void batchDisableAccount(List<String> ids) {
         // 批量禁用管理员账号
         UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<Admin>()
                 .set("status", AccountStatusConstant.DISABLE)
@@ -286,7 +280,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public void batchEnableAccount(List<Long> ids) {
+    public void batchEnableAccount(List<String> ids) {
         // 批量解禁管理员账号
         UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<Admin>()
                 .set("status", AccountStatusConstant.ENABLE)
