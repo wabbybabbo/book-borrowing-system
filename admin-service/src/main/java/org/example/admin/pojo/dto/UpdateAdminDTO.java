@@ -8,6 +8,9 @@ import org.example.common.constant.GenderConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.constant.RegexpConstant;
 
+/**
+ * 更改管理员信息时传递的数据模型
+ */
 @Data
 @Schema(description = "更改管理员信息时传递的数据模型")
 public class UpdateAdminDTO {

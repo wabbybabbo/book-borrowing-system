@@ -4,6 +4,7 @@ package org.example.client.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +38,24 @@ public class UserController {
 
     private final IUserService userService;
 
+    @Operation(summary = "获取动态图形验证码")
+    @GetMapping(value = "/captcha")
+    public void getGifCaptcha(
+            @Parameter(description = "时间戳", required = true)
+            String timestamp,
+            HttpServletResponse response
+    ) {
+        log.info("[log] 开始获取动态图形验证码");
+        String code = userService.createGifCaptcha(timestamp, response);
+        log.info("[log] 生成的验证码为：{}", code);
+    }
+
     @Operation(summary = "用户登录")
     @GetMapping("/login")
     public Result<UserVO> login(@ParameterObject @Valid UserLoginDTO userLoginDTO) {
         log.info("[log] 用户登录 {}", userLoginDTO);
-
-        //查询登录用户信息
-        UserVO userVO = userService.login(userLoginDTO);
-
+        String code = userService.getCodeCache(userLoginDTO.getTimestamp());
+        UserVO userVO = userService.login(userLoginDTO, code);
         return Result.success(MessageConstant.LOGIN_SUCCESS, userVO);
     }
 

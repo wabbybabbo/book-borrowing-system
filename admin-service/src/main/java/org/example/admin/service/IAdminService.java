@@ -68,7 +68,7 @@ public interface IAdminService extends IService<Admin> {
     /**
      * 更改管理员信息
      *
-     * @param updateAdminDTO 更改管理员信息时传递的数据模型
+     * @param updateAdminDTO {@link UpdateAdminDTO}
      * @param id             管理员ID
      */
     void updateAdmin(UpdateAdminDTO updateAdminDTO, String id);

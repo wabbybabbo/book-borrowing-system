@@ -10,6 +10,12 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.RedisSerializer;
+
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Redis 缓存配置
@@ -30,6 +36,15 @@ public class RedisCacheConfig {
      */
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory, CacheProperties cacheProperties) {
+        // 针对不同cacheName，使用不同的配置
+        Map<String, RedisCacheConfiguration> initialCacheConfigurations = new HashMap<>() {{
+            put("captchaCache", RedisCacheConfiguration.defaultCacheConfig()
+                    .entryTtl(Duration.ofMinutes(1))//1分钟
+                    .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()))//修改Redis值序列化方式
+                    .computePrefixWith(cacheName -> cacheName + ":"));
+            // ...
+        }};
+
         // 自定义 RedisCacheConfiguration
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig();
         // cacheConfig = cacheConfig.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));//修改Redis值序列化方式，默认StringSerializationRedisSerializer
@@ -52,6 +67,7 @@ public class RedisCacheConfig {
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
                 .cacheDefaults(cacheConfig)
+                .withInitialCacheConfigurations(initialCacheConfigurations)
                 .build();
     }
 

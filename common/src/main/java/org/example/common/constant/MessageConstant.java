@@ -24,7 +24,7 @@ public class MessageConstant {
     public static final String BORROW_NOT_FOUND = "书籍借阅记录不存在";
     //public static final String CATEGORY_NOT_FOUND = "书籍类别不存在";
     public static final String FIELD_NOT_FOUND = "筛选字段不存在";
-    public static final String CAPTCHA_NOT_FOUND = "验证码已过期";
+    public static final String CAPTCHA_NOT_FOUND = "验证码已过期，请重新获取";
 
     public static final String EMAIL_ALREADY_EXISTS = "邮箱已存在";
     public static final String CATEGORY_ALREADY_EXISTS = "书籍类别已存在";
