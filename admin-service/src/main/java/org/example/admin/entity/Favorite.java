@@ -31,8 +31,8 @@ public class Favorite implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "收藏记录ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @Schema(description = "收藏记录ID")
     private String id;
 
     @Schema(description = "用户ID")
@@ -41,12 +41,12 @@ public class Favorite implements Serializable {
     @Schema(description = "书籍ID")
     private String bookId;
 
-    @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "创建时间")
     private LocalDateTime createTime;
 
-    @Schema(description = "更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 
 

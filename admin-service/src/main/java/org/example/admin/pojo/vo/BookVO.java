@@ -41,12 +41,12 @@ public class BookVO implements Serializable {
     @Schema(description = "库存数量")
     private Integer stock;
 
-    @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "创建时间")
     private LocalDateTime createTime;
 
-    @Schema(description = "更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 
 }

@@ -44,65 +44,65 @@ public class CategoryController {
 
     private final ICategoryService categoryService;
 
-    @Operation(summary = "分页查询书籍类别")
-    //只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存
-    @Cacheable(cacheNames = "categoryCache", key = "'categoryList'+':'+#pageQuery.current+':'+#pageQuery.size", condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @GetMapping("/page")
+    @Cacheable(cacheNames = "categoryCache",
+            key = "'categoryList'+':'+#pageQuery.current+':'+#pageQuery.size",
+            /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
+            condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
+    @Operation(summary = "分页查询书籍类别")
     public Result<PageResult<Category>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询书籍类别 {}", pageQuery);
         PageResult<Category> pageResult = categoryService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "查询所有书籍类别")
-    @Cacheable(cacheNames = "categoryCache", key = "'categoryVOList'")
     @GetMapping
+    @Cacheable(cacheNames = "categoryCache", key = "'categoryVOList'")
+    @Operation(summary = "查询所有书籍类别")
     public Result<List<CategoryVO>> getCategories() {
         log.info("[log] 查询所有书籍类别");
         List<CategoryVO> categories = categoryService.getCategories();
         return Result.success(categories);
     }
 
-    @Operation(summary = "新建书籍类别")
-    @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @PostMapping
+    @CacheEvict(cacheNames = "categoryCache", allEntries = true)
+    @Operation(summary = "新建书籍类别")
     public Result<Object> createCategory(@RequestBody @Valid CreateCategoryDTO createCategoryDTO) {
         log.info("[log] 新建书籍类别 {}", createCategoryDTO);
         categoryService.createCategory(createCategoryDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
 
-    @Operation(summary = "更改书籍类别信息")
-    @CacheEvict(cacheNames = {"categoryCache", "bookCache"}, allEntries = true)
     @PutMapping
+    @CacheEvict(cacheNames = {"categoryCache", "bookCache"}, allEntries = true)
+    @Operation(summary = "更改书籍类别信息")
     public Result<Object> updateCategory(@RequestBody @Valid UpdateCategoryDTO updateCategoryDTO) {
         log.info("[log] 更改书籍类别信息 {}", updateCategoryDTO);
         categoryService.updateCategory(updateCategoryDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
 
-    @Operation(summary = "删除书籍类别")
-    @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @DeleteMapping
+    @CacheEvict(cacheNames = "categoryCache", allEntries = true)
+    @Operation(summary = "删除书籍类别")
     public Result<Object> deleteCategory(
-            @Parameter(description = "书籍类别ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "书籍类别ID", required = true)
+            String id) {
         log.info("[log] 删除书籍类别 id: {}", id);
         categoryService.deleteCategory(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 
-    @Operation(summary = "批量删除书籍类别")
-    @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @DeleteMapping("/batch")
+    @CacheEvict(cacheNames = "categoryCache", allEntries = true)
+    @Operation(summary = "批量删除书籍类别")
     public Result<Object> batchDeleteCategories(
-            @Parameter(description = "书籍类别ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<String> ids
-    ) {
+            @Parameter(description = "书籍类别ID列表", required = true)
+            List<String> ids) {
         log.info("[log] 批量删除书籍类别 ids: {}", ids);
         categoryService.batchDeleteCategories(ids);
         return Result.success(MessageConstant.DELETE_SUCCESS);

@@ -15,16 +15,16 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Schema(description = "新增书籍借阅记录时传递的数据模型")
 public class CreateBorrowDTO {
 
-    @Schema(description = "国际标准书号", pattern = RegexpConstant.ISBN, requiredMode = REQUIRED, example = "9787115583864")
     @Pattern(regexp = RegexpConstant.ISBN, message = MessageConstant.INVALID_ISBN)
+    @Schema(description = "国际标准书号", pattern = RegexpConstant.ISBN, requiredMode = REQUIRED, example = "9787115583864")
     private String isbn;
 
-    @Schema(description = "借阅预约日期", requiredMode = REQUIRED, example = "1970-01-01")
     @Future(message = MessageConstant.INVALID_RESERVE_DATE)
+    @Schema(description = "借阅预约日期", requiredMode = REQUIRED, example = "1970-01-01")
     private LocalDate reserveDate;
 
-    @Schema(description = "预计归还日期", requiredMode = REQUIRED, example = "1970-01-02")
     @Future(message = MessageConstant.INVALID_RETURN_DATE)
+    @Schema(description = "预计归还日期", requiredMode = REQUIRED, example = "1970-01-02")
     private LocalDate returnDate;
 
 }

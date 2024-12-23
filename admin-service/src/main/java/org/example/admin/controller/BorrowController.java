@@ -37,40 +37,38 @@ public class BorrowController {
 
     private final IBorrowService borrowService;
 
-    @Operation(summary = "分页查询借阅记录")
     @GetMapping("/page")
+    @Operation(summary = "分页查询借阅记录")
     public Result<PageResult<Borrow>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询借阅记录 {}", pageQuery);
         PageResult<Borrow> pageResult = borrowService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
 
-//    @Operation(summary = "查询用户的借阅记录")
 //    @GetMapping
+//    @Operation(summary = "查询用户的借阅记录")
 //    public Result<List<Borrow>> getBorrows(
 //            @Parameter(description = "用户ID")
 //            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-//            Integer id
-//    ) {
+//            Integer id) {
 //        log.info("[log] 查询用户的借阅记录，id: {}", id);
 //        List<Borrow> borrows = borrowService.getBorrows(id);
 //        return Result.success(borrows);
 //    }
 
-    @Operation(summary = "借阅登记")
     @PutMapping
+    @Operation(summary = "借阅登记")
     public Result<Object> borrowRegister(
-            @Parameter(description = "书籍借阅记录ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "书籍借阅记录ID", required = true)
+            String id) {
         log.info("[log] 借阅登记 id: {}", id);
         borrowService.borrowRegister(id);
         return Result.success();
     }
 
-    @Operation(summary = "归还登记")
     @PutMapping("/return")
+    @Operation(summary = "归还登记")
     public Result<Object> returnRegister(@RequestBody @Valid ReturnRegisterDTO returnRegisterDTO) {
         log.info("[log] 归还登记 {}", returnRegisterDTO);
         borrowService.returnRegister(returnRegisterDTO);

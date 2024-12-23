@@ -15,28 +15,28 @@ import org.example.common.constant.RegexpConstant;
 @Schema(description = "更改管理员信息时传递的数据模型")
 public class UpdateAdminDTO {
 
-    @Schema(description = "管理员名称", pattern = RegexpConstant.ADMIN_NAME, example = "admin")
     @Pattern(regexp = RegexpConstant.ADMIN_NAME, message = MessageConstant.INVALID_ADMIN_NAME)
+    @Schema(description = "管理员名称", pattern = RegexpConstant.ADMIN_NAME, example = "admin")
     private String name;
 
-    @Schema(description = "账号", pattern = RegexpConstant.ACCOUNT, example = "admin")
     @Pattern(regexp = RegexpConstant.ACCOUNT, message = MessageConstant.INVALID_ACCOUNT)
+    @Schema(description = "账号", pattern = RegexpConstant.ACCOUNT, example = "admin")
     private String account;
 
-    @Schema(description = "密码", pattern = RegexpConstant.PASSWORD, example = "admin")
     @Pattern(regexp = RegexpConstant.PASSWORD, message = MessageConstant.INVALID_PASSWORD)
+    @Schema(description = "密码", pattern = RegexpConstant.PASSWORD, example = "admin")
     private String password;
 
-    @Schema(description = "性别", pattern = RegexpConstant.GENDER, example = GenderConstant.MALE)
     @Pattern(regexp = RegexpConstant.GENDER, message = MessageConstant.INVALID_GENDER)
+    @Schema(description = "性别", pattern = RegexpConstant.GENDER, example = GenderConstant.MALE)
     private String gender;
 
-    @Schema(description = "电话号码", pattern = RegexpConstant.PHONE, example = "19876543210")
     @Pattern(regexp = RegexpConstant.PHONE, message = MessageConstant.INVALID_PHONE)
+    @Schema(description = "电话号码", pattern = RegexpConstant.PHONE, example = "19876543210")
     private String phone;
 
-    @Schema(description = "邮箱", example = "example@qq.com")
     @Email(regexp = RegexpConstant.EMAIL, message = MessageConstant.INVALID_EMAIL)
+    @Schema(description = "邮箱", example = "example@qq.com")
     private String email;
 
     @Schema(description = "联系地址", example = "广东省广州市海珠区")

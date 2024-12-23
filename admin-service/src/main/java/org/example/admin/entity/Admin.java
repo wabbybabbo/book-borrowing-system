@@ -31,8 +31,8 @@ public class Admin implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "管理员ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @Schema(description = "管理员ID")
     private String id;
 
     @Schema(description = "管理员名称")
@@ -62,12 +62,12 @@ public class Admin implements Serializable {
     @Schema(description = "账号状态")
     private String status;
 
-    @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "创建时间")
     private LocalDateTime createTime;
 
-    @Schema(description = "更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 
 

@@ -30,8 +30,8 @@ public class BorrowVO implements Serializable {
     @Schema(description = "预计归还日期")
     private LocalDate returnDate;
 
-    @Schema(description = "实际归还时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "实际归还时间")
     private LocalDateTime updateTime;
 
 }

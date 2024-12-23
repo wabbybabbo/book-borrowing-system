@@ -38,61 +38,57 @@ public class BorrowController {
 
     private final IBorrowService borrowService;
 
-    @Operation(summary = "分页查询用户的借阅记录")
     @GetMapping("/page")
+    @Operation(summary = "分页查询用户的借阅记录")
     public Result<PageResult<BorrowVO>> pageQuery(
             @ParameterObject
             PageQuery pageQuery,
-            @Parameter(description = "用户ID")
             @RequestHeader(ClaimConstant.CLIENT_ID)
-            String id
-    ) {
+            @Parameter(description = "用户ID")
+            String id) {
         log.info("[log] 分页查询用户的借阅记录 {}, id: {}", pageQuery, id);
         PageResult<BorrowVO> pageResult = borrowService.pageQuery(pageQuery, id);
         return Result.success(pageResult);
     }
 
-//    @Operation(summary = "查询用户所有的借阅记录")
 //    @GetMapping
+//    @Operation(summary = "查询用户所有的借阅记录")
 //    public Result<List<BorrowVO>> getBorrows() {
 //        log.info("[log] 查询用户所有的借阅记录");
 //        List<BorrowVO> borrows = borrowService.getBorrows();
 //        return Result.success(borrows);
 //    }
 
-    @Operation(summary = "新增用户的借阅预约记录")
     @PostMapping
+    @Operation(summary = "新增用户的借阅预约记录")
     public Result<Object> createBorrow(
             @RequestBody @Valid
             CreateBorrowDTO createBorrowDTO,
-            @Parameter(description = "用户ID", required = true)
             @RequestHeader(ClaimConstant.CLIENT_ID)
-            String id
-    ) {
+            @Parameter(description = "用户ID", required = true)
+            String id) {
         log.info("[log] 新增用户的借阅预约记录 {}, id: {}", createBorrowDTO, id);
         borrowService.createBorrow(createBorrowDTO, id);
         return Result.success(MessageConstant.BORROW_SUCCESS);
     }
 
-    @Operation(summary = "取消书籍借阅预约")
     @PutMapping
+    @Operation(summary = "取消书籍借阅预约")
     public Result<Object> cancelBorrow(
-            @Parameter(description = "借阅记录ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "借阅记录ID", required = true)
+            String id) {
         log.info("[log] 取消书籍借阅预约 id: {}", id);
         borrowService.cancelBorrow(id);
         return Result.success(MessageConstant.CANCEL_SUCCESS);
     }
 
-    @Operation(summary = "删除书籍借阅记录")
     @DeleteMapping
+    @Operation(summary = "删除书籍借阅记录")
     public Result<Object> deleteBorrow(
-            @Parameter(description = "借阅记录ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "借阅记录ID", required = true)
+            String id) {
         log.info("[log] 删除书籍借阅记录 id: {}", id);
         borrowService.deleteBorrow(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);

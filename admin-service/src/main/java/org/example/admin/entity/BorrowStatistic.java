@@ -1,7 +1,6 @@
 package org.example.admin.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -32,9 +31,9 @@ public class BorrowStatistic implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "日期")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     @TableId(value = "date", type = IdType.NONE)
+    @JsonFormat(pattern = "yyyy-MM-dd")//todo 是否必要
+    @Schema(description = "日期")
     private LocalDate date;
 
     @Schema(description = "借阅数量")

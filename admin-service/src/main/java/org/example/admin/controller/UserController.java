@@ -44,22 +44,24 @@ public class UserController {
 
     private final IUserService userService;
 
-    @Operation(summary = "分页查询用户信息")
-    //只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存
-    @Cacheable(cacheNames = "userCache", key = "'userList'+':'+#pageQuery.current+':'+#pageQuery.size", condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @GetMapping("/page")
+    @Cacheable(cacheNames = "userCache",
+            key = "'userList'+':'+#pageQuery.current+':'+#pageQuery.size",
+            /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
+            condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
+    @Operation(summary = "分页查询用户信息")
     public Result<PageResult<User>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询用户信息 {}", pageQuery);
         PageResult<User> pageResult = userService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "新建用户信息")
-    @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
+    @CacheEvict(cacheNames = "userCache", allEntries = true)
+    @Operation(summary = "新建用户信息")
     public Result<Object> createUser(
-            @Parameter(description = "用户头像图片文件")
             @RequestPart(value = "file", required = false)
+            @Parameter(description = "用户头像图片文件")
             MultipartFile file,
             @RequestPart @Valid
             CreateUserDTO createUserDTO) {
@@ -68,55 +70,51 @@ public class UserController {
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
 
-    @Operation(summary = "禁用用户账号")
-    @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/disable")
+    @CacheEvict(cacheNames = "userCache", allEntries = true)
+    @Operation(summary = "禁用用户账号")
     public Result<Object> disableAccount(
-            @Parameter(description = "用户ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "用户ID", required = true)
+            String id) {
         log.info("[log] 禁用用户账号 id: {}", id);
         userService.disableAccount(id);
         return Result.success(MessageConstant.DISABLE_SUCCESS);
     }
 
-    @Operation(summary = "批量禁用用户账号")
-    @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/disable/batch")
+    @CacheEvict(cacheNames = "userCache", allEntries = true)
+    @Operation(summary = "批量禁用用户账号")
     public Result<Object> batchDisableAccount(
-            @Parameter(description = "用户ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<String> ids
-    ) {
+            @Parameter(description = "用户ID列表", required = true)
+            List<String> ids) {
         log.info("[log] 批量禁用用户账号 ids: {}", ids);
         userService.batchDisableAccount(ids);
         return Result.success(MessageConstant.DISABLE_SUCCESS);
     }
 
-    @Operation(summary = "解禁用户账号")
-    @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/enable")
+    @CacheEvict(cacheNames = "userCache", allEntries = true)
+    @Operation(summary = "解禁用户账号")
     public Result<Object> enableAccount(
-            @Parameter(description = "用户ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "用户ID", required = true)
+            String id) {
         log.info("[log] 解禁用户账号 id: {}", id);
         userService.enableAccount(id);
         return Result.success(MessageConstant.ENABLE_SUCCESS);
     }
 
-    @Operation(summary = "批量解禁用户账号")
-    @CacheEvict(cacheNames = "userCache", allEntries = true)
     @PutMapping("/enable/batch")
+    @CacheEvict(cacheNames = "userCache", allEntries = true)
+    @Operation(summary = "批量解禁用户账号")
     public Result<Object> batchEnableAccount(
-            @Parameter(description = "用户ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<String> ids
-    ) {
+            @Parameter(description = "用户ID列表", required = true)
+            List<String> ids) {
         log.info("[log] 批量解禁用户账号 ids: {}", ids);
         userService.batchEnableAccount(ids);
         return Result.success(MessageConstant.ENABLE_SUCCESS);

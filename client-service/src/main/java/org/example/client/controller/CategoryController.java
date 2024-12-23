@@ -34,9 +34,9 @@ public class CategoryController {
 
     private final ICategoryService categoryService;
 
-    @Operation(summary = "查询所有书籍类别")
-    @Cacheable(cacheNames = "categoryCache", key = "'categoryVOList'")
     @GetMapping
+    @Cacheable(cacheNames = "categoryCache", key = "'categoryVOList'")
+    @Operation(summary = "查询所有书籍类别")
     public Result<List<CategoryVO>> getCategories() {
         log.info("[log] 查询所有书籍类别");
         List<CategoryVO> categories = categoryService.getCategories();

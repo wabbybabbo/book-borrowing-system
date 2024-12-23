@@ -34,12 +34,12 @@ public class AdminLoginVO {
     @Schema(description = "联系地址")
     private String address;
 
-    @Schema(description = "账号创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "账号创建时间")
     private LocalDateTime createTime;
 
-    @Schema(description = "最新信息更改时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "最新信息更改时间")
     private LocalDateTime updateTime;
 
     @Schema(description = "令牌")

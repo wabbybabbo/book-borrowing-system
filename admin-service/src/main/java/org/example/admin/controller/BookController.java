@@ -46,69 +46,67 @@ public class BookController {
 
     private final IBookService bookService;
 
-    @Operation(summary = "分页查询书籍信息")
-    //只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存
-    @Cacheable(cacheNames = "bookCache", key = "'bookList'+':'+#pageQuery.current+':'+#pageQuery.size", condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @GetMapping("/page")
+    @Cacheable(cacheNames = "bookCache",
+            key = "'bookList'+':'+#pageQuery.current+':'+#pageQuery.size",
+            /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
+            condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
+    @Operation(summary = "分页查询书籍信息")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询书籍信息 {}", pageQuery);
         PageResult<BookVO> pageResult = bookService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "新建书籍信息")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE /*指定multipart/form-data*/)
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
+    @Operation(summary = "新建书籍信息")
     public Result<Object> createBook(
-            @Parameter(description = "书籍封面图片文件", required = true)
             @RequestPart("file")
             @NotNull(message = MessageConstant.FIELD_NOT_BLANK)
+            @Parameter(description = "书籍封面图片文件", required = true)
             MultipartFile file,
             @RequestPart @Valid
-            CreateBookDTO createBookDTO
-    ) {
+            CreateBookDTO createBookDTO) {
         log.info("[log] 新建书籍信息 {}", createBookDTO);
         bookService.createBook(file, createBookDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
 
-    @Operation(summary = "更改书籍信息")
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE /*指定multipart/form-data*/)
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
+    @Operation(summary = "更改书籍信息")
     public Result<Object> updateBook(
-            @Parameter(description = "书籍封面图片文件")
             @RequestPart(value = "file", required = false)
+            @Parameter(description = "书籍封面图片文件")
             MultipartFile file,
             @RequestPart @Valid
-            UpdateBookDTO updateBookDTO
-    ) {
+            UpdateBookDTO updateBookDTO) {
         log.info("[log] 更改书籍信息 {}", updateBookDTO);
         bookService.updateBook(file, updateBookDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
 
-    @Operation(summary = "删除书籍信息")
-    @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @DeleteMapping
+    @CacheEvict(cacheNames = "bookCache", allEntries = true)
+    @Operation(summary = "删除书籍信息")
     public Result<Object> deleteBook(
-            @Parameter(description = "书籍ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "书籍ID", required = true)
+            String id) {
         log.info("[log] 删除书籍信息 id: {}", id);
         bookService.deleteBook(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 
-    @Operation(summary = "批量删除书籍信息")
-    @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @DeleteMapping("/batch")
+    @CacheEvict(cacheNames = "bookCache", allEntries = true)
+    @Operation(summary = "批量删除书籍信息")
     public Result<Object> batchDeleteBooks(
-            @Parameter(description = "书籍ID列表", required = true)
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            List<String> ids
-    ) {
+            @Parameter(description = "书籍ID列表", required = true)
+            List<String> ids) {
         log.info("[log] 批量删除书籍信息 ids: {}", ids);
         bookService.batchDeleteBooks(ids);
         return Result.success(MessageConstant.DELETE_SUCCESS);

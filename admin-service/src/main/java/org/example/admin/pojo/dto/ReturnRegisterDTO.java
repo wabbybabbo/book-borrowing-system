@@ -13,12 +13,12 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Schema(description = "用户归还借阅的书籍时传递的数据模型")
 public class ReturnRegisterDTO {
 
-    @Schema(description = "借阅记录ID", requiredMode = REQUIRED)
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+    @Schema(description = "借阅记录ID", requiredMode = REQUIRED)
     private String id;
 
-    @Schema(description = "国际标准书号", pattern = RegexpConstant.ISBN, requiredMode = REQUIRED, example = "9787115583864")
     @Pattern(regexp = RegexpConstant.ISBN, message = MessageConstant.INVALID_ISBN)
+    @Schema(description = "国际标准书号", pattern = RegexpConstant.ISBN, requiredMode = REQUIRED, example = "9787115583864")
     private String isbn;
 
 }

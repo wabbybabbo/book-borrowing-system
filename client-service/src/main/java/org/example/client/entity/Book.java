@@ -31,8 +31,8 @@ public class Book implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "书籍ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @Schema(description = "书籍ID")
     private String id;
 
     @Schema(description = "书籍类别ID")
@@ -59,12 +59,12 @@ public class Book implements Serializable {
     @Schema(description = "库存数量")
     private Integer stock;
 
-    @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "创建时间")
     private LocalDateTime createTime;
 
-    @Schema(description = "更新时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 
 

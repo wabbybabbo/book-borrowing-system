@@ -14,28 +14,28 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @Schema(description = "用户注册时传递的数据模型")
 public class UserRegisterDTO {
 
-    @Schema(description = "用户名", pattern = RegexpConstant.USER_NAME, requiredMode = REQUIRED, example = "guest")
     @Pattern(regexp = RegexpConstant.USER_NAME, message = MessageConstant.INVALID_USER_NAME)
+    @Schema(description = "用户名", pattern = RegexpConstant.USER_NAME, requiredMode = REQUIRED, example = "guest")
     private String name;
 
-    @Schema(description = "账号", pattern = RegexpConstant.ACCOUNT, requiredMode = REQUIRED, example = "guest")
     @Pattern(regexp = RegexpConstant.ACCOUNT, message = MessageConstant.INVALID_ACCOUNT)
+    @Schema(description = "账号", pattern = RegexpConstant.ACCOUNT, requiredMode = REQUIRED, example = "guest")
     private String account;
 
-    @Schema(description = "密码", pattern = RegexpConstant.PASSWORD, requiredMode = REQUIRED, example = "guest")
     @Pattern(regexp = RegexpConstant.PASSWORD, message = MessageConstant.INVALID_PASSWORD)
+    @Schema(description = "密码", pattern = RegexpConstant.PASSWORD, requiredMode = REQUIRED, example = "guest")
     private String password;
 
-    @Schema(description = "性别", pattern = RegexpConstant.GENDER, example = GenderConstant.MALE)
     @Pattern(regexp = RegexpConstant.GENDER, message = MessageConstant.INVALID_GENDER)
+    @Schema(description = "性别", pattern = RegexpConstant.GENDER, example = GenderConstant.MALE)
     private String gender;
 
-    @Schema(description = "电话号码", example = "12345678901")
     @Pattern(regexp = RegexpConstant.PHONE, message = MessageConstant.INVALID_PHONE)
+    @Schema(description = "电话号码", example = "12345678901")
     private String phone;
 
-    @Schema(description = "邮箱", example = "example@qq.com")
     @Email(regexp = RegexpConstant.EMAIL, message = MessageConstant.INVALID_EMAIL)
+    @Schema(description = "邮箱", example = "example@qq.com")
     private String email;
 
     @Schema(description = "联系地址", example = "广东省广州市海珠区")

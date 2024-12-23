@@ -38,20 +38,19 @@ public class UserController {
 
     private final IUserService userService;
 
-    @Operation(summary = "获取动态图形验证码")
     @GetMapping(value = "/captcha")
+    @Operation(summary = "获取动态图形验证码")
     public void getGifCaptcha(
             @Parameter(description = "时间戳", required = true)
             String timestamp,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         log.info("[log] 开始获取动态图形验证码");
         String code = userService.createGifCaptcha(timestamp, response);
         log.info("[log] 生成的验证码为：{}", code);
     }
 
-    @Operation(summary = "用户登录")
     @GetMapping("/login")
+    @Operation(summary = "用户登录")
     public Result<UserVO> login(@ParameterObject @Valid UserLoginDTO userLoginDTO) {
         log.info("[log] 用户登录 {}", userLoginDTO);
         String code = userService.getCodeCache(userLoginDTO.getTimestamp());
@@ -59,23 +58,22 @@ public class UserController {
         return Result.success(MessageConstant.LOGIN_SUCCESS, userVO);
     }
 
-    @Operation(summary = "用户注册")
     @PostMapping("/register")
+    @Operation(summary = "用户注册")
     public Result<Object> register(@RequestBody @Valid UserRegisterDTO userRegisterDTO /*@RequestBody用于接收请求体的内容(JSON)，并将其转换为Java对象绑定到方法的参数上。*/) {
         log.info("[log] 用户注册 {}", userRegisterDTO);
         userService.register(userRegisterDTO);
         return Result.success(MessageConstant.REGISTER_SUCCESS);
     }
 
-    @Operation(summary = "更改用户信息")
     @PutMapping
+    @Operation(summary = "更改用户信息")
     public Result<Object> updateUser(
             @RequestBody @Valid
             UpdateUserDTO updateUserDTO,
-            @Parameter(description = "用户ID", required = true)
             @RequestHeader(ClaimConstant.CLIENT_ID)
-            String id
-    ) {
+            @Parameter(description = "用户ID", required = true)
+            String id) {
         log.info("[log] 更改用户信息 {}", updateUserDTO);
         userService.updateUser(updateUserDTO, id);
         return Result.success(MessageConstant.UPDATE_SUCCESS);

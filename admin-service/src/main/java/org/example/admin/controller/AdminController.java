@@ -44,20 +44,19 @@ public class AdminController {
 
     private final IAdminService adminService;
 
-    @Operation(summary = "获取动态图形验证码")
     @GetMapping(value = "/captcha")
+    @Operation(summary = "获取动态图形验证码")
     public void getGifCaptcha(
             @Parameter(description = "时间戳", required = true)
             String timestamp,
-            HttpServletResponse response
-    ) {
+            HttpServletResponse response) {
         log.info("[log] 开始获取动态图形验证码");
         String code = adminService.createGifCaptcha(timestamp, response);
         log.info("[log] 生成的验证码为：{}", code);
     }
 
-    @Operation(summary = "管理员登录")
     @GetMapping("/login")
+    @Operation(summary = "管理员登录")
     public Result<AdminLoginVO> login(@ParameterObject @Valid AdminLoginDTO adminLoginDTO) {
         log.info("[log] 管理员登录 {}", adminLoginDTO);
         String code = adminService.getCodeCache(adminLoginDTO.getTimestamp());
@@ -65,91 +64,87 @@ public class AdminController {
         return Result.success(MessageConstant.LOGIN_SUCCESS, adminLoginVO);
     }
 
-    @Operation(summary = "分页查询管理员信息")
-    //只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存
-    @Cacheable(cacheNames = "adminCache", key = "'adminList'+':'+#pageQuery.current+':'+#pageQuery.size", condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @GetMapping("/page")
+    @Cacheable(cacheNames = "adminCache",
+            key = "'adminList'+':'+#pageQuery.current+':'+#pageQuery.size",
+            /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
+            condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
+    @Operation(summary = "分页查询管理员信息")
     public Result<PageResult<Admin>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询管理员信息 {}", pageQuery);
         PageResult<Admin> pageResult = adminService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
 
-    @Operation(summary = "新建管理员信息")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE /*指定multipart/form-data*/)
     @CacheEvict(cacheNames = "adminCache", allEntries = true)
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE/*指定multipart/form-data*/)
+    @Operation(summary = "新建管理员信息")
     public Result<Object> createAdmin(
-            @Parameter(description = "管理员头像图片文件")
             @RequestPart(value = "file", required = false)
+            @Parameter(description = "管理员头像图片文件")
             MultipartFile file,
             @RequestPart @Valid
-            CreateAdminDTO createAdminDTO
-    ) {
+            CreateAdminDTO createAdminDTO) {
         log.info("[log] 新建管理员信息 {}", createAdminDTO);
         adminService.createAdmin(file, createAdminDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
 
-    @Operation(summary = "更改管理员信息")
     @PutMapping
+    @Operation(summary = "更改管理员信息")
     public Result<Object> updateAdmin(
             @RequestBody @Valid
             UpdateAdminDTO updateAdminDTO,
-            @Parameter(description = "管理员ID", hidden = true)
             @RequestHeader(ClaimConstant.CLIENT_ID)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "管理员ID", hidden = true)
+            String id) {
         log.info("[log] 更改管理员信息 {}, id: {}", updateAdminDTO, id);
         adminService.updateAdmin(updateAdminDTO, id);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
 
-    @Operation(summary = "禁用管理员账号")
-    @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @PutMapping("/disable")
+    @CacheEvict(cacheNames = "adminCache", allEntries = true)
+    @Operation(summary = "禁用管理员账号")
     public Result<Object> disableAccount(
-            @Parameter(description = "管理员ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "管理员ID", required = true)
+            String id) {
         log.info("[log] 禁用管理员账号 id: {}", id);
         adminService.disableAccount(id);
         return Result.success(MessageConstant.DISABLE_SUCCESS);
     }
 
-    @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @PutMapping("/disable/batch")
+    @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @Operation(summary = "批量禁用管理员账号")
     public Result<Object> batchDisableAccount(
             @RequestBody @Valid
-            BatchDisableAccountDTO batchDisableAccountDTO
-    ) {
+            BatchDisableAccountDTO batchDisableAccountDTO) {
         log.info("[log] 批量禁用管理员账号 {}", batchDisableAccountDTO);
         adminService.batchDisableAccount(batchDisableAccountDTO.getIds());
         return Result.success(MessageConstant.DISABLE_SUCCESS);
     }
 
-    @Operation(summary = "解禁管理员账号")
-    @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @PutMapping("/enable")
+    @CacheEvict(cacheNames = "adminCache", allEntries = true)
+    @Operation(summary = "解禁管理员账号")
     public Result<Object> enableAccount(
-            @Parameter(description = "管理员ID", required = true)
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            String id
-    ) {
+            @Parameter(description = "管理员ID", required = true)
+            String id) {
         log.info("[log] 解禁管理员账号 id: {}", id);
         adminService.enableAccount(id);
         return Result.success(MessageConstant.ENABLE_SUCCESS);
     }
 
-    @Operation(summary = "批量解禁管理员账号")
-    @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @PutMapping("/enable/batch")
+    @CacheEvict(cacheNames = "adminCache", allEntries = true)
+    @Operation(summary = "批量解禁管理员账号")
     public Result<Object> batchEnableAccount(
             @RequestBody @Valid
-            BatchEnableAccountDTO batchEnableAccountDTO
-    ) {
+            BatchEnableAccountDTO batchEnableAccountDTO) {
         log.info("[log] 批量解禁管理员账号 {}", batchEnableAccountDTO);
         adminService.batchEnableAccount(batchEnableAccountDTO.getIds());
         return Result.success(MessageConstant.ENABLE_SUCCESS);

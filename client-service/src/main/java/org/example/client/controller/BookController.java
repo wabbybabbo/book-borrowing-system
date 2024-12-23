@@ -34,8 +34,8 @@ public class BookController {
 
     private final IBookService bookService;
 
-    @Operation(summary = "分页查询书籍信息")
     @GetMapping("/page")
+    @Operation(summary = "分页查询书籍信息")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询书籍信息 {}", pageQuery);
         PageResult<BookVO> pageResult = bookService.pageQuery(pageQuery);

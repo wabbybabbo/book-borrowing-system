@@ -34,8 +34,8 @@ public class BorrowStatisticController {
 
     private final IBorrowStatisticService borrowStatisticService;
 
-    @Operation(summary = "分页查询借阅数量统计数据")
     @GetMapping("/page")
+    @Operation(summary = "分页查询借阅数量统计数据")
     public Result<PageResult<BorrowStatistic>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询借阅数量统计数据 {}", pageQuery);
         PageResult<BorrowStatistic> pageResult = borrowStatisticService.pageQuery(pageQuery);

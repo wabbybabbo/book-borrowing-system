@@ -32,8 +32,8 @@ public class Borrow implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Schema(description = "借阅记录ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @Schema(description = "借阅记录ID")
     private String id;
 
     @Schema(description = "用户ID")
@@ -54,12 +54,12 @@ public class Borrow implements Serializable {
     @Schema(description = "预计归还日期")
     private LocalDate returnDate;
 
-    @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "创建时间")
     private LocalDateTime createTime;
 
-    @Schema(description = "更新时间 实际归还时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @Schema(description = "更新时间 实际归还时间")
     private LocalDateTime updateTime;
 
 }
