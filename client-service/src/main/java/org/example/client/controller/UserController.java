@@ -45,16 +45,14 @@ public class UserController {
             String timestamp,
             HttpServletResponse response) {
         log.info("[log] 开始获取动态图形验证码");
-        String code = userService.createGifCaptcha(timestamp, response);
-        log.info("[log] 生成的验证码为：{}", code);
+        userService.createGifCaptcha(timestamp, response);
     }
 
     @GetMapping("/login")
     @Operation(summary = "用户登录")
     public Result<UserVO> login(@ParameterObject @Valid UserLoginDTO userLoginDTO) {
         log.info("[log] 用户登录 {}", userLoginDTO);
-        String code = userService.getCodeCache(userLoginDTO.getTimestamp());
-        UserVO userVO = userService.login(userLoginDTO, code);
+        UserVO userVO = userService.login(userLoginDTO);
         return Result.success(MessageConstant.LOGIN_SUCCESS, userVO);
     }
 

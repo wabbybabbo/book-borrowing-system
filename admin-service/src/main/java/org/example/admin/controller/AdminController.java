@@ -51,16 +51,14 @@ public class AdminController {
             String timestamp,
             HttpServletResponse response) {
         log.info("[log] 开始获取动态图形验证码");
-        String code = adminService.createGifCaptcha(timestamp, response);
-        log.info("[log] 生成的验证码为：{}", code);
+        adminService.createGifCaptcha(timestamp, response);
     }
 
     @GetMapping("/login")
     @Operation(summary = "管理员登录")
     public Result<AdminLoginVO> login(@ParameterObject @Valid AdminLoginDTO adminLoginDTO) {
         log.info("[log] 管理员登录 {}", adminLoginDTO);
-        String code = adminService.getCodeCache(adminLoginDTO.getTimestamp());
-        AdminLoginVO adminLoginVO = adminService.login(adminLoginDTO, code);
+        AdminLoginVO adminLoginVO = adminService.login(adminLoginDTO);
         return Result.success(MessageConstant.LOGIN_SUCCESS, adminLoginVO);
     }
 

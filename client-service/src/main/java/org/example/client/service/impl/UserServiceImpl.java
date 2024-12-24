@@ -22,14 +22,14 @@ import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.ClaimConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.*;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -46,10 +46,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     private final UserMapper userMapper;
     private final CommonClient commonClient;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
-    @CachePut(cacheNames = "codeCache", key = "#timestamp") //在方法执行后生效，将方法的返回值放到缓存中
-    public String createGifCaptcha(String timestamp, HttpServletResponse response) {
+    public void createGifCaptcha(String timestamp, HttpServletResponse response) {
         // 定义动态图形验证码的长、宽
         GifCaptcha gifCaptcha = CaptchaUtil.createGifCaptcha(120, 40);
         // 自定义验证码内容为1位数的四则运算方式
@@ -67,19 +67,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         response.setHeader(HttpHeaders.CACHE_CONTROL, "No-cache");
         // 告诉客户端（例如浏览器）响应包含了GIF图像数据，浏览器会根据这个信息来处理和显示数据
         response.setContentType("image/gif");
-        // 将验证码放到缓存中
-        return gifCaptcha.getCode();
+        // 将验证码放到缓存中，并设置过期时间为5分钟
+        redisTemplate.opsForValue().set("codeCache:" + timestamp, gifCaptcha.getCode(), 5, TimeUnit.MINUTES);
     }
 
     @Override
-    @Cacheable(cacheNames = "codeCache", key = "#timestamp")
-    public String getCodeCache(String timestamp) {
-        log.info("获取redis缓存中的验证码失败 timestamp: {}, msg: {}", timestamp, MessageConstant.CAPTCHA_NOT_FOUND);
-        throw new NotFoundException(MessageConstant.CAPTCHA_NOT_FOUND);
-    }
-
-    @Override
-    public UserVO login(UserLoginDTO userLoginDTO, String code) {
+    public UserVO login(UserLoginDTO userLoginDTO) {
+        // 根据时间戳获取redis缓存中的验证码
+        String timestamp = userLoginDTO.getTimestamp();
+        String code = redisTemplate.opsForValue().get("codeCache:" + timestamp);
+        if (Objects.isNull(code)) {
+            log.info("获取redis缓存中的验证码失败 timestamp: {}, msg: {}", timestamp, MessageConstant.CAPTCHA_NOT_FOUND);
+            throw new NotFoundException(MessageConstant.CAPTCHA_NOT_FOUND);
+        }
         // 验证码校验
         CodeGenerator mathGenerator = new MathGenerator(1);
         String userInputCode = userLoginDTO.getCode();
@@ -161,7 +161,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public void updateUser(UpdateUserDTO updateUserDTO, String id) {
         // 检查Bean对象中字段是否全空
-        if(BeanUtil.isEmpty(updateUserDTO)){
+        if (BeanUtil.isEmpty(updateUserDTO)) {
             throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);
         }
         // 检查参数值在数据库中的唯一性
