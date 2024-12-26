@@ -102,13 +102,13 @@ public class BookController {
     @DeleteMapping("/batch")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @Operation(summary = "批量删除书籍信息")
-    public Result<Object> batchDeleteBooks(
+    public Result<Object> deleteBatchBooks(
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
             @Parameter(description = "书籍ID列表", required = true)
             List<String> ids) {
         log.info("[log] 批量删除书籍信息 ids: {}", ids);
-        bookService.batchDeleteBooks(ids);
+        bookService.deleteBatchBooks(ids);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

@@ -4,7 +4,10 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.GifCaptcha;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.captcha.generator.MathGenerator;
+import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -47,13 +50,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final UserMapper userMapper;
     private final CommonClient commonClient;
     private final RedisTemplate<String, String> redisTemplate;
+    private final CodeGenerator registerCodeGenerator = new RandomGenerator(RandomUtil.BASE_NUMBER,6);
+    private final CodeGenerator loginCodeGenerator = new MathGenerator(1);
 
     @Override
     public void createGifCaptcha(String timestamp, HttpServletResponse response) {
         // 定义动态图形验证码的长、宽
         GifCaptcha gifCaptcha = CaptchaUtil.createGifCaptcha(120, 40);
         // 自定义验证码内容为1位数的四则运算方式
-        gifCaptcha.setGenerator(new MathGenerator(1));
+        gifCaptcha.setGenerator(loginCodeGenerator);
         try {
             // 写出到浏览器（Servlet输出流）
             gifCaptcha.write(response.getOutputStream());
@@ -77,15 +82,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String timestamp = userLoginDTO.getTimestamp();
         String code = redisTemplate.opsForValue().get("codeCache:" + timestamp);
         if (Objects.isNull(code)) {
-            log.info("获取redis缓存中的验证码失败 timestamp: {}, msg: {}", timestamp, MessageConstant.CAPTCHA_NOT_FOUND);
-            throw new NotFoundException(MessageConstant.CAPTCHA_NOT_FOUND);
+            log.info("获取redis缓存中的验证码失败 timestamp: {}, msg: {}", timestamp, MessageConstant.CODE_NOT_FOUND);
+            throw new NotFoundException(MessageConstant.CODE_NOT_FOUND);
         }
         // 验证码校验
-        CodeGenerator mathGenerator = new MathGenerator(1);
         String userInputCode = userLoginDTO.getCode();
-        if (!mathGenerator.verify(code, userInputCode)) {
-            log.info("验证码校验不通过 code: {}, userInputCode: {}, msg: {}", code, userInputCode, MessageConstant.CAPTCHA_ERROR);
-            throw new CheckException(MessageConstant.CAPTCHA_ERROR);
+        if (!loginCodeGenerator.verify(code, userInputCode)) {
+            log.info("验证码校验不通过 code: {}, userInputCode: {}, msg: {}", code, userInputCode, MessageConstant.CODE_ERROR);
+            throw new CheckException(MessageConstant.CODE_ERROR);
         }
         // 查询账号是否存在
         String account = userLoginDTO.getAccount();
@@ -124,7 +128,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public void sendCaptchaToEmail(String email, Long timeout) {
+        // 查询该邮箱是否已被使用
+        QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
+                .eq("email", email);
+        if (userMapper.exists(queryWrapper)) {
+            throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
+        }
+
+        String code = registerCodeGenerator.generate();
+        String content = "您正在注册账号，验证码是：" + code + "（请勿泄露），此验证码" + timeout + "分钟内有效。如非本人操作，请忽略。";
+        // 将验证码存到redis缓存中，并设置过期时间
+        redisTemplate.opsForValue().set("codeCache:" + email, code, timeout, TimeUnit.MINUTES);
+        // 发送验证码到用户邮箱
+        MailUtil.send(email, "【书店借阅平台】邮箱验证码", content, false);
+    }
+
+    @Override
     public void register(UserRegisterDTO userRegisterDTO) {
+        // 根据邮箱地址获取redis缓存中的验证码
+        String email = userRegisterDTO.getEmail();
+        String code = redisTemplate.opsForValue().get("codeCache:" + email);
+        if (Objects.isNull(code)) {
+            log.info("获取redis缓存中的验证码失败 email: {}, msg: {}", email, MessageConstant.CODE_NOT_FOUND);
+            throw new NotFoundException(MessageConstant.CODE_NOT_FOUND);
+        }
+        // 验证码校验
+        String userInputCode = userRegisterDTO.getCode();
+        if (!registerCodeGenerator.verify(code, userInputCode)) {
+            log.info("验证码校验不通过 code: {}, userInputCode: {}, msg: {}", code, userInputCode, MessageConstant.CODE_ERROR);
+            throw new CheckException(MessageConstant.CODE_ERROR);
+        }
         // 查询账号是否已存在
         String account = userRegisterDTO.getAccount();
         QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
@@ -132,7 +166,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (userMapper.exists(queryWrapper1)) {
             throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
-        // 检查参数值在数据库中的唯一性
+
         String phone = userRegisterDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
@@ -142,15 +176,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
         }
-        String email = userRegisterDTO.getEmail();
-        if (Objects.nonNull(email)) {
-            // 查询电子邮箱是否已存在
-            QueryWrapper<User> queryWrapper3 = new QueryWrapper<User>()
-                    .eq("email", email);
-            if (userMapper.exists(queryWrapper3)) {
-                throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
-            }
-        }
+
         // 构建用户对象
         User user = new User();
         BeanUtil.copyProperties(userRegisterDTO, user);
@@ -164,7 +190,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (BeanUtil.isEmpty(updateUserDTO)) {
             throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);
         }
-        // 检查参数值在数据库中的唯一性
+
         String account = updateUserDTO.getAccount();
         if (Objects.nonNull(account)) {
             // 检查账号是否已存在

@@ -11,14 +11,14 @@
     <description>管理端相关服务</description>
 
     <dependencies>
-        <!--包含SpringMVC、validation、swagger3、hutool、七牛云对象存储-->
+        <!--包含SpringMVC、validation、swagger3、hutool-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!--包含OpenFeign、loadbalancer-->
+        <!--包含OpenFeign、loadbalancer 负载均衡-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>common-api</artifactId>

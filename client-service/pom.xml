@@ -11,14 +11,14 @@
     <description>客户端相关服务</description>
 
     <dependencies>
-        <!--包含SpringMVC、validation、swagger3、hutool、七牛云对象存储-->
+        <!--包含SpringMVC、validation、swagger3、hutool-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!--包含OpenFeign、loadbalancer-->
+        <!--包含OpenFeign、loadbalancer 负载均衡-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>common-api</artifactId>
@@ -81,6 +81,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!--发送邮件 使用hutool的MailUtil时需要的第三方依赖-->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
         </dependency>
     </dependencies>
 

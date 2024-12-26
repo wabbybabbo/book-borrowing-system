@@ -150,7 +150,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     }
 
     @Override
-    public void batchDeleteBooks(List<String> ids) {
+    public void deleteBatchBooks(List<String> ids) {
         int updates = bookMapper.deleteBatchIds(ids);
         if (updates == 0) {
             log.error("[log] 批量删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);

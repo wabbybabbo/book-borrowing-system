@@ -98,13 +98,13 @@ public class CategoryController {
     @DeleteMapping("/batch")
     @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @Operation(summary = "批量删除书籍类别")
-    public Result<Object> batchDeleteCategories(
+    public Result<Object> deleteBatchCategories(
             @RequestBody
             @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
             @Parameter(description = "书籍类别ID列表", required = true)
             List<String> ids) {
         log.info("[log] 批量删除书籍类别 ids: {}", ids);
-        categoryService.batchDeleteCategories(ids);
+        categoryService.deleteBatchCategories(ids);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

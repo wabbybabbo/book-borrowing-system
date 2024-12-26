@@ -44,7 +44,7 @@ public class AdminController {
 
     private final IAdminService adminService;
 
-    @GetMapping(value = "/captcha")
+    @GetMapping(value = "/login/captcha")
     @Operation(summary = "获取动态图形验证码")
     public void getGifCaptcha(
             @Parameter(description = "时间戳", required = true)

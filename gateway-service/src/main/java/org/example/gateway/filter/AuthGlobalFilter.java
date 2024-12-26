@@ -40,6 +40,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         log.info("[log] 接收到的请求路径 requestPath: {}", requestPath);
         for (String pathPattern : authProperties.getExcludePaths()) {
             if (antPathMatcher.match(pathPattern, requestPath)) {
+                log.info("[log] 放行该请求路径 requestPath: {}", requestPath);
                 return chain.filter(exchange); //放行
             }
         }

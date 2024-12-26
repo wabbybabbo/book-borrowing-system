@@ -33,6 +33,7 @@
         <qiniu-sdk-oss.version>7.7.0</qiniu-sdk-oss.version>
         <poi.version>4.1.2</poi.version>
         <hutool.version>5.8.34</hutool.version>
+        <javax.mail.version>1.6.2</javax.mail.version>
     </properties>
 
     <dependencyManagement>
@@ -116,6 +117,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <!--发送邮件 使用hutool的MailUtil时需要的第三方依赖-->
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>${javax.mail.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

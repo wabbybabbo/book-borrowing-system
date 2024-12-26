@@ -12,7 +12,7 @@
     <description>微服务网关</description>
 
     <dependencies>
-        <!--包含SpringMVC、validation、swagger3、hutool、七牛云对象存储-->
+        <!--包含SpringMVC、validation、swagger3、hutool-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>common</artifactId>
@@ -29,17 +29,6 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-validation</artifactId>
                 </exclusion>
-
-                <!--七牛云对象存储-->
-                <exclusion>
-                    <groupId>com.qiniu</groupId>
-                    <artifactId>qiniu-java-sdk</artifactId>
-                </exclusion>
-                <!--gson-->
-                <exclusion>
-                    <groupId>com.google.code.gson</groupId>
-                    <artifactId>gson</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
@@ -54,7 +43,7 @@
             <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
         </dependency>
 
-        <!--负载均衡-->
+        <!--loadbalancer 负载均衡-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-loadbalancer</artifactId>
@@ -74,12 +63,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-
-        <!--hutool-->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
         </dependency>
 
     </dependencies>

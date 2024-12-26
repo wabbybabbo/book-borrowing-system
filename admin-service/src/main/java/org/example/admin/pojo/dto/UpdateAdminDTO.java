@@ -36,7 +36,7 @@ public class UpdateAdminDTO {
     private String phone;
 
     @Email(regexp = RegexpConstant.EMAIL, message = MessageConstant.INVALID_EMAIL)
-    @Schema(description = "邮箱", example = "example@qq.com")
+    @Schema(description = "邮箱", pattern = RegexpConstant.EMAIL, example = "example@qq.com")
     private String email;
 
     @Schema(description = "联系地址", example = "广东省广州市海珠区")

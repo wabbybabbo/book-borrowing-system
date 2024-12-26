@@ -55,13 +55,14 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private final CommonClient commonClient;
     private final AdminMapper adminMapper;
     private final RedisTemplate<String, String> redisTemplate;
+    private final CodeGenerator loginCodeGenerator = new MathGenerator(1);
 
     @Override
     public void createGifCaptcha(String timestamp, HttpServletResponse response) {
         // 定义动态图形验证码的长、宽
         GifCaptcha gifCaptcha = CaptchaUtil.createGifCaptcha(120, 40);
         // 自定义验证码内容为1位数的四则运算方式
-        gifCaptcha.setGenerator(new MathGenerator(1));
+        gifCaptcha.setGenerator(loginCodeGenerator);
         try {
             // 写出到浏览器（Servlet输出流）
             gifCaptcha.write(response.getOutputStream());
@@ -85,15 +86,14 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         String timestamp = adminLoginDTO.getTimestamp();
         String code = redisTemplate.opsForValue().get("codeCache:" + timestamp);
         if (Objects.isNull(code)) {
-            log.info("获取redis缓存中的验证码失败 timestamp: {}, msg: {}", timestamp, MessageConstant.CAPTCHA_NOT_FOUND);
-            throw new NotFoundException(MessageConstant.CAPTCHA_NOT_FOUND);
+            log.info("获取redis缓存中的验证码失败 timestamp: {}, msg: {}", timestamp, MessageConstant.CODE_NOT_FOUND);
+            throw new NotFoundException(MessageConstant.CODE_NOT_FOUND);
         }
         // 验证码校验
-        CodeGenerator mathGenerator = new MathGenerator(1);
         String adminInputCode = adminLoginDTO.getCode();
-        if (!mathGenerator.verify(code, adminInputCode)) {
-            log.info("验证码校验不通过 code: {}, adminInputCode: {}, msg: {}", code, adminInputCode, MessageConstant.CAPTCHA_ERROR);
-            throw new CheckException(MessageConstant.CAPTCHA_ERROR);
+        if (!loginCodeGenerator.verify(code, adminInputCode)) {
+            log.info("验证码校验不通过 code: {}, adminInputCode: {}, msg: {}", code, adminInputCode, MessageConstant.CODE_ERROR);
+            throw new CheckException(MessageConstant.CODE_ERROR);
         }
         // 查询账号是否存在
         String account = adminLoginDTO.getAccount();

@@ -124,7 +124,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public void batchDeleteCategories(List<String> ids) {
+    public void deleteBatchCategories(List<String> ids) {
         // 批量删除书籍类别
         try {
             categoryMapper.deleteBatchIds(ids);
