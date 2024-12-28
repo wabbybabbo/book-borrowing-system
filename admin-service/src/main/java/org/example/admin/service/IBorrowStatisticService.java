@@ -18,8 +18,8 @@ public interface IBorrowStatisticService extends IService<BorrowStatistic> {
     /**
      * 分页查询借阅数量统计数据
      *
-     * @param pageQuery 分页查询时传递的数据模型
-     * @return 借阅数量统计数据列表
+     * @param pageQuery {@link PageQuery}
+     * @return {@link PageResult<BorrowStatistic>}
      */
     PageResult<BorrowStatistic> pageQuery(PageQuery pageQuery);
 

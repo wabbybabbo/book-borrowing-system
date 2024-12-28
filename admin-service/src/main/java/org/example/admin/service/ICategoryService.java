@@ -22,21 +22,21 @@ public interface ICategoryService extends IService<Category> {
     /**
      * 新建书籍类别
      *
-     * @param createCategoryDTO 新建书籍类别时传递的数据模型
+     * @param createCategoryDTO {@link CreateCategoryDTO}
      */
     void createCategory(CreateCategoryDTO createCategoryDTO);
 
     /**
      * 查询所有书籍类别
      *
-     * @return 书籍类别列表
+     * @return {@link List<CategoryVO>}
      */
     List<CategoryVO> getCategories();
 
     /**
      * 更改书籍类别信息
      *
-     * @param updateCategoryDTO 更改书籍类别信息时传递的数据模型
+     * @param updateCategoryDTO {@link UpdateCategoryDTO}
      */
     void updateCategory(UpdateCategoryDTO updateCategoryDTO);
 
@@ -57,8 +57,8 @@ public interface ICategoryService extends IService<Category> {
     /**
      * 分页查询书籍类别
      *
-     * @param pageQuery 分页查询时传递的数据模型
-     * @return 书籍类别列表
+     * @param pageQuery {@link PageQuery}
+     * @return {@link PageResult<Category>}
      */
     PageResult<Category> pageQuery(PageQuery pageQuery);
 

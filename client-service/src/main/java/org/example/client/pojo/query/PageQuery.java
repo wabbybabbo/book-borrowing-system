@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 分页查询时传递的数据模型
+ */
 @Data
 @Schema(description = "分页查询时传递的数据模型")
 public class PageQuery {

@@ -5,7 +5,10 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-
+/**
+ * 响应结果封装类
+ * @param <T> 响应数据
+ */
 @Data
 @Schema(description = "响应结果封装类")
 public class Result<T> implements Serializable {

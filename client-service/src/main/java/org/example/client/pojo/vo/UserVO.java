@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * 用户登录时响应的数据模型
+ */
 @Data
 @Schema(description = "用户登录时响应的数据模型")
 public class UserVO {

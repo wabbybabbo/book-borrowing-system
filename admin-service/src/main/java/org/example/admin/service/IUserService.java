@@ -22,8 +22,8 @@ public interface IUserService extends IService<User> {
     /**
      * 分页查询用户信息
      *
-     * @param pageQuery 分页查询时传递的数据模型
-     * @return 用户信息列表
+     * @param pageQuery {@link PageQuery}
+     * @return {@link PageResult<User>}
      */
     PageResult<User> pageQuery(PageQuery pageQuery);
 
@@ -31,7 +31,7 @@ public interface IUserService extends IService<User> {
      * 新建用户信息
      *
      * @param file          用户头像图片文件
-     * @param createUserDTO 新建用户信息时传递的数据模型
+     * @param createUserDTO {@link CreateUserDTO}
      */
     void createUser(MultipartFile file, CreateUserDTO createUserDTO);
 

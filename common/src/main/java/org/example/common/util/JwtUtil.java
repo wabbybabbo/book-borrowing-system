@@ -13,6 +13,9 @@ import org.example.common.constant.ClaimConstant;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * JWT工具类
+ */
 @Slf4j
 @Data
 @Builder

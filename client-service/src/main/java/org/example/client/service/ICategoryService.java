@@ -19,7 +19,7 @@ public interface ICategoryService extends IService<Category> {
     /**
      * 查询所有书籍类别
      *
-     * @return 书籍类别列表
+     * @return {@link List<CategoryVO>}
      */
     List<CategoryVO> getCategories();
 

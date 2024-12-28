@@ -14,7 +14,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-
+/**
+ * 七牛云对象存储工具类
+ */
 @Slf4j
 @Data
 @Builder

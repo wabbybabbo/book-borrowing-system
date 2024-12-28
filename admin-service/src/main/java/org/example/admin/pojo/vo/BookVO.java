@@ -7,6 +7,9 @@ import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * 查询书籍信息时响应的数据模型
+ */
 @Data
 @Schema(description = "查询书籍信息时响应的数据模型")
 public class BookVO implements Serializable {

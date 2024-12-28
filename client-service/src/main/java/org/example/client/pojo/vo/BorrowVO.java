@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * 查询借阅书籍时响应的数据模型
+ */
 @Data
 @Schema(description = "查询借阅书籍时响应的数据模型")
 public class BorrowVO implements Serializable {

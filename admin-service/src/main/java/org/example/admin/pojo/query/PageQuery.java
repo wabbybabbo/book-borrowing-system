@@ -9,6 +9,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 分页查询时传递的数据模型
+ */
 @Data
 @Schema(description = "分页查询时传递的数据模型")
 public class PageQuery {

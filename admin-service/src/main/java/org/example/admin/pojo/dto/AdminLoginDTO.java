@@ -11,6 +11,9 @@ import org.example.common.constant.RegexpConstant;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+/**
+ * 管理员登录时传递的数据模型
+ */
 @Data
 @Schema(description = "管理员登录时传递的数据模型")
 public class AdminLoginDTO {

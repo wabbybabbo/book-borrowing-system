@@ -9,6 +9,9 @@ import java.util.List;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+/**
+ * 批量禁用管理员账号时传递的数据模型
+ */
 @Data
 @Schema(description = "批量禁用管理员账号时传递的数据模型")
 public class BatchDisableAccountDTO {

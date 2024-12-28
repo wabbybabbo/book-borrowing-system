@@ -1,9 +1,9 @@
 package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.admin.entity.Book;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
-import org.example.admin.entity.Book;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.BookVO;
 import org.example.common.result.PageResult;
@@ -24,8 +24,8 @@ public interface IBookService extends IService<Book> {
     /**
      * 分页查询书籍信息
      *
-     * @param pageQuery 分页查询时传递的数据模型
-     * @return 书籍信息列表
+     * @param pageQuery {@link PageQuery}
+     * @return {@link PageResult<BookVO>}
      */
     PageResult<BookVO> pageQuery(PageQuery pageQuery);
 
@@ -33,7 +33,7 @@ public interface IBookService extends IService<Book> {
      * 新建书籍信息
      *
      * @param file          书籍封面图片文件
-     * @param createBookDTO 新建书籍信息时传递的数据模型
+     * @param createBookDTO {@link CreateBookDTO}
      */
     void createBook(MultipartFile file, CreateBookDTO createBookDTO);
 
@@ -41,7 +41,7 @@ public interface IBookService extends IService<Book> {
      * 更改书籍信息
      *
      * @param file          书籍封面图片文件
-     * @param updateBookDTO 更改书籍信息时传递的数据模型
+     * @param updateBookDTO {@link UpdateBookDTO}
      */
     void updateBook(MultipartFile file, UpdateBookDTO updateBookDTO);
 

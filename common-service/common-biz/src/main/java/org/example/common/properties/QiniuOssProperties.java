@@ -4,6 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * 七牛云对象存储的配置属性类
+ */
 @Data
 @Component
 @ConfigurationProperties(prefix = "oss.qiniu")

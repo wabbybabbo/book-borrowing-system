@@ -7,6 +7,10 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * 分页查询结果封装类
+ * @param <T> 查询结果数据集合的元素
+ */
 @Data
 @Builder
 @Schema(description = "分页查询结果封装类")

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.client.pojo.dto.CreateBorrowDTO;
@@ -41,13 +42,14 @@ public class BorrowController {
     @GetMapping("/page")
     @Operation(summary = "分页查询用户的借阅记录")
     public Result<PageResult<BorrowVO>> pageQuery(
-            @ParameterObject
-            PageQuery pageQuery,
             @RequestHeader(ClaimConstant.CLIENT_ID)
-            @Parameter(description = "用户ID")
-            String id) {
-        log.info("[log] 分页查询用户的借阅记录 {}, id: {}", pageQuery, id);
-        PageResult<BorrowVO> pageResult = borrowService.pageQuery(pageQuery, id);
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id,
+            @ParameterObject
+            PageQuery pageQuery) {
+        log.info("[log] 分页查询用户的借阅记录 id: {}, {}", id, pageQuery);
+        PageResult<BorrowVO> pageResult = borrowService.pageQuery(id, pageQuery);
         return Result.success(pageResult);
     }
 
@@ -62,13 +64,14 @@ public class BorrowController {
     @PostMapping
     @Operation(summary = "新增用户的借阅预约记录")
     public Result<Object> createBorrow(
-            @RequestBody @Valid
-            CreateBorrowDTO createBorrowDTO,
             @RequestHeader(ClaimConstant.CLIENT_ID)
-            @Parameter(description = "用户ID", required = true)
-            String id) {
-        log.info("[log] 新增用户的借阅预约记录 {}, id: {}", createBorrowDTO, id);
-        borrowService.createBorrow(createBorrowDTO, id);
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id,
+            @RequestBody @Valid
+            CreateBorrowDTO createBorrowDTO) {
+        log.info("[log] 新增用户的借阅预约记录 id: {}, {}", id, createBorrowDTO);
+        borrowService.createBorrow(id, createBorrowDTO);
         return Result.success(MessageConstant.BORROW_SUCCESS);
     }
 

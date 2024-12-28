@@ -21,8 +21,8 @@ public interface IBorrowService extends IService<Borrow> {
     /**
      * 分页查询书籍信息
      *
-     * @param pageQuery 分页查询时传递的数据模型
-     * @return 书籍信息列表
+     * @param pageQuery {@link PageQuery}
+     * @return {@link PageResult<Borrow>}
      */
     PageResult<Borrow> pageQuery(PageQuery pageQuery);
 
@@ -30,14 +30,14 @@ public interface IBorrowService extends IService<Borrow> {
      * 查询用户的借阅记录
      *
      * @param id 用户ID
-     * @return 用户的借阅记录列表
+     * @return {@link List<Borrow>}
      */
     List<Borrow> getBorrows(String id);
 
     /**
      * 归还登记
      *
-     * @param returnRegisterDTO 用户归还借阅的书籍时传递的数据模型
+     * @param returnRegisterDTO {@link ReturnRegisterDTO}
      */
     void returnRegister(ReturnRegisterDTO returnRegisterDTO);
 

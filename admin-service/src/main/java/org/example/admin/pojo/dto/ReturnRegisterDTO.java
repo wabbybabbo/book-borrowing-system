@@ -9,6 +9,9 @@ import org.example.common.constant.RegexpConstant;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+/**
+ * 用户归还借阅的书籍时传递的数据模型
+ */
 @Data
 @Schema(description = "用户归还借阅的书籍时传递的数据模型")
 public class ReturnRegisterDTO {

@@ -185,7 +185,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void updateUser(UpdateUserDTO updateUserDTO, String id) {
+    public void updateUser(String id, UpdateUserDTO updateUserDTO) {
         // 检查Bean对象中字段是否全空
         if (BeanUtil.isEmpty(updateUserDTO)) {
             throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);

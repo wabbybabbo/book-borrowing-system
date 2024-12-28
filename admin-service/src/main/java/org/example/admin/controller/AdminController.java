@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Admin;
@@ -91,14 +92,14 @@ public class AdminController {
     @PutMapping
     @Operation(summary = "更改管理员信息")
     public Result<Object> updateAdmin(
-            @RequestBody @Valid
-            UpdateAdminDTO updateAdminDTO,
             @RequestHeader(ClaimConstant.CLIENT_ID)
-            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
-            @Parameter(description = "管理员ID", hidden = true)
-            String id) {
-        log.info("[log] 更改管理员信息 {}, id: {}", updateAdminDTO, id);
-        adminService.updateAdmin(updateAdminDTO, id);
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "管理员ID", required = true, hidden = true)
+            String id,
+            @RequestBody @Valid
+            UpdateAdminDTO updateAdminDTO) {
+        log.info("[log] 更改管理员信息 id: {}, {}", id, updateAdminDTO);
+        adminService.updateAdmin(id, updateAdminDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
 

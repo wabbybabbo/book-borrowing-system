@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,13 +84,14 @@ public class UserController {
     @PutMapping
     @Operation(summary = "更改用户信息")
     public Result<Object> updateUser(
-            @RequestBody @Valid
-            UpdateUserDTO updateUserDTO,
             @RequestHeader(ClaimConstant.CLIENT_ID)
-            @Parameter(description = "用户ID", required = true)
-            String id) {
-        log.info("[log] 更改用户信息 {}", updateUserDTO);
-        userService.updateUser(updateUserDTO, id);
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id,
+            @RequestBody @Valid
+            UpdateUserDTO updateUserDTO) {
+        log.info("[log] 更改用户信息 id: {}, {}", id, updateUserDTO);
+        userService.updateUser(id, updateUserDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
 

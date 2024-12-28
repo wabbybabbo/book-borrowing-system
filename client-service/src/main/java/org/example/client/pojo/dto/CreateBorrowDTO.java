@@ -12,6 +12,9 @@ import java.time.LocalDate;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+/**
+ * 新增书籍借阅记录时传递的数据模型
+ */
 @Data
 @Schema(description = "新增书籍借阅记录时传递的数据模型")
 public class CreateBorrowDTO {

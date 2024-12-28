@@ -48,7 +48,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     private final BookMapper bookMapper;
 
     @Override
-    public PageResult<BorrowVO> pageQuery(PageQuery pageQuery, String id) {
+    public PageResult<BorrowVO> pageQuery(String id, PageQuery pageQuery) {
         // 构建分页查询条件
         Page<Borrow> page = pageQuery.toMpPage();
         QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
@@ -118,7 +118,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
 
     @Override
     @Transactional
-    public void createBorrow(CreateBorrowDTO createBorrowDTO, String id) {
+    public void createBorrow(String id, CreateBorrowDTO createBorrowDTO) {
         // 检查参数是否合法
         LocalDate reserveDate = createBorrowDTO.getReserveDate();
         LocalDate returnDate = createBorrowDTO.getReturnDate();

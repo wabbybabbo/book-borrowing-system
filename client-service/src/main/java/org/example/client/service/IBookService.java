@@ -19,7 +19,7 @@ public interface IBookService extends IService<Book> {
     /**
      * 分页查询书籍信息
      *
-     * @param pageQuery 分页查询时传递的数据模型
+     * @param pageQuery {@link PageQuery}
      * @return 书籍信息列表
      */
     PageResult<BookVO> pageQuery(PageQuery pageQuery);

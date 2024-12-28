@@ -34,16 +34,16 @@ public interface IAdminService extends IService<Admin> {
     /**
      * 管理员登录
      *
-     * @param adminLoginDTO 管理员登录时传递的数据模型
-     * @return 登录的管理员信息
+     * @param adminLoginDTO {@link AdminLoginDTO}
+     * @return {@link AdminLoginVO}
      */
     AdminLoginVO login(AdminLoginDTO adminLoginDTO);
 
     /**
      * 分页查询管理员信息
      *
-     * @param pageQuery 分页查询时传递的数据模型
-     * @return 管理员信息列表
+     * @param pageQuery {@link PageQuery}
+     * @return {@link PageResult<Admin>}
      */
     PageResult<Admin> pageQuery(PageQuery pageQuery);
 
@@ -51,17 +51,17 @@ public interface IAdminService extends IService<Admin> {
      * 新建管理员信息
      *
      * @param file           管理员头像图片文件
-     * @param createAdminDTO 新建管理员信息时传递的数据模型
+     * @param createAdminDTO {@link CreateAdminDTO}
      */
     void createAdmin(MultipartFile file, CreateAdminDTO createAdminDTO);
 
     /**
      * 更改管理员信息
      *
-     * @param updateAdminDTO {@link UpdateAdminDTO}
      * @param id             管理员ID
+     * @param updateAdminDTO {@link UpdateAdminDTO}
      */
-    void updateAdmin(UpdateAdminDTO updateAdminDTO, String id);
+    void updateAdmin(String id, UpdateAdminDTO updateAdminDTO);
 
     /**
      * 禁用管理员账号

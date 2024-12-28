@@ -29,7 +29,7 @@ public interface IUserService extends IService<User> {
     /**
      * 用户注册
      *
-     * @param userRegisterDTO 用户注册时传递的数据模型
+     * @param userRegisterDTO {@link UserRegisterDTO}
      */
     void register(UserRegisterDTO userRegisterDTO);
 
@@ -44,17 +44,17 @@ public interface IUserService extends IService<User> {
     /**
      * 用户登录
      *
-     * @param userLoginDTO 用户登录时传递的数据模型
-     * @return 登录用户信息
+     * @param userLoginDTO {@link UserLoginDTO}
+     * @return {@link UserVO}
      */
     UserVO login(UserLoginDTO userLoginDTO);
 
     /**
      * 更改用户信息
      *
-     * @param updateUserDTO 更改用户信息时传递的数据模型
      * @param id            用户ID
+     * @param updateUserDTO {@link UpdateUserDTO}
      */
-    void updateUser(UpdateUserDTO updateUserDTO, String id);
+    void updateUser(String id, UpdateUserDTO updateUserDTO);
 
 }

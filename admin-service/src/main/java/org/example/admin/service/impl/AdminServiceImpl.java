@@ -208,7 +208,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public void updateAdmin(UpdateAdminDTO updateAdminDTO, String id) {
+    public void updateAdmin(String id, UpdateAdminDTO updateAdminDTO) {
         // 检查Bean对象中字段是否全空
         if (BeanUtil.isEmpty(updateAdminDTO)) {
             throw new MissingValueException(MessageConstant.MISSING_UPDATE_VALUE);

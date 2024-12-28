@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 查询书籍类别时响应的数据模型
+ */
 @Data
 @Schema(description = "查询书籍类别时响应的数据模型")
 public class CategoryVO implements Serializable {

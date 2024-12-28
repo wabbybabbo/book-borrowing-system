@@ -11,6 +11,9 @@ import org.example.common.constant.RegexpConstant;
 
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
+/**
+ * 用户注册时传递的数据模型
+ */
 @Data
 @Schema(description = "用户注册时传递的数据模型")
 public class UserRegisterDTO {
