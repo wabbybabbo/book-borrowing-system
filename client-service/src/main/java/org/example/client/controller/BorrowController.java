@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.client.pojo.dto.BatchDeleteBorrowsDTO;
 import org.example.client.pojo.dto.CreateBorrowDTO;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BorrowVO;
@@ -78,6 +79,7 @@ public class BorrowController {
     @PutMapping
     @Operation(summary = "取消书籍借阅预约")
     public Result<Object> cancelBorrow(
+            @RequestParam
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "借阅记录ID", required = true)
             String id) {
@@ -89,11 +91,22 @@ public class BorrowController {
     @DeleteMapping
     @Operation(summary = "删除书籍借阅记录")
     public Result<Object> deleteBorrow(
+            @RequestParam
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "借阅记录ID", required = true)
             String id) {
         log.info("[log] 删除书籍借阅记录 id: {}", id);
         borrowService.deleteBorrow(id);
+        return Result.success(MessageConstant.DELETE_SUCCESS);
+    }
+
+    @DeleteMapping("/batch")
+    @Operation(summary = "批量删除书籍借阅记录")
+    public Result<Object> batchDeleteBorrows(
+            @RequestBody @Valid
+            BatchDeleteBorrowsDTO batchDeleteBorrowsDTO) {
+        log.info("[log] 批量删除书籍借阅记 {}", batchDeleteBorrowsDTO);
+        borrowService.batchDeleteBorrows(batchDeleteBorrowsDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

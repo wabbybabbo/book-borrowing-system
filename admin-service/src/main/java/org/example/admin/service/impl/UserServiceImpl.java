@@ -8,10 +8,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.User;
 import org.example.admin.mapper.UserMapper;
 import org.example.admin.pojo.dto.CreateUserDTO;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IUserService;
 import org.example.common.client.CommonClient;
 import org.example.common.constant.AccountStatusConstant;
@@ -137,7 +137,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void batchDisableAccount(List<String> ids) {
+    public void batchDisableAccounts(List<String> ids) {
         // 批量禁用用户账号
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>()
                 .set("status", AccountStatusConstant.DISABLE)
@@ -146,7 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void batchEnableAccount(List<String> ids) {
+    public void batchEnableAccounts(List<String> ids) {
         // 批量解禁用户账号
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>()
                 .set("status", AccountStatusConstant.ENABLE)

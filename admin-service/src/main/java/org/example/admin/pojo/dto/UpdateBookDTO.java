@@ -20,8 +20,7 @@ public class UpdateBookDTO {
     @Schema(description = "书籍ID", requiredMode = REQUIRED)
     private String id;
 
-    @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    @Schema(description = "书籍ID", requiredMode = REQUIRED)
+    @Schema(description = "书籍类别ID", requiredMode = REQUIRED)
     private String categoryId;
 
     @Pattern(regexp = RegexpConstant.BOOK_NAME, message = MessageConstant.INVALID_BOOK_NAME)

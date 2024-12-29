@@ -4,7 +4,6 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.example.common.exception.ServiceException;
 import org.example.common.result.Result;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,7 +51,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("; "));
         log.info("[log] 参数校验不通过 {}", logInfo);
         String message = fieldErrors.stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map((fieldError)-> fieldError.getField() + fieldError.getDefaultMessage())
                 .collect(Collectors.joining("；"));
         return Result.error(message);
     }

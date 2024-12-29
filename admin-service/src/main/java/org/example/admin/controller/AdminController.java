@@ -65,7 +65,7 @@ public class AdminController {
 
     @GetMapping("/page")
     @Cacheable(cacheNames = "adminCache",
-            key = "'adminList'+':'+#pageQuery.current+':'+#pageQuery.size",
+            key = "'admin-service' + ':' + 'adminList' + ':' + #pageQuery.current + ':' + #pageQuery.size",
             /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
             condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @Operation(summary = "分页查询管理员信息")
@@ -90,6 +90,7 @@ public class AdminController {
     }
 
     @PutMapping
+    @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @Operation(summary = "更改管理员信息")
     public Result<Object> updateAdmin(
             @RequestHeader(ClaimConstant.CLIENT_ID)
@@ -107,6 +108,7 @@ public class AdminController {
     @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @Operation(summary = "禁用管理员账号")
     public Result<Object> disableAccount(
+            @RequestParam
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "管理员ID", required = true)
             String id) {
@@ -118,11 +120,11 @@ public class AdminController {
     @PutMapping("/disable/batch")
     @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @Operation(summary = "批量禁用管理员账号")
-    public Result<Object> batchDisableAccount(
+    public Result<Object> batchDisableAccounts(
             @RequestBody @Valid
-            BatchDisableAccountDTO batchDisableAccountDTO) {
-        log.info("[log] 批量禁用管理员账号 {}", batchDisableAccountDTO);
-        adminService.batchDisableAccount(batchDisableAccountDTO.getIds());
+            BatchDisableAccountsDTO batchDisableAccountsDTO) {
+        log.info("[log] 批量禁用管理员账号 {}", batchDisableAccountsDTO);
+        adminService.batchDisableAccounts(batchDisableAccountsDTO.getIds());
         return Result.success(MessageConstant.DISABLE_SUCCESS);
     }
 
@@ -130,6 +132,7 @@ public class AdminController {
     @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @Operation(summary = "解禁管理员账号")
     public Result<Object> enableAccount(
+            @RequestParam
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "管理员ID", required = true)
             String id) {
@@ -141,11 +144,11 @@ public class AdminController {
     @PutMapping("/enable/batch")
     @CacheEvict(cacheNames = "adminCache", allEntries = true)
     @Operation(summary = "批量解禁管理员账号")
-    public Result<Object> batchEnableAccount(
+    public Result<Object> batchEnableAccounts(
             @RequestBody @Valid
-            BatchEnableAccountDTO batchEnableAccountDTO) {
-        log.info("[log] 批量解禁管理员账号 {}", batchEnableAccountDTO);
-        adminService.batchEnableAccount(batchEnableAccountDTO.getIds());
+            BatchEnableAccountsDTO batchEnableAccountsDTO) {
+        log.info("[log] 批量解禁管理员账号 {}", batchEnableAccountsDTO);
+        adminService.batchEnableAccounts(batchEnableAccountsDTO.getIds());
         return Result.success(MessageConstant.ENABLE_SUCCESS);
     }
 

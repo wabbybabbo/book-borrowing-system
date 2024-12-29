@@ -57,6 +57,6 @@ public interface IBookService extends IService<Book> {
      *
      * @param ids 书籍ID列表
      */
-    void deleteBatchBooks(List<String> ids);
+    void batchDeleteBooks(List<String> ids);
 
 }

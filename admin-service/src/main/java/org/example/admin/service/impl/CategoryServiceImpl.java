@@ -7,12 +7,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.pojo.query.PageQuery;
+import org.example.admin.pojo.vo.CategoryVO;
 import org.example.admin.entity.Category;
 import org.example.admin.mapper.CategoryMapper;
 import org.example.admin.pojo.dto.CreateCategoryDTO;
 import org.example.admin.pojo.dto.UpdateCategoryDTO;
-import org.example.admin.pojo.query.PageQuery;
-import org.example.admin.pojo.vo.CategoryVO;
 import org.example.admin.service.ICategoryService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
@@ -124,7 +124,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public void deleteBatchCategories(List<String> ids) {
+    public void batchDeleteCategories(List<String> ids) {
         // 批量删除书籍类别
         try {
             categoryMapper.deleteBatchIds(ids);

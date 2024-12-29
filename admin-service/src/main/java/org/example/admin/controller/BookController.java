@@ -6,10 +6,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.pojo.dto.BatchDeleteBooksDTO;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
 import org.example.admin.pojo.query.PageQuery;
@@ -25,8 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * <p>
@@ -44,11 +42,12 @@ import java.util.List;
 @Tag(name = "书籍相关接口")
 public class BookController {
 
+    private final String appName = "222";
     private final IBookService bookService;
 
     @GetMapping("/page")
     @Cacheable(cacheNames = "bookCache",
-            key = "'bookList'+':'+#pageQuery.current+':'+#pageQuery.size",
+            key = "'admin-service' + ':' + 'bookVOList' + ':' + #pageQuery.current + ':' + #pageQuery.size",
             /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
             condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @Operation(summary = "分页查询书籍信息")
@@ -91,6 +90,7 @@ public class BookController {
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @Operation(summary = "删除书籍信息")
     public Result<Object> deleteBook(
+            @RequestParam
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "书籍ID", required = true)
             String id) {
@@ -102,13 +102,11 @@ public class BookController {
     @DeleteMapping("/batch")
     @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @Operation(summary = "批量删除书籍信息")
-    public Result<Object> deleteBatchBooks(
-            @RequestBody
-            @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            @Parameter(description = "书籍ID列表", required = true)
-            List<String> ids) {
-        log.info("[log] 批量删除书籍信息 ids: {}", ids);
-        bookService.deleteBatchBooks(ids);
+    public Result<Object> batchDeleteBooks(
+            @RequestBody @Valid
+            BatchDeleteBooksDTO batchDeleteBooksDTO) {
+        log.info("[log] 批量删除书籍信息 {}", batchDeleteBooksDTO);
+        bookService.batchDeleteBooks(batchDeleteBooksDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

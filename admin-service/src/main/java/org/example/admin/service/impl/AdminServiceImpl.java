@@ -271,7 +271,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public void batchDisableAccount(List<String> ids) {
+    public void batchDisableAccounts(List<String> ids) {
         // 批量禁用管理员账号
         UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<Admin>()
                 .set("status", AccountStatusConstant.DISABLE)
@@ -280,7 +280,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     }
 
     @Override
-    public void batchEnableAccount(List<String> ids) {
+    public void batchEnableAccounts(List<String> ids) {
         // 批量解禁管理员账号
         UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<Admin>()
                 .set("status", AccountStatusConstant.ENABLE)

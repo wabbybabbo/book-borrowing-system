@@ -29,7 +29,7 @@ public interface ICategoryService extends IService<Category> {
     /**
      * 查询所有书籍类别
      *
-     * @return {@link List<CategoryVO>}
+     * @return {@link List<  CategoryVO  >}
      */
     List<CategoryVO> getCategories();
 
@@ -52,7 +52,7 @@ public interface ICategoryService extends IService<Category> {
      *
      * @param ids 书籍类别ID列表
      */
-    void deleteBatchCategories(List<String> ids);
+    void batchDeleteCategories(List<String> ids);
 
     /**
      * 分页查询书籍类别

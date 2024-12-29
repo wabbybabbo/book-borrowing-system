@@ -8,9 +8,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.Borrow;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
@@ -59,6 +59,7 @@ public class BorrowController {
     @PutMapping
     @Operation(summary = "借阅登记")
     public Result<Object> borrowRegister(
+            @RequestParam
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "书籍借阅记录ID", required = true)
             String id) {

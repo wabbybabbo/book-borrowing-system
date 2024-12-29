@@ -54,13 +54,13 @@ public interface IUserService extends IService<User> {
      *
      * @param ids 用户ID列表
      */
-    void batchDisableAccount(List<String> ids);
+    void batchDisableAccounts(List<String> ids);
 
     /**
      * 批量解禁用户账号
      *
      * @param ids 用户ID列表
      */
-    void batchEnableAccount(List<String> ids);
+    void batchEnableAccounts(List<String> ids);
 
 }

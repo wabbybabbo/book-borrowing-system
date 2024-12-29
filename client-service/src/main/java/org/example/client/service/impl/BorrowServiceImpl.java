@@ -201,4 +201,13 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         }
     }
 
+    @Override
+    public void batchDeleteBorrows(List<String> ids) {
+        int updates = borrowMapper.deleteBatchIds(ids);
+        if (updates == 0) {
+            log.error("[log] 批量删除书籍借阅记录失败 msg: {}", MessageConstant.BORROW_NOT_FOUND);
+            throw new NotFoundException(MessageConstant.BORROW_NOT_FOUND);
+        }
+    }
+
 }

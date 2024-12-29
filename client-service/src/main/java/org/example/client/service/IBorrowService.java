@@ -57,4 +57,12 @@ public interface IBorrowService extends IService<Borrow> {
      * @param id 借阅记录ID
      */
     void deleteBorrow(String id);
+
+    /**
+     * 批量删除书籍借阅记录
+     *
+     * @param ids 借阅记录ID列表
+     */
+    void batchDeleteBorrows(List<String> ids);
+
 }

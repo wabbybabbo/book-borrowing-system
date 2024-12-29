@@ -2,12 +2,12 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.admin.entity.Admin;
 import org.example.admin.pojo.dto.AdminLoginDTO;
-import org.example.admin.pojo.dto.CreateAdminDTO;
 import org.example.admin.pojo.dto.UpdateAdminDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.AdminLoginVO;
+import org.example.admin.entity.Admin;
+import org.example.admin.pojo.dto.CreateAdminDTO;
 import org.example.common.result.PageResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,13 +82,13 @@ public interface IAdminService extends IService<Admin> {
      *
      * @param ids 管理员ID列表
      */
-    void batchDisableAccount(List<String> ids);
+    void batchDisableAccounts(List<String> ids);
 
     /**
      * 批量解禁管理员账号
      *
      * @param ids 管理员ID列表
      */
-    void batchEnableAccount(List<String> ids);
+    void batchEnableAccounts(List<String> ids);
 
 }

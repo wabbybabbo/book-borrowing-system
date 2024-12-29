@@ -26,12 +26,12 @@ public class CreateBorrowDTO {
 
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
     @Future(message = MessageConstant.INVALID_RESERVE_DATE)
-    @Schema(description = "借阅预约日期", requiredMode = REQUIRED, example = "1970-01-01")
+    @Schema(description = "借阅预约日期", requiredMode = REQUIRED, format = "date", example = "1970-01-01")
     private LocalDate reserveDate;
 
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
     @Future(message = MessageConstant.INVALID_RETURN_DATE)
-    @Schema(description = "预计归还日期", requiredMode = REQUIRED, example = "1970-01-02")
+    @Schema(description = "预计归还日期", requiredMode = REQUIRED, format = "date", example = "1970-01-02")
     private LocalDate returnDate;
 
 }

@@ -6,14 +6,14 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.admin.entity.Category;
-import org.example.admin.pojo.dto.CreateCategoryDTO;
-import org.example.admin.pojo.dto.UpdateCategoryDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.CategoryVO;
+import org.example.admin.entity.Category;
+import org.example.admin.pojo.dto.CreateCategoryDTO;
+import org.example.admin.pojo.dto.BatchDeleteCategoriesDTO;
+import org.example.admin.pojo.dto.UpdateCategoryDTO;
 import org.example.admin.service.ICategoryService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
@@ -46,7 +46,7 @@ public class CategoryController {
 
     @GetMapping("/page")
     @Cacheable(cacheNames = "categoryCache",
-            key = "'categoryList'+':'+#pageQuery.current+':'+#pageQuery.size",
+            key = "'admin-service' + ':' + 'categoryList' + ':' + #pageQuery.current + ':' + #pageQuery.size",
             /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
             condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @Operation(summary = "分页查询书籍类别")
@@ -57,7 +57,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    @Cacheable(cacheNames = "categoryCache", key = "'categoryVOList'")
+    @Cacheable(cacheNames = "categoryCache", key = "'admin-service' + ':' + 'categoryVOList'")
     @Operation(summary = "查询所有书籍类别")
     public Result<List<CategoryVO>> getCategories() {
         log.info("[log] 查询所有书籍类别");
@@ -87,6 +87,7 @@ public class CategoryController {
     @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @Operation(summary = "删除书籍类别")
     public Result<Object> deleteCategory(
+            @RequestParam
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "书籍类别ID", required = true)
             String id) {
@@ -98,13 +99,11 @@ public class CategoryController {
     @DeleteMapping("/batch")
     @CacheEvict(cacheNames = "categoryCache", allEntries = true)
     @Operation(summary = "批量删除书籍类别")
-    public Result<Object> deleteBatchCategories(
-            @RequestBody
-            @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-            @Parameter(description = "书籍类别ID列表", required = true)
-            List<String> ids) {
-        log.info("[log] 批量删除书籍类别 ids: {}", ids);
-        categoryService.deleteBatchCategories(ids);
+    public Result<Object> batchDeleteCategories(
+            @RequestBody @Valid
+            BatchDeleteCategoriesDTO batchDeleteCategoriesDTO) {
+        log.info("[log] 批量删除书籍类别 {}", batchDeleteCategoriesDTO);
+        categoryService.batchDeleteCategories(batchDeleteCategoriesDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

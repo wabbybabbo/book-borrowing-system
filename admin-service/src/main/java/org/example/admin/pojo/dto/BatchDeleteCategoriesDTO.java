@@ -10,14 +10,14 @@ import java.util.List;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 /**
- * 批量禁用管理员账号时传递的数据模型
+ * 批量删除书籍类别时传递的数据模型
  */
 @Data
-@Schema(description = "批量禁用管理员账号时传递的数据模型")
-public class BatchEnableAccountDTO {
+@Schema(description = "批量删除书籍类别时传递的数据模型")
+public class BatchDeleteCategoriesDTO {
 
     @NotEmpty(message = MessageConstant.FIELD_NOT_EMPTY)
-    @Schema(description = "管理员ID列表", requiredMode = REQUIRED, type = "string[]", example = "1,2,3")
+    @Schema(description = "书籍类别ID列表", requiredMode = REQUIRED, example = "1,2,3")
     private List<String> ids;
 
 }

@@ -1,4 +1,4 @@
-package org.example.admin;
+package org.admin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

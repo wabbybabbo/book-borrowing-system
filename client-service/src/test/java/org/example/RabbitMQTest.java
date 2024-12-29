@@ -1,4 +1,4 @@
-package org.example.client;
+package org.example;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

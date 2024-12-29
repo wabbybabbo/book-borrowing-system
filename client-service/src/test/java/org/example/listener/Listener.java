@@ -1,4 +1,4 @@
-package org.example.admin.listener;
+package org.example.listener;
 
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;

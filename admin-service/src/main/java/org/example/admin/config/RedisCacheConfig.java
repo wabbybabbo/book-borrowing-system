@@ -41,8 +41,8 @@ public class RedisCacheConfig {
 
         // 自定义 RedisCacheConfiguration
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig();
-        // cacheConfig = cacheConfig.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));//修改Redis值序列化方式，默认StringSerializationRedisSerializer
-        // cacheConfig = cacheConfig.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));//修改Redis值序列化方式，默认JdkSerializationRedisSerializer
+        //cacheConfig = cacheConfig.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.string()));//修改Redis值序列化方式，默认StringSerializationRedisSerializer
+        //cacheConfig = cacheConfig.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()));//修改Redis值序列化方式，默认JdkSerializationRedisSerializer
         CacheProperties.Redis redisProperties = cacheProperties.getRedis();
         if (redisProperties.getTimeToLive() != null) {
             log.info("[log] 设置缓存的过期时间：{}s", redisProperties.getTimeToLive().getSeconds());
@@ -56,7 +56,7 @@ public class RedisCacheConfig {
             log.info("[log] 取消设置缓存键的前缀");
             cacheConfig = cacheConfig.disableKeyPrefix();//取消设置缓存键的前缀
         }
-        cacheConfig = cacheConfig.computePrefixWith(cacheName -> cacheName + ":");//覆盖默认key双冒号  CacheKeyPrefix#prefixed
+        cacheConfig = cacheConfig.computePrefixWith(cacheName -> cacheName + ":");//覆盖默认key双冒号
 
         return RedisCacheManager
                 .builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))

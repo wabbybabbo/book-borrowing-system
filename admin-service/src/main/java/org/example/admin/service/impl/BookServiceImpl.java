@@ -7,13 +7,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.Book;
 import org.example.admin.entity.Category;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.CategoryMapper;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.BookVO;
 import org.example.admin.service.IBookService;
 import org.example.common.client.CommonClient;
@@ -150,7 +150,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     }
 
     @Override
-    public void deleteBatchBooks(List<String> ids) {
+    public void batchDeleteBooks(List<String> ids) {
         int updates = bookMapper.deleteBatchIds(ids);
         if (updates == 0) {
             log.error("[log] 批量删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);
