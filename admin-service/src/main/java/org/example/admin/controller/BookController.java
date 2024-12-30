@@ -19,8 +19,6 @@ import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
 import org.example.common.result.Result;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,10 +44,6 @@ public class BookController {
     private final IBookService bookService;
 
     @GetMapping("/page")
-    @Cacheable(cacheNames = "bookCache",
-            key = "'admin-service' + ':' + 'bookVOList' + ':' + #pageQuery.current + ':' + #pageQuery.size",
-            /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
-            condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @Operation(summary = "分页查询书籍信息")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询书籍信息 {}", pageQuery);
@@ -58,7 +52,6 @@ public class BookController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE /*指定multipart/form-data*/)
-    @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @Operation(summary = "新建书籍信息")
     public Result<Object> createBook(
             @RequestPart("file")
@@ -73,7 +66,6 @@ public class BookController {
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE /*指定multipart/form-data*/)
-    @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @Operation(summary = "更改书籍信息")
     public Result<Object> updateBook(
             @RequestPart(value = "file", required = false)
@@ -87,7 +79,6 @@ public class BookController {
     }
 
     @DeleteMapping
-    @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @Operation(summary = "删除书籍信息")
     public Result<Object> deleteBook(
             @RequestParam
@@ -100,7 +91,6 @@ public class BookController {
     }
 
     @DeleteMapping("/batch")
-    @CacheEvict(cacheNames = "bookCache", allEntries = true)
     @Operation(summary = "批量删除书籍信息")
     public Result<Object> batchDeleteBooks(
             @RequestBody @Valid

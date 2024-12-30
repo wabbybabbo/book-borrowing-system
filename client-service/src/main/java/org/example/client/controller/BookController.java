@@ -11,7 +11,6 @@ import org.example.client.service.IBookService;
 import org.example.common.result.PageResult;
 import org.example.common.result.Result;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +35,6 @@ public class BookController {
     private final IBookService bookService;
 
     @GetMapping("/page")
-    @Cacheable(cacheNames = "bookCache",
-            key = "'client-service' + ':' + 'bookVOList' + ':' + #pageQuery.current + ':' + #pageQuery.size",
-            /*只有当PageQuery对象中的filterConditions和sortBy都为null时才会进行缓存*/
-            condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @Operation(summary = "分页查询书籍信息")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
         log.info("[log] 分页查询书籍信息 {}", pageQuery);

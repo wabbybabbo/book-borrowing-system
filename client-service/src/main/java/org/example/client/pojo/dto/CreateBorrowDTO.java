@@ -1,7 +1,7 @@
 package org.example.client.pojo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -25,12 +25,12 @@ public class CreateBorrowDTO {
     private String isbn;
 
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    @Future(message = MessageConstant.INVALID_RESERVE_DATE)
+    @FutureOrPresent(message = MessageConstant.INVALID_RESERVE_DATE)
     @Schema(description = "借阅预约日期", requiredMode = REQUIRED, format = "date", example = "1970-01-01")
     private LocalDate reserveDate;
 
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-    @Future(message = MessageConstant.INVALID_RETURN_DATE)
+    @FutureOrPresent(message = MessageConstant.INVALID_RETURN_DATE)
     @Schema(description = "预计归还日期", requiredMode = REQUIRED, format = "date", example = "1970-01-02")
     private LocalDate returnDate;
 

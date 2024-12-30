@@ -40,8 +40,8 @@ public class MessageConstant {
     public static final String INVALID_GENDER = "性别应为'男'或'女'";
     public static final String INVALID_ACCOUNT = "账号应为4~16位，并且只能包含字母、数字、下划线";
     public static final String INVALID_PASSWORD = "密码应为4~16位，并且只能包含字母、数字、下划线";
-    public static final String INVALID_RESERVE_DATE = "预定日期必须是一个将来的日期";
-    public static final String INVALID_RETURN_DATE = "归还日期必须是一个将来的日期";
+    public static final String INVALID_RESERVE_DATE = "预定日期不能是一个过去的日期";
+    public static final String INVALID_RETURN_DATE = "归还日期不能是一个过去的日期";
     public static final String INVALID_BOOK_NAME = "书名中不能出现除了空格以外的空白字符；不能出现连续的空格；不能以空白字符开头或结尾";
     public static final String INVALID_AUTHOR_NAME = "作者名称中不能出现除了空格以外的空白字符；不能出现连续的空格；不能以空白字符开头或结尾";
     public static final String INVALID_PUBLISHER = "出版社名称中不能出现除了空格以外的空白字符；不能出现连续的空格；不能以空白字符开头或结尾";
