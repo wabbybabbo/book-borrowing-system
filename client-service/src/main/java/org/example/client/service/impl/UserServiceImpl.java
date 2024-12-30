@@ -50,7 +50,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final UserMapper userMapper;
     private final CommonClient commonClient;
     private final RedisTemplate<String, String> redisTemplate;
-    private final CodeGenerator registerCodeGenerator = new RandomGenerator(RandomUtil.BASE_NUMBER,6);
+    private final CodeGenerator registerCodeGenerator = new RandomGenerator(RandomUtil.BASE_NUMBER, 6);
     private final CodeGenerator loginCodeGenerator = new MathGenerator(1);
 
     @Override
@@ -137,11 +137,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         String code = registerCodeGenerator.generate();
-        String content = "您正在注册账号，验证码是：" + code + "（请勿泄露），此验证码" + timeout + "分钟内有效。如非本人操作，请忽略。";
+        String content = "您正在注册账号，验证码是："
+                + "<b style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">"
+                + code + "</b>（请勿泄露），此验证码" + timeout + "分钟内有效。<br><br>如非本人操作，请忽略。";
         // 将验证码存到redis缓存中，并设置过期时间
         redisTemplate.opsForValue().set("codeCache:" + email, code, timeout, TimeUnit.MINUTES);
         // 发送验证码到用户邮箱
-        MailUtil.send(email, "【书店借阅平台】邮箱验证码", content, false);
+        MailUtil.send(email, "【书店借阅平台】邮箱验证码", content, true);
     }
 
     @Override
