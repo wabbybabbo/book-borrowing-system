@@ -17,12 +17,12 @@ import java.util.List;
 public class PageQuery {
 
     @Schema(description = "当前页号,默认值(1)")
-    private Integer current = 1;
+    private Long current = 1L;
 
     @Schema(description = "每页显示记录数,默认值(10)")
-    private Integer size = 10;
+    private Long size = 10L;
 
-    @Schema(description = "筛选条件,默认值([])", example = "category_id=1,title~vue")
+    @Schema(description = "筛选条件,默认值([])", example = "category_id=1,name~vue")
     private List<String> filterConditions = new ArrayList<>();
 
     @Schema(description = "排序字段,默认值(\"\")", example = "create_time")

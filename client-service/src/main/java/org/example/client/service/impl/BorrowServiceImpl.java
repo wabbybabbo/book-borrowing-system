@@ -2,8 +2,9 @@ package org.example.client.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +52,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     public PageResult<BorrowVO> pageQuery(String id, PageQuery pageQuery) {
         // 构建分页查询条件
         Page<Borrow> page = pageQuery.toMpPage();
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
-                .select("id", "status", "book_name", "isbn", "reserve_date", "return_date", "update_time")
-                .eq("user_id", id);
+        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<>();
         List<String> filterConditions = pageQuery.getFilterConditions();
         log.info("[log] 借阅记录分页查询条件 filterConditions: {}", filterConditions);
         if (CollUtil.isNotEmpty(filterConditions)) {
@@ -71,9 +70,12 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
                 }
             }
         }
+        LambdaQueryWrapper<Borrow> lambdaQueryWrapper = queryWrapper.lambda()
+                .select(Borrow::getId, Borrow::getStatus, Borrow::getBookName, Borrow::getIsbn, Borrow::getReserveDate, Borrow::getReturnDate, Borrow::getUpdateTime)
+                .eq(Borrow::getUserId, id);
         // 分页查询
         try {
-            borrowMapper.selectPage(page, queryWrapper);
+            borrowMapper.selectPage(page, lambdaQueryWrapper);
         } catch (BadSqlGrammarException e) {
             log.error("[log] 借阅记录分页查询失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.FIELD_NOT_FOUND);
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);
@@ -100,9 +102,9 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Override
     public List<BorrowVO> getBorrows(String id) {
         // 构建查询条件
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
-                .select("id", "status", "book_name", "isbn", "reserve_date", "return_date", "update_time")
-                .eq("user_id", id);
+        LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
+                .select(Borrow::getId, Borrow::getStatus, Borrow::getBookName, Borrow::getIsbn, Borrow::getReserveDate, Borrow::getReturnDate, Borrow::getUpdateTime)
+                .eq(Borrow::getUserId, id);
         // 查询用户的借阅记录
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
         // 转化为BorrowVO
@@ -128,9 +130,9 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         }
         // 查询书籍库存
         String isbn = createBorrowDTO.getIsbn();
-        QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>()
-                .select("name", "stock")
-                .eq("isbn", isbn);
+        LambdaQueryWrapper<Book> queryWrapper = new LambdaQueryWrapper<Book>()
+                .select(Book::getName, Book::getStock)
+                .eq(Book::getIsbn, isbn);
         Book book = bookMapper.selectOne(queryWrapper);
         if (Objects.isNull(book)) {
             throw new NotFoundException(MessageConstant.BOOK_NOT_FOUND);
@@ -139,9 +141,9 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
             throw new CheckException(MessageConstant.BOOK_STOCK_NOT_ENOUGH);
         }
         // 更改书籍库存 当前库存-1
-        UpdateWrapper<Book> updateWrapper = new UpdateWrapper<Book>()
+        LambdaUpdateWrapper<Book> updateWrapper = new LambdaUpdateWrapper<Book>()
                 .setSql("stock=stock-1")
-                .eq("isbn", isbn);
+                .eq(Book::getIsbn, isbn);
         bookMapper.update(updateWrapper);
         // 新增用户借阅记录
         Borrow borrow = new Borrow();
@@ -154,9 +156,9 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Override
     public void deleteBorrow(String id) {
         // 查询该借阅记录的借阅状态
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
-                .select("isbn", "status")
-                .eq("id", id);
+        LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
+                .select(Borrow::getIsbn, Borrow::getStatus)
+                .eq(Borrow::getId, id);
         Borrow borrow = borrowMapper.selectOne(queryWrapper);
         if (Objects.isNull(borrow)) {
             throw new NotFoundException(MessageConstant.BORROW_NOT_FOUND);
@@ -176,9 +178,9 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Transactional
     public void cancelBorrow(String id) {
         // 查询该借阅记录的借阅状态
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
-                .select("isbn", "status")
-                .eq("id", id);
+        LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
+                .select(Borrow::getIsbn, Borrow::getStatus)
+                .eq(Borrow::getId, id);
         Borrow borrow = borrowMapper.selectOne(queryWrapper);
         if (Objects.isNull(borrow)) {
             throw new NotFoundException(MessageConstant.BORROW_NOT_FOUND);
@@ -191,9 +193,9 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
             borrow.setStatus(BorrowStatusConstant.CANCELLED);
             borrowMapper.updateById(borrow);
             // 更改书籍库存 当前库存+1
-            UpdateWrapper<Book> updateWrapper = new UpdateWrapper<Book>()
+            LambdaUpdateWrapper<Book> updateWrapper = new LambdaUpdateWrapper<Book>()
                     .setSql("stock=stock+1")
-                    .eq("isbn", borrow.getIsbn());
+                    .eq(Book::getIsbn, borrow.getIsbn());
             bookMapper.update(updateWrapper);
         } else {
             log.info("[log] 取消书籍借阅预约失败 id: {}, msg: {}", id, MessageConstant.CANCELLATION_IS_NOT_ALLOWED);

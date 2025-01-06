@@ -1,6 +1,7 @@
 package org.example.admin.task;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,19 +36,19 @@ public class BorrowTask {
     public void processBorrow() {
         log.info("[log] 定时处理状态为'借阅中'的借阅记录");
         // 查询当前日期超过预计归还日期的借阅记录
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
-                .select("id")
-                .eq("status", BorrowStatusConstant.BORROW)
-                .lt("return_date", LocalDate.now());
+        LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
+                .select(Borrow::getId)
+                .eq(Borrow::getStatus, BorrowStatusConstant.BORROW)
+                .lt(Borrow::getReturnDate, LocalDate.now());
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
 
         if(borrows.isEmpty()) return;
 
         // 将这些借阅记录的借阅状态更改为'未按时归还'
         List<String> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
-        UpdateWrapper<Borrow> updateWrapper = new UpdateWrapper<Borrow>()
-                .set("status", BorrowStatusConstant.RETURN_OVERDUE)
-                .in("id", borrowIds);
+        LambdaUpdateWrapper<Borrow> updateWrapper = new LambdaUpdateWrapper<Borrow>()
+                .set(Borrow::getStatus, BorrowStatusConstant.RETURN_OVERDUE)
+                .in(Borrow::getId, borrowIds);
         borrowMapper.update(updateWrapper);
     }
 
@@ -59,25 +60,26 @@ public class BorrowTask {
     public void processReserve() {
         log.info("[log] 定时处理状态为'已预约'的借阅记录");
         // 查询当前日期超过预约日期的借阅记录
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
-                .select("id", "isbn")
-                .eq("status", BorrowStatusConstant.RESERVED)
-                .lt("reserve_date", LocalDate.now());
+        LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
+                .select(Borrow::getId, Borrow::getIsbn)
+                .eq(Borrow::getStatus, BorrowStatusConstant.RESERVED)
+                .lt(Borrow::getReserveDate, LocalDate.now());
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
 
         if(borrows.isEmpty()) return;
 
         // 将这些借阅记录的借阅状态更改为'预约已失效'
         List<String> borrowIds = borrows.stream().map(Borrow::getId).collect(Collectors.toList());
-        UpdateWrapper<Borrow> updateWrapper1 = new UpdateWrapper<Borrow>()
-                .set("status", BorrowStatusConstant.RESERVE_OVERDUE)
-                .in("id", borrowIds);
+        LambdaUpdateWrapper<Borrow> updateWrapper1 = new LambdaUpdateWrapper<Borrow>()
+                .set(Borrow::getStatus, BorrowStatusConstant.RESERVE_OVERDUE)
+                .in(Borrow::getId, borrowIds);
         borrowMapper.update(updateWrapper1);
         // 并更改书籍库存 当前库存+1
         List<String> isbns = borrows.stream().map(Borrow::getIsbn).collect(Collectors.toList());
-        UpdateWrapper<Book> updateWrapper2 = new UpdateWrapper<Book>()
+        LambdaUpdateWrapper<Book> updateWrapper2 = new UpdateWrapper<Book>()
                 .setSql("stock=stock+1")
-                .in("isbn", isbns);
+                .lambda()
+                .in(Book::getIsbn, isbns);
         bookMapper.update(updateWrapper2);
     }
 

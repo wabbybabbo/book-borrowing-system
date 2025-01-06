@@ -2,18 +2,19 @@ package org.example.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.Book;
 import org.example.admin.entity.Category;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.CategoryMapper;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.BookVO;
 import org.example.admin.service.IBookService;
 import org.example.common.client.CommonClient;
@@ -81,8 +82,8 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         List<Book> records = page.getRecords();
 
         // 查询所有书籍类别名称
-        QueryWrapper<Category> queryWrapper1 = new QueryWrapper<Category>()
-                .select("id", "name");
+        LambdaQueryWrapper<Category> queryWrapper1 = new LambdaQueryWrapper<Category>()
+                .select(Category::getId, Category::getName);
         List<Category> categories = categoryMapper.selectList(queryWrapper1);
         Map<String, String> categoryMap = new HashMap<>();
         for (Category category : categories) {

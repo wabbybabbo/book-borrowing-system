@@ -2,6 +2,7 @@ package org.example.client.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -45,8 +46,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     public PageResult<BookVO> pageQuery(PageQuery pageQuery) {
         // 构建分页查询条件
         Page<Book> page = pageQuery.toMpPage();
-        QueryWrapper<Book> queryWrapper = new QueryWrapper<Book>()
-                .select("id", "category_id", "name", "img_url", "isbn", "author", "publisher", "description", "stock");
+        QueryWrapper<Book> queryWrapper = new QueryWrapper<>();
         List<String> filterConditions = pageQuery.getFilterConditions();
         log.info("[log] 书籍信息分页查询条件 filterConditions: {}", filterConditions);
         if (CollUtil.isNotEmpty(filterConditions)) {
@@ -64,17 +64,19 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
                 }
             }
         }
+        LambdaQueryWrapper<Book> lambdaQueryWrapper = queryWrapper.lambda()
+                .select(Book::getId, Book::getCategoryId, Book::getName, Book::getImgUrl, Book::getIsbn, Book::getAuthor, Book::getPublisher, Book::getDescription, Book::getStock);
         // 分页查询
         try {
-            bookMapper.selectPage(page, queryWrapper);
+            bookMapper.selectPage(page, lambdaQueryWrapper);
         } catch (BadSqlGrammarException e) {
             log.error("[log] 书籍信息分页查询失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.FIELD_NOT_FOUND);
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);
         }
         List<Book> records = page.getRecords();
         // 查询所有书籍类别名称
-        QueryWrapper<Category> queryWrapper1 = new QueryWrapper<Category>()
-                .select("id", "name");
+        LambdaQueryWrapper<Category> queryWrapper1 = new LambdaQueryWrapper<Category>()
+                .select(Category::getId, Category::getName);
         List<Category> categories = categoryMapper.selectList(queryWrapper1);
         Map<String, String> categoryMap = new HashMap<>();
         for (Category category : categories) {

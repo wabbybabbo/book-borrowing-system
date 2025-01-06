@@ -1,18 +1,19 @@
 package org.example.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.Book;
 import org.example.admin.entity.Borrow;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.BorrowMapper;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
 import org.example.common.constant.BorrowStatusConstant;
 import org.example.common.constant.MessageConstant;
@@ -83,8 +84,8 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Override
     public List<Borrow> getBorrows(String id) {
         // 构建查询条件
-        QueryWrapper<Borrow> queryWrapper = new QueryWrapper<Borrow>()
-                .eq("user_id", id);
+        LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
+                .eq(Borrow::getUserId, id);
         // 查询用户的借阅记录
         List<Borrow> borrows = borrowMapper.selectList(queryWrapper);
 
@@ -99,9 +100,9 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Transactional
     public void returnRegister(ReturnRegisterDTO returnRegisterDTO) {
         // 更改书籍库存 当前库存+1
-        UpdateWrapper<Book> updateWrapper = new UpdateWrapper<Book>()
+        LambdaUpdateWrapper<Book> updateWrapper = new LambdaUpdateWrapper<Book>()
                 .setSql("stock=stock+1")
-                .eq("isbn", returnRegisterDTO.getIsbn());
+                .eq(Book::getIsbn, returnRegisterDTO.getIsbn());
         bookMapper.update(updateWrapper);
         // 更改借阅状态为'已归还'
         Borrow borrow = new Borrow();

@@ -8,7 +8,7 @@ import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.extra.mail.MailUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -93,16 +93,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 查询账号是否存在
         String account = userLoginDTO.getAccount();
-        QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
-                .eq("account", account);
+        LambdaQueryWrapper<User> queryWrapper1 = new LambdaQueryWrapper<User>()
+                .eq(User::getAccount, account);
         if (!userMapper.exists(queryWrapper1)) {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
         // 查询密码是否正确
         String password = userLoginDTO.getPassword();
-        QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
-                .eq("account", account)
-                .eq("password", password);
+        LambdaQueryWrapper<User> queryWrapper2 = new LambdaQueryWrapper<User>()
+                .eq(User::getAccount, account)
+                .eq(User::getPassword, password);
         User user = userMapper.selectOne(queryWrapper2);
         if (Objects.isNull(user)) {
             throw new NotFoundException(MessageConstant.PASSWORD_ERROR);
@@ -130,8 +130,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public void sendCaptchaToEmail(String email, Long timeout) {
         // 查询该邮箱是否已被使用
-        QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
-                .eq("email", email);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                .eq(User::getEmail, email);
         if (userMapper.exists(queryWrapper)) {
             throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
         }
@@ -163,8 +163,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 查询账号是否已存在
         String account = userRegisterDTO.getAccount();
-        QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
-                .eq("account", account);
+        LambdaQueryWrapper<User> queryWrapper1 = new LambdaQueryWrapper<User>()
+                .eq(User::getAccount, account);
         if (userMapper.exists(queryWrapper1)) {
             throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
@@ -172,8 +172,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String phone = userRegisterDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
-            QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
-                    .eq("phone", phone);
+            LambdaQueryWrapper<User> queryWrapper2 = new LambdaQueryWrapper<User>()
+                    .eq(User::getPhone, phone);
             if (userMapper.exists(queryWrapper2)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
@@ -196,9 +196,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String account = updateUserDTO.getAccount();
         if (Objects.nonNull(account)) {
             // 检查账号是否已存在
-            QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
-                    .eq("account", account)
-                    .ne("id", id);
+            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                    .eq(User::getAccount, account)
+                    .ne(User::getId, id);
             if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
             }
@@ -206,9 +206,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String phone = updateUserDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 检查电话号码是否已存在
-            QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
-                    .eq("phone", phone)
-                    .ne("id", id);
+            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                    .eq(User::getPhone, phone)
+                    .ne(User::getId, id);
             if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
@@ -216,9 +216,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String email = updateUserDTO.getEmail();
         if (Objects.nonNull(email)) {
             // 检查邮箱是否已存在
-            QueryWrapper<User> queryWrapper = new QueryWrapper<User>()
-                    .eq("email", email)
-                    .ne("id", id);
+            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                    .eq(User::getEmail, email)
+                    .ne(User::getId, id);
             if (userMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }

@@ -6,8 +6,9 @@ import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.captcha.generator.MathGenerator;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -97,16 +98,16 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         }
         // 查询账号是否存在
         String account = adminLoginDTO.getAccount();
-        QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
-                .eq("account", account);
+        LambdaQueryWrapper<Admin> queryWrapper1 = new LambdaQueryWrapper<Admin>()
+                .eq(Admin::getAccount, account);
         if (!adminMapper.exists(queryWrapper1)) {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
         }
         // 查询密码是否正确
         String password = adminLoginDTO.getPassword();
-        QueryWrapper<Admin> queryWrapper2 = new QueryWrapper<Admin>()
-                .eq("account", account)
-                .eq("password", password);
+        LambdaQueryWrapper<Admin> queryWrapper2 = new LambdaQueryWrapper<Admin>()
+                .eq(Admin::getAccount, account)
+                .eq(Admin::getPassword, password);
         Admin admin = adminMapper.selectOne(queryWrapper2);
         if (Objects.isNull(admin)) {
             throw new NotFoundException(MessageConstant.PASSWORD_ERROR);
@@ -172,16 +173,16 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public void createAdmin(MultipartFile file, CreateAdminDTO createAdminDTO) {
         // 查询账号是否已存在
         String account = createAdminDTO.getAccount();
-        QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
-                .eq("account", account);
+        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<Admin>()
+                .eq(Admin::getAccount, account);
         if (adminMapper.exists(queryWrapper)) {
             throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
         String phone = createAdminDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
-            QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
-                    .eq("phone", phone);
+            LambdaQueryWrapper<Admin> queryWrapper1 = new LambdaQueryWrapper<Admin>()
+                    .eq(Admin::getPhone, phone);
             if (adminMapper.exists(queryWrapper1)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
@@ -189,8 +190,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         String email = createAdminDTO.getEmail();
         if (Objects.nonNull(email)) {
             // 查询电子邮箱是否已存在
-            QueryWrapper<Admin> queryWrapper1 = new QueryWrapper<Admin>()
-                    .eq("email", email);
+            LambdaQueryWrapper<Admin> queryWrapper1 = new LambdaQueryWrapper<Admin>()
+                    .eq(Admin::getEmail, email);
             if (adminMapper.exists(queryWrapper1)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
@@ -217,9 +218,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         String account = updateAdminDTO.getAccount();
         if (Objects.nonNull(account)) {
             // 查询账号是否已存在
-            QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
-                    .eq("account", account)
-                    .ne("id", id);
+            LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<Admin>()
+                    .eq(Admin::getAccount, account)
+                    .ne(Admin::getId, id);
             if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
             }
@@ -227,9 +228,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         String phone = updateAdminDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
-            QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
-                    .eq("phone", phone)
-                    .ne("id", id);
+            LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<Admin>()
+                    .eq(Admin::getPhone, phone)
+                    .ne(Admin::getId, id);
             if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
@@ -237,9 +238,9 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         String email = updateAdminDTO.getEmail();
         if (Objects.nonNull(email)) {
             // 查询邮箱是否已存在
-            QueryWrapper<Admin> queryWrapper = new QueryWrapper<Admin>()
-                    .eq("email", email)
-                    .ne("id", id);
+            LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<Admin>()
+                    .eq(Admin::getEmail, email)
+                    .ne(Admin::getId, id);
             if (adminMapper.exists(queryWrapper)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
@@ -273,18 +274,18 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public void batchDisableAccounts(List<String> ids) {
         // 批量禁用管理员账号
-        UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<Admin>()
-                .set("status", AccountStatusConstant.DISABLE)
-                .in("id", ids);
+        LambdaUpdateWrapper<Admin> updateWrapper = new LambdaUpdateWrapper<Admin>()
+                .set(Admin::getStatus, AccountStatusConstant.DISABLE)
+                .in(Admin::getId, ids);
         adminMapper.update(updateWrapper);
     }
 
     @Override
     public void batchEnableAccounts(List<String> ids) {
         // 批量解禁管理员账号
-        UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<Admin>()
-                .set("status", AccountStatusConstant.ENABLE)
-                .in("id", ids);
+        LambdaUpdateWrapper<Admin> updateWrapper = new LambdaUpdateWrapper<Admin>()
+                .set(Admin::getStatus, AccountStatusConstant.ENABLE)
+                .in(Admin::getId, ids);
         adminMapper.update(updateWrapper);
     }
 

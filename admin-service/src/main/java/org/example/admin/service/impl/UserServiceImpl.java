@@ -2,16 +2,17 @@ package org.example.admin.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.User;
 import org.example.admin.mapper.UserMapper;
 import org.example.admin.pojo.dto.CreateUserDTO;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IUserService;
 import org.example.common.client.CommonClient;
 import org.example.common.constant.AccountStatusConstant;
@@ -83,16 +84,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void createUser(MultipartFile file, CreateUserDTO createUserDTO) {
         // 查询账号是否已存在
         String account = createUserDTO.getAccount();
-        QueryWrapper<User> queryWrapper1 = new QueryWrapper<User>()
-                .eq("account", account);
+        LambdaQueryWrapper<User> queryWrapper1 = new LambdaQueryWrapper<User>()
+                .eq(User::getAccount, account);
         if (userMapper.exists(queryWrapper1)) {
             throw new AlreadyExistsException(MessageConstant.ACCOUNT_ALREADY_EXISTS);
         }
         String phone = createUserDTO.getPhone();
         if (Objects.nonNull(phone)) {
             // 查询电话号码是否已存在
-            QueryWrapper<User> queryWrapper2 = new QueryWrapper<User>()
-                    .eq("phone", phone);
+            LambdaQueryWrapper<User> queryWrapper2 = new LambdaQueryWrapper<User>()
+                    .eq(User::getPhone, phone);
             if (userMapper.exists(queryWrapper2)) {
                 throw new AlreadyExistsException(MessageConstant.PHONE_ALREADY_EXISTS);
             }
@@ -100,8 +101,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         String email = createUserDTO.getEmail();
         if (Objects.nonNull(email)) {
             // 查询电子邮箱是否已存在
-            QueryWrapper<User> queryWrapper3 = new QueryWrapper<User>()
-                    .eq("email", email);
+            LambdaQueryWrapper<User> queryWrapper3 = new LambdaQueryWrapper<User>()
+                    .eq(User::getEmail, email);
             if (userMapper.exists(queryWrapper3)) {
                 throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
             }
@@ -139,18 +140,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public void batchDisableAccounts(List<String> ids) {
         // 批量禁用用户账号
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>()
-                .set("status", AccountStatusConstant.DISABLE)
-                .in("id", ids);
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<User>()
+                .set(User::getStatus, AccountStatusConstant.DISABLE)
+                .in(User::getId, ids);
         userMapper.update(updateWrapper);
     }
 
     @Override
     public void batchEnableAccounts(List<String> ids) {
         // 批量解禁用户账号
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<User>()
-                .set("status", AccountStatusConstant.ENABLE)
-                .in("id", ids);
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<User>()
+                .set(User::getStatus, AccountStatusConstant.ENABLE)
+                .in(User::getId, ids);
         userMapper.update(updateWrapper);
     }
 
