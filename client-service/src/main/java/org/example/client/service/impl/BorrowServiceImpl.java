@@ -170,7 +170,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
             // 删除用户的借阅记录
             borrowMapper.deleteById(id);
         } else {
-            throw new NotAllowedException(MessageConstant.DELETION_IS_NOT_ALLOWED);
+            throw new NotAllowedException(MessageConstant.DELETE_BORROW_IS_NOT_ALLOWED);
         }
     }
 
@@ -198,8 +198,8 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
                     .eq(Book::getIsbn, borrow.getIsbn());
             bookMapper.update(updateWrapper);
         } else {
-            log.info("[log] 取消书籍借阅预约失败 id: {}, msg: {}", id, MessageConstant.CANCELLATION_IS_NOT_ALLOWED);
-            throw new NotAllowedException(MessageConstant.CANCELLATION_IS_NOT_ALLOWED);
+            log.info("[log] 取消书籍借阅预约失败 id: {}, msg: {}", id, MessageConstant.CANCEL_BORROW_IS_NOT_ALLOWED);
+            throw new NotAllowedException(MessageConstant.CANCEL_BORROW_IS_NOT_ALLOWED);
         }
     }
 

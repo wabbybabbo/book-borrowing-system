@@ -40,7 +40,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "书籍相关接口")
 public class BookController {
 
-    private final String appName = "222";
     private final IBookService bookService;
 
     @GetMapping("/page")

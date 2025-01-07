@@ -9,8 +9,10 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Book;
+import org.example.admin.entity.Borrow;
 import org.example.admin.entity.Category;
 import org.example.admin.mapper.BookMapper;
+import org.example.admin.mapper.BorrowMapper;
 import org.example.admin.mapper.CategoryMapper;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
@@ -18,8 +20,10 @@ import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.BookVO;
 import org.example.admin.service.IBookService;
 import org.example.common.client.CommonClient;
+import org.example.common.constant.BorrowStatusConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
+import org.example.common.exception.NotAllowedException;
 import org.example.common.exception.NotFoundException;
 import org.example.common.result.PageResult;
 import org.springframework.dao.DuplicateKeyException;
@@ -49,6 +53,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     private final CommonClient commonClient;
     private final BookMapper bookMapper;
     private final CategoryMapper categoryMapper;
+    private final BorrowMapper borrowMapper;
 
     @Override
     public PageResult<BookVO> pageQuery(PageQuery pageQuery) {
@@ -143,6 +148,18 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
 
     @Override
     public void deleteBook(String id) {
+        LambdaQueryWrapper<Book> queryWrapper1 = new LambdaQueryWrapper<Book>()
+                .select(Book::getIsbn)
+                .eq(Book::getId, id);
+        String isbn = bookMapper.selectOne(queryWrapper1).getIsbn();
+        LambdaQueryWrapper<Borrow> queryWrapper2 = new LambdaQueryWrapper<Borrow>()
+                .eq(Borrow::getIsbn, isbn)
+                .in(Borrow::getStatus, BorrowStatusConstant.RESERVED, BorrowStatusConstant.BORROW, BorrowStatusConstant.RETURN_OVERDUE);
+        if (borrowMapper.exists(queryWrapper2)) {
+            log.info("[log] 删除书籍信息失败 msg: {}", MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);
+            throw new NotAllowedException(MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);
+        }
+
         int updates = bookMapper.deleteById(id);
         if (updates == 0) {
             log.error("[log] 删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);
@@ -152,6 +169,18 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
 
     @Override
     public void batchDeleteBooks(List<String> ids) {
+        LambdaQueryWrapper<Book> queryWrapper1 = new LambdaQueryWrapper<Book>()
+                .select(Book::getIsbn)
+                .in(Book::getId, ids);
+        List<String> isbnList = bookMapper.selectList(queryWrapper1).stream().map(Book::getIsbn).toList();
+        LambdaQueryWrapper<Borrow> queryWrapper2 = new LambdaQueryWrapper<Borrow>()
+                .in(Borrow::getIsbn, isbnList)
+                .in(Borrow::getStatus, BorrowStatusConstant.RESERVED, BorrowStatusConstant.BORROW, BorrowStatusConstant.RETURN_OVERDUE);
+        if (borrowMapper.exists(queryWrapper2)) {
+            log.info("[log] 批量删除书籍信息失败 msg: {}", MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);
+            throw new NotAllowedException(MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);
+        }
+
         int updates = bookMapper.deleteBatchIds(ids);
         if (updates == 0) {
             log.error("[log] 批量删除书籍信息失败 msg: {}", MessageConstant.BOOK_NOT_FOUND);

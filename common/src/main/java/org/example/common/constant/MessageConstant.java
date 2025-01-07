@@ -54,8 +54,9 @@ public class MessageConstant {
     public static final String PASSWORD_ERROR = "密码错误";
     public static final String CODE_ERROR = "验证码错误";
 
-    public static final String CANCELLATION_IS_NOT_ALLOWED = "状态不为“已预约”的借阅记录不允许进行取消操作";
-    public static final String DELETION_IS_NOT_ALLOWED = "状态不为“已取消”或“已归还”的借阅记录不允许进行删除操作";
+    public static final String CANCEL_BORROW_IS_NOT_ALLOWED = "状态不为“已预约”的借阅记录不允许进行取消操作";
+    public static final String DELETE_BORROW_IS_NOT_ALLOWED = "状态不为“已取消”或“已归还”的借阅记录不允许进行删除操作";
+    public static final String DELETE_BOOK_IS_NOT_ALLOWED = "已被用户预约借阅或正在被用户借阅中的书籍不允许进行删除操作";
     public static final String BOOK_REFERENCES_CATEGORY = "不能删除，有书籍信息关联了当前类别";
     public static final String BOOK_STOCK_NOT_ENOUGH = "不能删除，该书籍当前库存不足";
     public static final String MISSING_UPDATE_VALUE = "没有填写更改值";

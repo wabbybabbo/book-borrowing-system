@@ -10,6 +10,6 @@ public class BorrowStatusConstant {
     public static final String BORROW = "borrow";
     public static final String RETURNED = "returned";
     public static final String RETURN_OVERDUE = "return_overdue";
-    public static final String RESERVE_OVERDUE = "rserve_overdue";
+    public static final String RESERVE_OVERDUE = "reserve_overdue";
 
 }
