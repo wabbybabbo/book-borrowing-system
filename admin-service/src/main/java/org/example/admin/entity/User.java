@@ -62,11 +62,11 @@ public class User implements Serializable {
     @Schema(description = "账号状态")
     private String status;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "更新时间")
     private LocalDateTime updateTime;
 

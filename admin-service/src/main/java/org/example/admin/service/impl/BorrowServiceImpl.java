@@ -69,6 +69,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         // 分页查询
         try {
             borrowMapper.selectPage(page, queryWrapper);
+            log.info("[log] Records {}", page.getRecords());
         } catch (BadSqlGrammarException e) {
             log.error("[log] 借阅记录分页查询失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.FIELD_NOT_FOUND);
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);

@@ -40,11 +40,11 @@ public class UserVO {
     @Schema(description = "联系地址")
     private String address;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "账号创建时间")
     private LocalDateTime createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:MM:SS")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "最新信息更改时间")
     private LocalDateTime updateTime;
 
