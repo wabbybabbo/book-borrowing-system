@@ -1,6 +1,7 @@
 package org.example.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -10,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Book;
 import org.example.admin.entity.Borrow;
+import org.example.admin.entity.User;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.BorrowMapper;
+import org.example.admin.mapper.UserMapper;
+import org.example.admin.pojo.dto.RemindDTO;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
@@ -24,6 +28,7 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +47,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
 
     private final BorrowMapper borrowMapper;
     private final BookMapper bookMapper;
+    private final UserMapper userMapper;
     private final RabbitTemplate rabbitTemplate;
 
     @Override
@@ -122,6 +128,37 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         borrowMapper.updateById(borrow);
         // 发送消息，异步调用统计方法
         rabbitTemplate.convertAndSend("amq.direct", "statistic", "");
+    }
+
+    @Override
+    public void remindByBorrowStatus(RemindDTO remindDTO) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                .select(User::getEmail)
+                .eq(User::getId, remindDTO.getUserId());
+        String email = userMapper.selectOne(queryWrapper).getEmail();
+        String status = remindDTO.getStatus();
+        String bookName = remindDTO.getBookName();
+        String isbn = remindDTO.getIsbn();
+        LocalDate returnDate = remindDTO.getReturnDate();
+        // todo 如果用户在线（用户表新增‘是否在线’状态）则发送到用户界面，否则发送到用户邮箱
+        // 根据借阅记录状态发送相应的提醒信息给用户
+        if (status.equals(BorrowStatusConstant.RESERVED)) {
+            LocalDate reserveDate = remindDTO.getReserveDate();
+            String content = "<p>您有以下借阅预约，请注意预约日期，在预约日期之前前往书店进行借阅登记。</p>" +
+                    "<div style=\"width: fit-content; font-family: sans-serif;\">" +
+                    "  <h1 style=\"padding: 5px; color: #353b48; font: 18px system-ui; text-align: center; border-bottom: 1.5px solid #bdc3c7;\">借阅预约信息</h1>" +
+                    "  <p>书籍名称：" + bookName + "</p>" +
+                    "  <p>ISBN：" + isbn + "</p>" +
+                    "  <p>借阅预约日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + reserveDate + "</span></p>" +
+                    "</div>";
+            MailUtil.send(email, "【书店借阅平台】", content, true);
+        }
+        if (status.equals(BorrowStatusConstant.BORROW)) {
+
+        }
+        if (status.equals(BorrowStatusConstant.RETURN_OVERDUE)) {
+
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.admin.entity.Borrow;
+import org.example.admin.pojo.dto.RemindDTO;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.common.result.PageResult;
@@ -47,5 +48,12 @@ public interface IBorrowService extends IService<Borrow> {
      * @param id 书籍借阅记录ID
      */
     void borrowRegister(String id);
+
+    /**
+     * 根据借阅记录状态发送相应的提醒信息给用户
+     *
+     * @param remindDTO {@link RemindDTO}
+     */
+    void remindByBorrowStatus(RemindDTO remindDTO);
 
 }

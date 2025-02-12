@@ -10,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.client.entity.Book;
 import org.example.client.entity.Category;
+import org.example.client.entity.Publisher;
 import org.example.client.mapper.BookMapper;
 import org.example.client.mapper.CategoryMapper;
+import org.example.client.mapper.PublisherMapper;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BookVO;
 import org.example.client.service.IBookService;
@@ -41,6 +43,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
 
     private final BookMapper bookMapper;
     private final CategoryMapper categoryMapper;
+    private final PublisherMapper publisherMapper;
 
     @Override
     public PageResult<BookVO> pageQuery(PageQuery pageQuery) {
@@ -65,7 +68,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
             }
         }
         LambdaQueryWrapper<Book> lambdaQueryWrapper = queryWrapper.lambda()
-                .select(Book::getId, Book::getCategoryId, Book::getName, Book::getImgUrl, Book::getIsbn, Book::getAuthor, Book::getPublisher, Book::getDescription, Book::getStock);
+                .select(Book::getId, Book::getCategoryId, Book::getName, Book::getImgUrl, Book::getIsbn, Book::getAuthor, Book::getPublisherId, Book::getDescription, Book::getStock);
         // 分页查询
         try {
             bookMapper.selectPage(page, lambdaQueryWrapper);
@@ -74,6 +77,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);
         }
         List<Book> records = page.getRecords();
+
         // 查询所有书籍类别名称
         LambdaQueryWrapper<Category> queryWrapper1 = new LambdaQueryWrapper<Category>()
                 .select(Category::getId, Category::getName);
@@ -82,11 +86,21 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         for (Category category : categories) {
             categoryMap.put(category.getId(), category.getName());
         }
+        // 查询所有出版社名称
+        LambdaQueryWrapper<Publisher> queryWrapper2 = new LambdaQueryWrapper<Publisher>()
+                .select(Publisher::getId, Publisher::getName);
+        List<Publisher> publishers = publisherMapper.selectList(queryWrapper2);
+        Map<String, String> publisherMap = new HashMap<>();
+        for (Publisher publisher : publishers) {
+            publisherMap.put(publisher.getId(), publisher.getName());
+        }
+
         //转化为VO
         List<BookVO> bookVOList = records.stream().map(book -> {
             BookVO bookVO = new BookVO();
             BeanUtil.copyProperties(book, bookVO);
             bookVO.setCategoryName(categoryMap.get(book.getCategoryId()));
+            bookVO.setPublisherName(publisherMap.get(book.getPublisherId()));
             return bookVO;
         }).collect(Collectors.toList());
 

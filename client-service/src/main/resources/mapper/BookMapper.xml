@@ -6,11 +6,11 @@
     <resultMap id="BaseResultMap" type="org.example.client.entity.Book">
         <id column="id" property="id" />
         <result column="category_id" property="categoryId" />
+        <result column="publisher_id" property="publisherId" />
         <result column="name" property="name" />
         <result column="img_url" property="imgUrl" />
         <result column="isbn" property="isbn" />
         <result column="author" property="author" />
-        <result column="publisher" property="publisher" />
         <result column="description" property="description" />
         <result column="stock" property="stock" />
         <result column="create_time" property="createTime" />
@@ -19,7 +19,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, category_id, name, img_url, isbn, author, publisher, description, stock, create_time, update_time
+        id, category_id, publisher_id, name, img_url, isbn, author, description, stock, create_time, update_time
     </sql>
 
 </mapper>

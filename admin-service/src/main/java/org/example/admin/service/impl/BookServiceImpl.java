@@ -11,9 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Book;
 import org.example.admin.entity.Borrow;
 import org.example.admin.entity.Category;
+import org.example.admin.entity.Publisher;
 import org.example.admin.mapper.BookMapper;
 import org.example.admin.mapper.BorrowMapper;
 import org.example.admin.mapper.CategoryMapper;
+import org.example.admin.mapper.PublisherMapper;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
 import org.example.admin.pojo.query.PageQuery;
@@ -53,6 +55,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
     private final CommonClient commonClient;
     private final BookMapper bookMapper;
     private final CategoryMapper categoryMapper;
+    private final PublisherMapper publisherMapper;
     private final BorrowMapper borrowMapper;
 
     @Override
@@ -94,12 +97,21 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         for (Category category : categories) {
             categoryMap.put(category.getId(), category.getName());
         }
+        // 查询所有出版社名称
+        LambdaQueryWrapper<Publisher> queryWrapper2 = new LambdaQueryWrapper<Publisher>()
+                .select(Publisher::getId, Publisher::getName);
+        List<Publisher> publishers = publisherMapper.selectList(queryWrapper2);
+        Map<String, String> publisherMap = new HashMap<>();
+        for (Publisher publisher : publishers) {
+            publisherMap.put(publisher.getId(), publisher.getName());
+        }
 
         //转化为VO
         List<BookVO> bookVOList = records.stream().map(book -> {
             BookVO bookVO = new BookVO();
             BeanUtil.copyProperties(book, bookVO);
             bookVO.setCategoryName(categoryMap.get(book.getCategoryId()));
+            bookVO.setPublisherName(publisherMap.get(book.getPublisherId()));
             return bookVO;
         }).collect(Collectors.toList());
 

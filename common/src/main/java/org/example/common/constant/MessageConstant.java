@@ -28,6 +28,7 @@ public class MessageConstant {
 
     public static final String EMAIL_ALREADY_EXISTS = "该邮箱已被使用";
     public static final String CATEGORY_ALREADY_EXISTS = "书籍类别已存在";
+    public static final String PUBLISHER_ALREADY_EXISTS = "出版社已存在";
     public static final String ISBN_ALREADY_EXISTS = "ISBN已存在";
     public static final String ACCOUNT_ALREADY_EXISTS = "账号已存在";
     public static final String PHONE_ALREADY_EXISTS = "电话号码已存在";
@@ -44,8 +45,8 @@ public class MessageConstant {
     public static final String INVALID_RETURN_DATE = "归还日期不能是一个过去的日期";
     public static final String INVALID_BOOK_NAME = "书名中不能出现除了空格以外的空白字符；不能出现连续的空格；不能以空白字符开头或结尾";
     public static final String INVALID_AUTHOR_NAME = "作者名称中不能出现除了空格以外的空白字符；不能出现连续的空格；不能以空白字符开头或结尾";
-    public static final String INVALID_PUBLISHER = "出版社名称中不能出现除了空格以外的空白字符；不能出现连续的空格；不能以空白字符开头或结尾";
     public static final String INVALID_CATEGORY_NAME = "书籍类别名应为2~16位，并且不含空白字符";
+    public static final String INVALID_PUBLISHER_NAME = "出版社名称中不能出现除了空格以外的空白字符；不能出现连续的空格；不能以空白字符开头或结尾";
     public static final String INVALID_CAPTCHA_TIMEOUT = "验证码的有效时长必须为正数或0";
     public static final String RETURN_DATE_BEFORE_RESERVATION = "归还日期不能早于预定日期";
 
@@ -58,6 +59,7 @@ public class MessageConstant {
     public static final String DELETE_BORROW_IS_NOT_ALLOWED = "状态不为“已取消”或“已归还”的借阅记录不允许进行删除操作";
     public static final String DELETE_BOOK_IS_NOT_ALLOWED = "已被用户预约借阅或正在被用户借阅中的书籍不允许进行删除操作";
     public static final String BOOK_REFERENCES_CATEGORY = "不能删除，有书籍信息关联了当前类别";
+    public static final String BOOK_REFERENCES_PUBLISHER = "不能删除，有书籍信息关联了当前出版社";
     public static final String BOOK_STOCK_NOT_ENOUGH = "不能删除，该书籍当前库存不足";
     public static final String MISSING_UPDATE_VALUE = "没有填写更改值";
     public static final String ACCOUNT_LOCKED = "当前账号被锁定";

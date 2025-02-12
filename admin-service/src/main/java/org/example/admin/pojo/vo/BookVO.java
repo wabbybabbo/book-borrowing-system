@@ -20,6 +20,9 @@ public class BookVO implements Serializable {
     @Schema(description = "书籍类别ID")
     private String categoryId;
 
+    @Schema(description = "出版社ID")
+    private String publisherId;
+
     @Schema(description = "书籍类名")
     private String categoryName;
 
@@ -35,8 +38,8 @@ public class BookVO implements Serializable {
     @Schema(description = "作者")
     private String author;
 
-    @Schema(description = "出版社")
-    private String publisher;
+    @Schema(description = "出版社名称")
+    private String publisherName;
 
     @Schema(description = "描述")
     private String description;

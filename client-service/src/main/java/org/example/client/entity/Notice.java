@@ -1,4 +1,4 @@
-package org.example.admin.entity;
+package org.example.client.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -15,49 +15,34 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 书籍信息表
+ * 通知消息表
  * </p>
  *
  * @author zhengjunpeng
- * @since 2024-04-07
+ * @since 2025-02-13
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("book")
-@Schema(description = "书籍信息表")
-public class Book implements Serializable {
+@TableName("notice")
+@Schema(description="通知消息表")
+public class Notice implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @Schema(description = "通知消息记录ID")
     @TableId(value = "id", type = IdType.ASSIGN_ID)
-    @Schema(description = "书籍ID")
     private String id;
 
-    @Schema(description = "书籍类别ID")
-    private String categoryId;
+    @Schema(description = "标题")
+    private String title;
 
-    @Schema(description = "出版社ID")
-    private String publisherId;
+    @Schema(description = "通知消息内容")
+    private String content;
 
-    @Schema(description = "书籍名称")
-    private String name;
-
-    @Schema(description = "书籍封面图片文件路径")
-    private String imgUrl;
-
-    @Schema(description = "国际标准书号")
-    private String isbn;
-
-    @Schema(description = "作者")
-    private String author;
-
-    @Schema(description = "描述")
-    private String description;
-
-    @Schema(description = "库存数量")
-    private Integer stock;
+    @Schema(description = "是否已发布：0-未发布，1-已发布")
+    private Boolean isPublish;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "创建时间")

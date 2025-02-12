@@ -62,6 +62,7 @@ public class BorrowTask {
                 .in(User::getId, userIdList);
         List<String> emailList = userMapper.selectList(queryWrapper2).stream().map(User::getEmail).toList();
         for (String email : emailList) {
+            //todo 邮件内容中加上“借阅书籍名称”、“ISBN”、“借阅日期”、“预计归还日期”
             MailUtil.send(email, "【书店借阅平台】", "您有未归还的借阅书籍，请尽快归还。", true);
         }
     }

@@ -27,4 +27,5 @@ auth:
     - /client-service/user/register/**
     - /client-service/book/page
     - /client-service/category
+    - /client-service/publisher
     - /**/api-docs

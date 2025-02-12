@@ -21,7 +21,7 @@ public class RegexpConstant {
      */
     public static final String BOOK_NAME = "^(\\S+[ ]?)+\\S$";
     public static final String ISBN = "^(978|979)\\d{10}$";
-    public static final String AUTHOR = "^(\\S+[ ]?)+\\S$";
-    public static final String PUBLISHER = "^(\\S+[ ]?)+\\S$";
+    public static final String AUTHOR_NAME = "^(\\S+[ ]?)+\\S$";
+    public static final String PUBLISHER_NAME = "^(\\S+[ ]?)+\\S$";
     public static final String CATEGORY_NAME = "^\\S{2,16}$";
 }

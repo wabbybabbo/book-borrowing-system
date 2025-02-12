@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.admin.pojo.dto.RemindDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.Borrow;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
@@ -73,6 +74,14 @@ public class BorrowController {
     public Result<Object> returnRegister(@RequestBody @Valid ReturnRegisterDTO returnRegisterDTO) {
         log.info("[log] 归还登记 {}", returnRegisterDTO);
         borrowService.returnRegister(returnRegisterDTO);
+        return Result.success();
+    }
+
+    @GetMapping("/remind")
+    @Operation(summary = "手动发送提醒消息给用户")
+    public Result<Object> remind(@ParameterObject @Valid RemindDTO remindDTO) {
+        log.info("[log] 手动发送提醒消息给用户 {}", remindDTO);
+        borrowService.remindByBorrowStatus(remindDTO);
         return Result.success();
     }
 
