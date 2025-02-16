@@ -7,7 +7,7 @@ public class BorrowStatusConstant {
 
     public static final String RESERVED = "reserved";
     public static final String CANCELLED = "cancelled";
-    public static final String BORROW = "borrow";
+    public static final String BORROWING = "borrowing";
     public static final String RETURNED = "returned";
     public static final String RETURN_OVERDUE = "return_overdue";
     public static final String RESERVE_OVERDUE = "reserve_overdue";

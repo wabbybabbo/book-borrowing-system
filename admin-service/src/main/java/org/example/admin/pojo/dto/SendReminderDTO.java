@@ -10,11 +10,11 @@ import java.time.LocalDate;
 import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 
 /**
- * 手动发送提醒消息给用户时传递的数据模型
+ * 发送提醒消息给用户时传递的数据模型
  */
 @Data
-@Schema(description = "手动发送提醒消息给用户时传递的数据模型")
-public class RemindDTO {
+@Schema(description = "发送提醒消息给用户时传递的数据模型")
+public class SendReminderDTO {
 
     @NotNull(message = MessageConstant.FIELD_NOT_NULL)
     @Schema(description = "借阅记录ID", requiredMode = REQUIRED)

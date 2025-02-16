@@ -22,6 +22,8 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 借阅记录表 前端控制器
@@ -54,13 +56,17 @@ public class BorrowController {
         return Result.success(pageResult);
     }
 
-//    @GetMapping
-//    @Operation(summary = "查询用户所有的借阅记录")
-//    public Result<List<BorrowVO>> getBorrows() {
-//        log.info("[log] 查询用户所有的借阅记录");
-//        List<BorrowVO> borrows = borrowService.getBorrows();
-//        return Result.success(borrows);
-//    }
+    @GetMapping
+    @Operation(summary = "查询用户的所有借阅记录")
+    public Result<List<BorrowVO>> getBorrows(
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id) {
+        log.info("[log] 查询用户的所有借阅记录");
+        List<BorrowVO> borrows = borrowService.getBorrows(id);
+        return Result.success(borrows);
+    }
 
     @PostMapping
     @Operation(summary = "新增用户的借阅预约记录")
@@ -105,7 +111,7 @@ public class BorrowController {
     public Result<Object> batchDeleteBorrows(
             @RequestBody @Valid
             BatchDeleteBorrowsDTO batchDeleteBorrowsDTO) {
-        log.info("[log] 批量删除书籍借阅记 {}", batchDeleteBorrowsDTO);
+        log.info("[log] 批量删除书籍借阅记录 {}", batchDeleteBorrowsDTO);
         borrowService.batchDeleteBorrows(batchDeleteBorrowsDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }

@@ -29,7 +29,7 @@ public interface IBorrowService extends IService<Borrow> {
     PageResult<BorrowVO> pageQuery(String id, PageQuery pageQuery);
 
     /**
-     * 查询用户所有的借阅记录
+     * 查询用户的所有借阅记录
      *
      * @param id 用户ID
      * @return 用户的借阅记录列表

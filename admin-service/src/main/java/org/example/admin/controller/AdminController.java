@@ -114,7 +114,7 @@ public class AdminController {
             String id) {
         log.info("[log] 禁用管理员账号 id: {}", id);
         adminService.disableAccount(id);
-        return Result.success(MessageConstant.DISABLE_SUCCESS);
+        return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
 
     @PutMapping("/disable/batch")
@@ -125,7 +125,7 @@ public class AdminController {
             BatchDisableAccountsDTO batchDisableAccountsDTO) {
         log.info("[log] 批量禁用管理员账号 {}", batchDisableAccountsDTO);
         adminService.batchDisableAccounts(batchDisableAccountsDTO.getIds());
-        return Result.success(MessageConstant.DISABLE_SUCCESS);
+        return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
 
     @PutMapping("/enable")
@@ -138,7 +138,7 @@ public class AdminController {
             String id) {
         log.info("[log] 解禁管理员账号 id: {}", id);
         adminService.enableAccount(id);
-        return Result.success(MessageConstant.ENABLE_SUCCESS);
+        return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
 
     @PutMapping("/enable/batch")
@@ -149,7 +149,7 @@ public class AdminController {
             BatchEnableAccountsDTO batchEnableAccountsDTO) {
         log.info("[log] 批量解禁管理员账号 {}", batchEnableAccountsDTO);
         adminService.batchEnableAccounts(batchEnableAccountsDTO.getIds());
-        return Result.success(MessageConstant.ENABLE_SUCCESS);
+        return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
 
 }

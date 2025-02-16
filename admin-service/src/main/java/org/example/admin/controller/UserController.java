@@ -71,7 +71,7 @@ public class UserController {
             String id) {
         log.info("[log] 禁用用户账号 id: {}", id);
         userService.disableAccount(id);
-        return Result.success(MessageConstant.DISABLE_SUCCESS);
+        return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
 
     @PutMapping("/disable/batch")
@@ -81,7 +81,7 @@ public class UserController {
             BatchDisableAccountsDTO batchDisableAccountsDTO) {
         log.info("[log] 批量禁用用户账号 {}", batchDisableAccountsDTO);
         userService.batchDisableAccounts(batchDisableAccountsDTO.getIds());
-        return Result.success(MessageConstant.DISABLE_SUCCESS);
+        return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
 
     @PutMapping("/enable")
@@ -93,7 +93,7 @@ public class UserController {
             String id) {
         log.info("[log] 解禁用户账号 id: {}", id);
         userService.enableAccount(id);
-        return Result.success(MessageConstant.ENABLE_SUCCESS);
+        return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
 
     @PutMapping("/enable/batch")
@@ -103,7 +103,7 @@ public class UserController {
             BatchEnableAccountsDTO batchEnableAccountsDTO) {
         log.info("[log] 批量解禁用户账号 {}", batchEnableAccountsDTO);
         userService.batchEnableAccounts(batchEnableAccountsDTO.getIds());
-        return Result.success(MessageConstant.ENABLE_SUCCESS);
+        return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
 
 }

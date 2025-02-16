@@ -2,7 +2,6 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.example.admin.entity.Borrow;
-import org.example.admin.pojo.dto.RemindDTO;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.common.result.PageResult;
@@ -28,7 +27,7 @@ public interface IBorrowService extends IService<Borrow> {
     PageResult<Borrow> pageQuery(PageQuery pageQuery);
 
     /**
-     * 查询用户的借阅记录
+     * 查询用户的所有借阅记录
      *
      * @param id 用户ID
      * @return {@link List<Borrow>}
@@ -50,10 +49,13 @@ public interface IBorrowService extends IService<Borrow> {
     void borrowRegister(String id);
 
     /**
-     * 根据借阅记录状态发送相应的提醒信息给用户
-     *
-     * @param remindDTO {@link RemindDTO}
+     * 将状态为'借阅中'并且超过预计归还日期的借阅记录的状态更新为'未按时归还'
      */
-    void remindByBorrowStatus(RemindDTO remindDTO);
+    void updateBorrowingBorrows();
+
+    /**
+     * 将状态为'已预约'并且超过预约日期的借阅记录的状态更新为'预约已失效'，并更新对应书籍库存
+     */
+    void updateReservedBorrows();
 
 }

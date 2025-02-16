@@ -166,7 +166,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         String isbn = bookMapper.selectOne(queryWrapper1).getIsbn();
         LambdaQueryWrapper<Borrow> queryWrapper2 = new LambdaQueryWrapper<Borrow>()
                 .eq(Borrow::getIsbn, isbn)
-                .in(Borrow::getStatus, BorrowStatusConstant.RESERVED, BorrowStatusConstant.BORROW, BorrowStatusConstant.RETURN_OVERDUE);
+                .in(Borrow::getStatus, BorrowStatusConstant.RESERVED, BorrowStatusConstant.BORROWING, BorrowStatusConstant.RETURN_OVERDUE);
         if (borrowMapper.exists(queryWrapper2)) {
             log.info("[log] 删除书籍信息失败 msg: {}", MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);
             throw new NotAllowedException(MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);
@@ -187,7 +187,7 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements IB
         List<String> isbnList = bookMapper.selectList(queryWrapper1).stream().map(Book::getIsbn).toList();
         LambdaQueryWrapper<Borrow> queryWrapper2 = new LambdaQueryWrapper<Borrow>()
                 .in(Borrow::getIsbn, isbnList)
-                .in(Borrow::getStatus, BorrowStatusConstant.RESERVED, BorrowStatusConstant.BORROW, BorrowStatusConstant.RETURN_OVERDUE);
+                .in(Borrow::getStatus, BorrowStatusConstant.RESERVED, BorrowStatusConstant.BORROWING, BorrowStatusConstant.RETURN_OVERDUE);
         if (borrowMapper.exists(queryWrapper2)) {
             log.info("[log] 批量删除书籍信息失败 msg: {}", MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);
             throw new NotAllowedException(MessageConstant.DELETE_BOOK_IS_NOT_ALLOWED);

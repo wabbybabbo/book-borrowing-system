@@ -155,7 +155,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
 
     @Override
     public void deleteBorrow(String id) {
-        // 查询该借阅记录的借阅状态
+        // 查询该借阅记录的状态
         LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
                 .select(Borrow::getIsbn, Borrow::getStatus)
                 .eq(Borrow::getId, id);
@@ -177,7 +177,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
     @Override
     @Transactional
     public void cancelBorrow(String id) {
-        // 查询该借阅记录的借阅状态
+        // 查询该借阅记录的状态
         LambdaQueryWrapper<Borrow> queryWrapper = new LambdaQueryWrapper<Borrow>()
                 .select(Borrow::getIsbn, Borrow::getStatus)
                 .eq(Borrow::getId, id);

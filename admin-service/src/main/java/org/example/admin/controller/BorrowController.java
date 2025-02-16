@@ -6,12 +6,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.admin.pojo.dto.RemindDTO;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.Borrow;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
@@ -19,6 +19,8 @@ import org.example.common.result.Result;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -46,18 +48,18 @@ public class BorrowController {
         return Result.success(pageResult);
     }
 
-//    @GetMapping
-//    @Operation(summary = "查询用户的借阅记录")
-//    public Result<List<Borrow>> getBorrows(
-//            @Parameter(description = "用户ID")
-//            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
-//            Integer id) {
-//        log.info("[log] 查询用户的借阅记录，id: {}", id);
-//        List<Borrow> borrows = borrowService.getBorrows(id);
-//        return Result.success(borrows);
-//    }
+    @GetMapping
+    @Operation(summary = "查询用户的所有借阅记录")
+    public Result<List<Borrow>> getBorrows(
+            @Parameter(description = "用户ID")
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            String id) {
+        log.info("[log] 查询用户的所有借阅记录，id: {}", id);
+        List<Borrow> borrows = borrowService.getBorrows(id);
+        return Result.success(borrows);
+    }
 
-    @PutMapping
+    @PutMapping("/register/borrowing")
     @Operation(summary = "借阅登记")
     public Result<Object> borrowRegister(
             @RequestParam
@@ -66,23 +68,23 @@ public class BorrowController {
             String id) {
         log.info("[log] 借阅登记 id: {}", id);
         borrowService.borrowRegister(id);
-        return Result.success();
+        return Result.success(MessageConstant.BORROW_REGISTER_SUCCESS);
     }
 
-    @PutMapping("/return")
+    @PutMapping("/register/returned")
     @Operation(summary = "归还登记")
     public Result<Object> returnRegister(@RequestBody @Valid ReturnRegisterDTO returnRegisterDTO) {
         log.info("[log] 归还登记 {}", returnRegisterDTO);
         borrowService.returnRegister(returnRegisterDTO);
-        return Result.success();
+        return Result.success(MessageConstant.RETURN_REGISTER_SUCCESS);
     }
 
-    @GetMapping("/remind")
-    @Operation(summary = "手动发送提醒消息给用户")
-    public Result<Object> remind(@ParameterObject @Valid RemindDTO remindDTO) {
-        log.info("[log] 手动发送提醒消息给用户 {}", remindDTO);
-        borrowService.remindByBorrowStatus(remindDTO);
-        return Result.success();
+    @PutMapping("/task/update-borrows")
+    @Operation(summary = "触发定时任务-更新借阅记录的状态")
+    public void updateBorrows() {
+        log.info("[log] 触发定时任务-更新借阅记录的状态");
+        borrowService.updateBorrowingBorrows();
+        borrowService.updateReservedBorrows();
     }
 
 }
