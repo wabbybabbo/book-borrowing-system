@@ -15,7 +15,6 @@ import org.example.admin.pojo.dto.CreateUserDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IUserService;
 import org.example.common.client.CommonClient;
-import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.AlreadyExistsException;
 import org.example.common.exception.NotFoundException;
@@ -124,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 禁用用户账号
         User user = new User();
         user.setId(id);
-        user.setStatus(AccountStatusConstant.DISABLE);
+        user.setStatus(false);
         userMapper.updateById(user);
     }
 
@@ -133,7 +132,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         // 解禁用户账号
         User user = new User();
         user.setId(id);
-        user.setStatus(AccountStatusConstant.ENABLE);
+        user.setStatus(true);
         userMapper.updateById(user);
     }
 
@@ -141,7 +140,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void batchDisableAccounts(List<String> ids) {
         // 批量禁用用户账号
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<User>()
-                .set(User::getStatus, AccountStatusConstant.DISABLE)
+                .set(User::getStatus, false)
                 .in(User::getId, ids);
         userMapper.update(updateWrapper);
     }
@@ -150,7 +149,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void batchEnableAccounts(List<String> ids) {
         // 批量解禁用户账号
         LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<User>()
-                .set(User::getStatus, AccountStatusConstant.ENABLE)
+                .set(User::getStatus, true)
                 .in(User::getId, ids);
         userMapper.update(updateWrapper);
     }

@@ -1,4 +1,4 @@
-package org.admin;
+package org.example.client;
 
 public class BookApplicationTest {
 

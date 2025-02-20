@@ -23,7 +23,6 @@ import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.AdminLoginVO;
 import org.example.admin.service.IAdminService;
 import org.example.common.client.CommonClient;
-import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.ClaimConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.exception.*;
@@ -113,7 +112,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
             throw new NotFoundException(MessageConstant.PASSWORD_ERROR);
         }
         // 判断该账号是否被禁用
-        if (admin.getStatus().equals(AccountStatusConstant.DISABLE)) {
+        if (!admin.getStatus()) {
             log.info("[log] 该管理员账号被禁用 status: {}, msg: {}", admin.getStatus(), MessageConstant.ACCOUNT_LOCKED);
             throw new CheckException(MessageConstant.ACCOUNT_LOCKED);
         }
@@ -258,7 +257,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         // 禁用管理员账号
         Admin admin = new Admin();
         admin.setId(id);
-        admin.setStatus(AccountStatusConstant.DISABLE);
+        admin.setStatus(false);
         adminMapper.updateById(admin);
     }
 
@@ -267,7 +266,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         // 解禁管理员账号
         Admin admin = new Admin();
         admin.setId(id);
-        admin.setStatus(AccountStatusConstant.ENABLE);
+        admin.setStatus(true);
         adminMapper.updateById(admin);
     }
 
@@ -275,7 +274,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public void batchDisableAccounts(List<String> ids) {
         // 批量禁用管理员账号
         LambdaUpdateWrapper<Admin> updateWrapper = new LambdaUpdateWrapper<Admin>()
-                .set(Admin::getStatus, AccountStatusConstant.DISABLE)
+                .set(Admin::getStatus, false)
                 .in(Admin::getId, ids);
         adminMapper.update(updateWrapper);
     }
@@ -284,7 +283,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public void batchEnableAccounts(List<String> ids) {
         // 批量解禁管理员账号
         LambdaUpdateWrapper<Admin> updateWrapper = new LambdaUpdateWrapper<Admin>()
-                .set(Admin::getStatus, AccountStatusConstant.ENABLE)
+                .set(Admin::getStatus, true)
                 .in(Admin::getId, ids);
         adminMapper.update(updateWrapper);
     }

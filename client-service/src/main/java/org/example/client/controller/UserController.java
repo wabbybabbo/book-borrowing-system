@@ -44,7 +44,7 @@ public class UserController {
 
     @GetMapping(value = "/register/captcha")
     @Operation(summary = "发送验证码到用户邮箱，并设置验证码有效时长")
-    public void sendCaptchaToEmail(
+    public Result<Object> sendCaptchaToEmail(
             @Email(regexp = RegexpConstant.EMAIL, message = MessageConstant.INVALID_EMAIL)
             @Parameter(description = "邮箱", required = true)
             String email,
@@ -53,6 +53,7 @@ public class UserController {
             Long timeout) {
         log.info("[log] 发送验证码到用户邮箱，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
         userService.sendCaptchaToEmail(email, timeout);
+        return Result.success();
     }
 
     @PostMapping("/register")

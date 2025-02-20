@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,7 @@ public class BorrowController {
     @Operation(summary = "借阅登记")
     public Result<Object> borrowRegister(
             @RequestParam
-            @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             @Parameter(description = "书籍借阅记录ID", required = true)
             String id) {
         log.info("[log] 借阅登记 id: {}", id);

@@ -15,7 +15,9 @@ import org.example.admin.pojo.dto.SendReminderDTO;
 import org.example.admin.service.IReminderService;
 import org.example.common.constant.BorrowStatusConstant;
 import org.example.common.constant.MessageConstant;
+import org.example.common.constant.RabbitMQConstant;
 import org.example.common.exception.NotAllowedException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,29 +39,29 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
     private final ReminderMapper reminderMapper;
     private final BorrowMapper borrowMapper;
     private final UserMapper userMapper;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public void sendReminder(SendReminderDTO sendReminderDTO) {
+        LambdaQueryWrapper<Borrow> queryWrapper1 = new LambdaQueryWrapper<Borrow>()
+                .select(Borrow::getStatus, Borrow::getBookName, Borrow::getIsbn, Borrow::getReserveDate, Borrow::getReturnDate)
+                .eq(Borrow::getId, sendReminderDTO.getId());
+        Borrow borrow = borrowMapper.selectOne(queryWrapper1);
         String userId = sendReminderDTO.getUserId();
-        String status = sendReminderDTO.getStatus();
-        String bookName = sendReminderDTO.getBookName();
-        String isbn = sendReminderDTO.getIsbn();
-        LocalDate reserveDate = sendReminderDTO.getReserveDate();
-        LocalDate returnDate = sendReminderDTO.getReturnDate();
         String title = null;
         String content = null;
 
         // 根据借阅记录状态发送相应的提醒信息给用户
-        switch (status) {
+        switch (borrow.getStatus()) {
             case BorrowStatusConstant.RESERVED -> {
                 title = "借阅预约提醒";
                 content = "<p>您有以下借阅预约，请注意预约日期，在预约日期之前前往书店进行借阅登记。</p>" +
                         "<div style=\"margin-left:1rem; width: fit-content; font-family: sans-serif;\">" +
                         "  <h1 style=\"padding: 5px; color: #353b48; font: 18px system-ui; text-align: center; border-bottom: 1.5px solid #bdc3c7;\">书籍借阅信息</h1>" +
-                        "  <p>书籍名称：" + bookName + "</p>" +
-                        "  <p>ISBN：" + isbn + "</p>" +
-                        "  <p>借阅预约日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + reserveDate + "</span></p>" +
-                        "  <p>预计归还日期：" + returnDate + "</p>" +
+                        "  <p>书籍名称：" + borrow.getBookName() + "</p>" +
+                        "  <p>ISBN：" + borrow.getIsbn() + "</p>" +
+                        "  <p>借阅预约日期：<span style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">" + borrow.getReserveDate() + "</span></p>" +
+                        "  <p>预计归还日期：" + borrow.getReturnDate() + "</p>" +
                         "</div>";
             }
             case BorrowStatusConstant.BORROWING -> {
@@ -67,10 +69,10 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
                 content = "<p>您有以下借阅记录，请注意归还日期，在归还日期之前前往书店进行归还登记。</p>" +
                         "<div style=\"margin-left:1rem; width: fit-content; font-family: sans-serif;\">" +
                         "  <h1 style=\"padding: 5px; color: #353b48; font: 18px system-ui; text-align: center; border-bottom: 1.5px solid #bdc3c7;\">书籍借阅信息</h1>" +
-                        "  <p>书籍名称：" + bookName + "</p>" +
-                        "  <p>ISBN：" + isbn + "</p>" +
-                        "  <p>借阅预约日期：" + reserveDate + "</p>" +
-                        "  <p>预计归还日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + returnDate + "</span></p>" +
+                        "  <p>书籍名称：" + borrow.getBookName() + "</p>" +
+                        "  <p>ISBN：" + borrow.getIsbn() + "</p>" +
+                        "  <p>借阅预约日期：" + borrow.getReserveDate() + "</p>" +
+                        "  <p>预计归还日期：<span style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">" + borrow.getReturnDate() + "</span></p>" +
                         "</div>";
             }
             case BorrowStatusConstant.RETURN_OVERDUE -> {
@@ -78,10 +80,10 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
                 content = "<p>您有未按时归还书籍的借阅记录，请尽快前往书店进行归还登记！</p>" +
                         "<div style=\"margin-left:1rem; width: fit-content; font-family: sans-serif;\">" +
                         "  <h1 style=\"padding: 5px; color: #353b48; font: 18px system-ui; text-align: center; border-bottom: 1.5px solid #bdc3c7;\">书籍借阅信息</h1>" +
-                        "  <p>书籍名称：" + bookName + "</p>" +
-                        "  <p>ISBN：" + isbn + "</p>" +
-                        "  <p>借阅预约日期：" + reserveDate + "</p>" +
-                        "  <p>预计归还日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + returnDate + "</span></p>" +
+                        "  <p>书籍名称：" + borrow.getBookName() + "</p>" +
+                        "  <p>ISBN：" + borrow.getIsbn() + "</p>" +
+                        "  <p>借阅预约日期：" + borrow.getReserveDate() + "</p>" +
+                        "  <p>预计归还日期：<span style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">" + borrow.getReturnDate() + "</span></p>" +
                         "</div>";
             }
             default -> {
@@ -97,11 +99,14 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
         reminderMapper.insert(reminder);
 
         // 发送邮件给用户
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+        LambdaQueryWrapper<User> queryWrapper2 = new LambdaQueryWrapper<User>()
                 .select(User::getEmail)
                 .eq(User::getId, userId);
-        String email = userMapper.selectOne(queryWrapper).getEmail();
+        String email = userMapper.selectOne(queryWrapper2).getEmail();
         MailUtil.send(email, "【书店借阅平台】" + title, content, true);
+
+        // 发送消息，触发前端的消息提醒
+        rabbitTemplate.convertAndSend(RabbitMQConstant.REMINDER_DIRECT_EXCHANGE, userId, "");
     }
 
     @Override
@@ -121,7 +126,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
                         "  <h1 style=\"padding: 5px; color: #353b48; font: 18px system-ui; text-align: center; border-bottom: 1.5px solid #bdc3c7;\">书籍借阅信息</h1>" +
                         "  <p>书籍名称：" + borrow.getBookName() + "</p>" +
                         "  <p>ISBN：" + borrow.getIsbn() + "</p>" +
-                        "  <p>借阅预约日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + borrow.getReserveDate() + "</span></p>" +
+                        "  <p>借阅预约日期：<span style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">" + borrow.getReserveDate() + "</span></p>" +
                         "  <p>预计归还日期：" + borrow.getReturnDate() + "</p>" +
                         "</div>";
 
@@ -160,7 +165,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
                         "  <p>书籍名称：" + borrow.getBookName() + "</p>" +
                         "  <p>ISBN：" + borrow.getIsbn() + "</p>" +
                         "  <p>借阅预约日期：" + borrow.getReserveDate() + "</p>" +
-                        "  <p>预计归还日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + borrow.getReturnDate() + "</span></p>" +
+                        "  <p>预计归还日期：<span style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">" + borrow.getReturnDate() + "</span></p>" +
                         "</div>";
 
                 // 新增用户提醒消息
@@ -197,7 +202,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
                         "  <h1 style=\"padding: 5px; color: #353b48; font: 18px system-ui; text-align: center; border-bottom: 1.5px solid #bdc3c7;\">书籍借阅信息</h1>" +
                         "  <p>书籍名称：" + borrow.getBookName() + "</p>" +
                         "  <p>ISBN：" + borrow.getIsbn() + "</p>" +
-                        "  <p>借阅预约日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + borrow.getReserveDate() + "</span></p>" +
+                        "  <p>借阅预约日期：<span style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">" + borrow.getReserveDate() + "</span></p>" +
                         "  <p>预计归还日期：" + borrow.getReturnDate() + "</p>" +
                         "</div>";
 
@@ -235,7 +240,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
                         "  <p>书籍名称：" + borrow.getBookName() + "</p>" +
                         "  <p>ISBN：" + borrow.getIsbn() + "</p>" +
                         "  <p>借阅预约日期：" + borrow.getReserveDate() + "</p>" +
-                        "  <p>预计归还日期：<span style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">" + borrow.getReturnDate() + "</span></p>" +
+                        "  <p>预计归还日期：<span style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">" + borrow.getReturnDate() + "</span></p>" +
                         "</div>";
 
                 // 新增用户提醒消息

@@ -36,7 +36,7 @@ public class ReminderController {
     public Result<Object> sendReminder(@RequestBody @Valid SendReminderDTO sendReminderDTO) {
         log.info("[log] 手动发送提醒消息给用户 {}", sendReminderDTO);
         reminderService.sendReminder(sendReminderDTO);
-        return Result.success(MessageConstant.SEND_REMINDER_SUCCESS);
+        return Result.success(MessageConstant.SEND_SUCCESS);
     }
 
     @PostMapping("/task/send-reminders")

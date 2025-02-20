@@ -13,4 +13,12 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ReminderMapper extends BaseMapper<Reminder> {
 
+    /**
+     * 新增用户提醒消息
+     *
+     * @param reminder {@link Reminder}
+     * @return 用户提醒消息ID
+     */
+    String insertReminder(Reminder reminder);
+
 }

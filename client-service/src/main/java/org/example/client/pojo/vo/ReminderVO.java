@@ -7,23 +7,23 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 查询用户提醒消息时响应的数据模型
+ * 查询用户的提醒消息时响应的数据模型
  */
 @Data
-@Schema(description = "查询用户提醒消息时响应的数据模型")
+@Schema(description = "查询用户的提醒消息时响应的数据模型")
 public class ReminderVO {
 
-    @Schema(description = "提醒消息记录ID")
+    @Schema(description = "用户的提醒消息记录ID")
     private String id;
 
     @Schema(description = "标题")
     private String title;
 
-    @Schema(description = "提醒消息内容")
+    @Schema(description = "内容")
     private String content;
 
-    @Schema(description = "是否已读：0-未读（默认），1-已读")
-    private Boolean isRead;
+    @Schema(description = "是否已读：false-未读（默认），true-已读")
+    private Boolean status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "消息接收时间")

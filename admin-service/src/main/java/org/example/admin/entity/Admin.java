@@ -47,8 +47,8 @@ public class Admin implements Serializable {
     @Schema(description = "头像图片文件路径")
     private String imgUrl;
 
-    @Schema(description = "性别")
-    private String gender;
+    @Schema(description = "性别：0-男，1-女")
+    private Boolean gender;
 
     @Schema(description = "电话号码")
     private String phone;
@@ -59,8 +59,8 @@ public class Admin implements Serializable {
     @Schema(description = "联系地址")
     private String address;
 
-    @Schema(description = "账号状态")
-    private String status;
+    @Schema(description = "账号状态：0-禁用，1-启用（默认）")
+    private Boolean status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "创建时间")

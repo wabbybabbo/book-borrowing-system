@@ -1,4 +1,4 @@
-package org.admin;
+package org.example.admin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

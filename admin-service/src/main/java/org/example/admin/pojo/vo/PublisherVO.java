@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 查询书籍类别时响应的数据模型
+ * 查询出版社信息时响应的数据模型
  */
 @Data
 @Schema(description = "查询出版社信息时响应的数据模型")

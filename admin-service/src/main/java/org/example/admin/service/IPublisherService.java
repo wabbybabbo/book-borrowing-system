@@ -1,8 +1,7 @@
 package org.example.admin.service;
 
-import org.example.admin.entity.Publisher;
-import org.example.admin.entity.Publisher;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.admin.entity.Publisher;
 import org.example.admin.pojo.dto.CreatePublisherDTO;
 import org.example.admin.pojo.dto.UpdatePublisherDTO;
 import org.example.admin.pojo.query.PageQuery;
@@ -20,6 +19,7 @@ import java.util.List;
  * @since 2025-02-13
  */
 public interface IPublisherService extends IService<Publisher> {
+
     /**
      * 新建出版社信息
      *

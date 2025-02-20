@@ -7,10 +7,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 用户登录时响应的数据模型
+ * 用户登录成功时响应的数据模型
  */
 @Data
-@Schema(description = "用户登录时响应的数据模型")
+@Schema(description = "用户登录成功时响应的数据模型")
 public class UserVO {
 
     @Schema(description = "用户ID")
@@ -28,8 +28,8 @@ public class UserVO {
     @Schema(description = "用户头像图片文件路径")
     private String imgUrl;
 
-    @Schema(description = "性别")
-    private String gender;
+    @Schema(description = "性别：false-男，true-女")
+    private Boolean gender;
 
     @Schema(description = "电话号码")
     private String phone;

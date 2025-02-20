@@ -1,7 +1,7 @@
 shared:
   jdbc:
     host: 172.20.10.9
-    db: book
+    db: bookstore
   nacos:
     host: 172.20.10.9
   sentinel-dashboard:

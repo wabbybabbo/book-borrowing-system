@@ -1,8 +1,5 @@
 package org.example.common.constant;
 
-import static org.example.common.constant.GenderConstant.FEMALE;
-import static org.example.common.constant.GenderConstant.MALE;
-
 /**
  * 正则表达式常量
  */
@@ -12,7 +9,7 @@ public class RegexpConstant {
     public static final String USER_NAME = "^\\S{2,16}$";
     public static final String ACCOUNT = "^\\w{4,16}$";
     public static final String PASSWORD = "^\\w{4,16}$";
-    public static final String GENDER = "^[" + MALE + FEMALE + "]$";
+    public static final String GENDER = "^[01]$";
     public static final String PHONE = "^1[3456789]\\d{9}$";
     public static final String EMAIL = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
     /**
@@ -24,4 +21,5 @@ public class RegexpConstant {
     public static final String AUTHOR_NAME = "^(\\S+[ ]?)+\\S$";
     public static final String PUBLISHER_NAME = "^(\\S+[ ]?)+\\S$";
     public static final String CATEGORY_NAME = "^\\S{2,16}$";
+    public static final String NOTICE_TITLE = "^(\\S+[ ]?)+\\S$";
 }

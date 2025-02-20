@@ -8,13 +8,13 @@
         <result column="user_id" property="userId" />
         <result column="title" property="title" />
         <result column="content" property="content" />
-        <result column="is_read" property="isRead" />
+        <result column="status" property="status" />
         <result column="create_time" property="createTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, user_id, title, content, is_read, create_time
+        id, user_id, title, content, status, create_time
     </sql>
 
 </mapper>

@@ -9,8 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.client.pojo.dto.BatchDeleteRemindersDTO;
-import org.example.client.pojo.dto.BatchUpdateReminderStatusDTO;
+import org.example.client.pojo.dto.BatchDTO;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.ReminderVO;
 import org.example.client.service.IReminderService;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- * 用户提醒消息表 前端控制器
+ * 用户的提醒消息表 前端控制器
  * </p>
  *
  * @author zhengjunpeng
@@ -35,7 +34,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/reminder")
-@Tag(name = "用户提醒消息相关接口")
+@Tag(name = "用户的提醒消息相关接口")
 public class ReminderController {
 
     private final IReminderService reminderService;
@@ -78,9 +77,9 @@ public class ReminderController {
     @Operation(summary = "批量将用户的提醒消息标为已读")
     public Result<Object> batchReadReminders(
             @RequestBody @Valid
-            BatchUpdateReminderStatusDTO batchUpdateReminderStatusDTO) {
-        log.info("[log] 批量将用户的提醒消息标为已读 {}", batchUpdateReminderStatusDTO);
-        reminderService.batchReadReminders(batchUpdateReminderStatusDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量将用户的提醒消息标为已读 {}", batchDTO);
+        reminderService.batchReadReminders(batchDTO.getIds());
         return Result.success();
     }
 
@@ -100,9 +99,9 @@ public class ReminderController {
     @Operation(summary = "批量将用户的提醒消息标为未读")
     public Result<Object> batchUnreadReminders(
             @RequestBody @Valid
-            BatchUpdateReminderStatusDTO batchUpdateReminderStatusDTO) {
-        log.info("[log] 批量将用户的提醒消息标为未读 {}", batchUpdateReminderStatusDTO);
-        reminderService.batchUnreadReminders(batchUpdateReminderStatusDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量将用户的提醒消息标为未读 {}", batchDTO);
+        reminderService.batchUnreadReminders(batchDTO.getIds());
         return Result.success();
     }
 
@@ -122,9 +121,9 @@ public class ReminderController {
     @Operation(summary = "批量删除用户的提醒消息")
     public Result<Object> batchDeleteReminders(
             @RequestBody @Valid
-            BatchDeleteRemindersDTO batchDeleteRemindersDTO) {
-        log.info("[log] 批量删除用户的提醒消息 {}", batchDeleteRemindersDTO);
-        reminderService.batchDeleteReminders(batchDeleteRemindersDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量删除用户的提醒消息 {}", batchDTO);
+        reminderService.batchDeleteReminders(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

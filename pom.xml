@@ -6,7 +6,7 @@
     <artifactId>spring-cloud</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>cloud-bookstore</name>
+    <name>bookstore</name>
     <description>微服务项目</description>
     <modules>
         <module>common</module>

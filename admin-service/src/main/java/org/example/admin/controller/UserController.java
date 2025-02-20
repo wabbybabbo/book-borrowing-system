@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.User;
-import org.example.admin.pojo.dto.BatchDisableAccountsDTO;
-import org.example.admin.pojo.dto.BatchEnableAccountsDTO;
+import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.CreateUserDTO;
 import org.example.admin.service.IUserService;
 import org.example.common.constant.MessageConstant;
@@ -78,9 +77,9 @@ public class UserController {
     @Operation(summary = "批量禁用用户账号")
     public Result<Object> batchDisableAccounts(
             @RequestBody @Valid
-            BatchDisableAccountsDTO batchDisableAccountsDTO) {
-        log.info("[log] 批量禁用用户账号 {}", batchDisableAccountsDTO);
-        userService.batchDisableAccounts(batchDisableAccountsDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量禁用用户账号 {}", batchDTO);
+        userService.batchDisableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
 
@@ -100,9 +99,9 @@ public class UserController {
     @Operation(summary = "批量解禁用户账号")
     public Result<Object> batchEnableAccounts(
             @RequestBody @Valid
-            BatchEnableAccountsDTO batchEnableAccountsDTO) {
-        log.info("[log] 批量解禁用户账号 {}", batchEnableAccountsDTO);
-        userService.batchEnableAccounts(batchEnableAccountsDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量解禁用户账号 {}", batchDTO);
+        userService.batchEnableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
 

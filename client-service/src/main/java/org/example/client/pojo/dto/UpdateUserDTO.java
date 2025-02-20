@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import org.example.common.constant.GenderConstant;
 import org.example.common.constant.MessageConstant;
 import org.example.common.constant.RegexpConstant;
 
@@ -27,9 +26,8 @@ public class UpdateUserDTO {
     @Schema(description = "密码", pattern = RegexpConstant.PASSWORD, example = "guest")
     private String password;
 
-    @Pattern(regexp = RegexpConstant.GENDER, message = MessageConstant.INVALID_GENDER)
-    @Schema(description = "性别", pattern = RegexpConstant.GENDER, example = GenderConstant.MALE)
-    private String gender;
+    @Schema(description = "性别：false-男，true-女", pattern = RegexpConstant.GENDER, example = "false")
+    private Boolean gender;
 
     @Pattern(regexp = RegexpConstant.PHONE, message = MessageConstant.INVALID_PHONE)
     @Schema(description = "电话号码", pattern = RegexpConstant.PHONE, example = "19876543210")

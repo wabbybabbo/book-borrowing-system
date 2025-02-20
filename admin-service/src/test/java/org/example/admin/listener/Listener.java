@@ -1,4 +1,4 @@
-package org.example.listener;
+package org.example.admin.listener;
 
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -39,11 +39,21 @@ public class Listener {
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "object.queue"),
-            exchange = @Exchange(name = "example.direct")
+            value = @Queue(name = "test.queue"),
+            exchange = @Exchange(name = "example.direct"),
+            key = {"test"}
     ))
-    public void MQListener(Map<String, Object> message) {
-        System.out.println("[sout] 消费者收到了object.queue的消息:" + message);
+    public void MQListener3(Map<String, Object> message) {
+        System.out.println("[sout] 消费者3收到了test.queue的消息:" + message);
+    }
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(name = "test.queue"),
+            exchange = @Exchange(name = "example.direct"),
+            key = {"test"}
+    ))
+    public void MQListener4(Map<String, Object> message) {
+        System.out.println("[sout] 消费者4收到了object.queue的消息:" + message);
     }
 
 }

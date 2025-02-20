@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.BorrowStatistic;
 import org.example.admin.mapper.BorrowStatisticMapper;
+import org.example.common.constant.RabbitMQConstant;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
@@ -22,9 +23,9 @@ public class BorrowStatisticListener {
     private final BorrowStatisticMapper borrowStatisticMapper;
 
     @RabbitListener(bindings = @QueueBinding(
-            value = @Queue(name = "statistic.queue"),
-            exchange = @Exchange(name = "amq.direct"),
-            key = {"statistic"}))
+            value = @Queue(name = RabbitMQConstant.STATISTIC_QUEUE),
+            exchange = @Exchange(name = RabbitMQConstant.STATISTIC_DIRECT_EXCHANGE),
+            key = {RabbitMQConstant.STATISTIC_ROUTING_KEY}))
     public void statistic() {
         log.info("[log] 统计借阅数量 今日借阅数量+1");
         LambdaUpdateWrapper<BorrowStatistic> updateWrapper = new UpdateWrapper<BorrowStatistic>()

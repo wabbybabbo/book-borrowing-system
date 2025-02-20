@@ -1,6 +1,6 @@
 shared:
   jdbc:
-    db: book
+    db: bookstore
     host: 172.20.10.9
   nacos:
     host: 172.20.10.9

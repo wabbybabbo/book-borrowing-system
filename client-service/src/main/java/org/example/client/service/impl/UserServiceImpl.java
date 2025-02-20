@@ -21,10 +21,13 @@ import org.example.client.pojo.dto.UserRegisterDTO;
 import org.example.client.pojo.vo.UserVO;
 import org.example.client.service.IUserService;
 import org.example.common.client.CommonClient;
-import org.example.common.constant.AccountStatusConstant;
 import org.example.common.constant.ClaimConstant;
 import org.example.common.constant.MessageConstant;
+import org.example.common.constant.RabbitMQConstant;
 import org.example.common.exception.*;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -50,6 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final UserMapper userMapper;
     private final CommonClient commonClient;
     private final RedisTemplate<String, String> redisTemplate;
+    private final RabbitTemplate rabbitTemplate;
     private final CodeGenerator registerCodeGenerator = new RandomGenerator(RandomUtil.BASE_NUMBER, 6);
     private final CodeGenerator loginCodeGenerator = new MathGenerator(1);
 
@@ -108,7 +112,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new NotFoundException(MessageConstant.PASSWORD_ERROR);
         }
         // 判断该用户账号是否被禁用
-        if (user.getStatus().equals(AccountStatusConstant.DISABLE)) {
+        if (!user.getStatus()) {
             log.info("[log] 该用户账号被禁用 status: {}", user.getStatus());
             throw new NotAllowedException(MessageConstant.ACCOUNT_LOCKED);
         }
@@ -138,7 +142,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         String code = registerCodeGenerator.generate();
         String content = "您正在注册账号，验证码是："
-                + "<b style=\"color: rgb(128, 96, 96); text-decoration: rgb(128, 96, 96) underline\">"
+                + "<b style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">"
                 + code + "</b>（请勿泄露），此验证码" + timeout + "分钟内有效。<br><br>如非本人操作，请忽略。";
         // 将验证码存到redis缓存中，并设置过期时间
         redisTemplate.opsForValue().set("codeCache:" + email, code, timeout, TimeUnit.MINUTES);
@@ -184,6 +188,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         BeanUtil.copyProperties(userRegisterDTO, user);
         // 新增用户信息
         userMapper.insert(user);
+
+        // 查询新增的用户信息的ID
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                .select(User::getId)
+                .eq(User::getAccount, user.getAccount());
+        String userId = userMapper.selectOne(queryWrapper).getId();
+
+        //构建RabbitAdmin对象，用于管理（声明或删除）RabbitMQ的队列、交换机和绑定关系
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(rabbitTemplate);
+        //构建队列对象
+        Queue noticeQueue = new Queue(RabbitMQConstant.NOTICE_QUEUE + userId);
+        Queue reminderQueue = new Queue(RabbitMQConstant.REMINDER_QUEUE + userId);
+        //构建交换机对象
+        FanoutExchange noticeFanoutExchange = new FanoutExchange(RabbitMQConstant.NOTICE_FANOUT_EXCHANGE);
+        DirectExchange reminderDirectExchange = new DirectExchange(RabbitMQConstant.REMINDER_DIRECT_EXCHANGE);
+        //构建绑定关系对象
+        Binding noticeBinding = BindingBuilder.bind(noticeQueue).to(noticeFanoutExchange);
+        Binding reminderBinding = BindingBuilder.bind(reminderQueue).to(reminderDirectExchange).with(userId);
+        //声明队列，即如果队列不存在则创建它
+        rabbitAdmin.declareQueue(noticeQueue);
+        rabbitAdmin.declareQueue(reminderQueue);
+        //声明交换机，即如果交换机不存在则创建它
+        rabbitAdmin.declareExchange(noticeFanoutExchange);
+        rabbitAdmin.declareExchange(reminderDirectExchange);
+        //声明绑定关系，将队列绑定到交换机
+        rabbitAdmin.declareBinding(noticeBinding);
+        rabbitAdmin.declareBinding(reminderBinding);
     }
 
     @Override

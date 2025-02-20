@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Publisher;
-import org.example.admin.pojo.dto.BatchDeletePublishersDTO;
+import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.CreatePublisherDTO;
 import org.example.admin.pojo.dto.UpdatePublisherDTO;
 import org.example.admin.pojo.query.PageQuery;
@@ -101,9 +101,9 @@ public class PublisherController {
     @Operation(summary = "批量删除出版社信息")
     public Result<Object> batchDeletePublishers(
             @RequestBody @Valid
-            BatchDeletePublishersDTO batchDeletePublishersDTO) {
-        log.info("[log] 批量删除出版社信息 {}", batchDeletePublishersDTO);
-        publisherService.batchDeletePublishers(batchDeletePublishersDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量删除出版社信息 {}", batchDTO);
+        publisherService.batchDeletePublishers(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
     

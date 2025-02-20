@@ -122,9 +122,9 @@ public class AdminController {
     @Operation(summary = "批量禁用管理员账号")
     public Result<Object> batchDisableAccounts(
             @RequestBody @Valid
-            BatchDisableAccountsDTO batchDisableAccountsDTO) {
-        log.info("[log] 批量禁用管理员账号 {}", batchDisableAccountsDTO);
-        adminService.batchDisableAccounts(batchDisableAccountsDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量禁用管理员账号 {}", batchDTO);
+        adminService.batchDisableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
 
@@ -146,9 +146,9 @@ public class AdminController {
     @Operation(summary = "批量解禁管理员账号")
     public Result<Object> batchEnableAccounts(
             @RequestBody @Valid
-            BatchEnableAccountsDTO batchEnableAccountsDTO) {
-        log.info("[log] 批量解禁管理员账号 {}", batchEnableAccountsDTO);
-        adminService.batchEnableAccounts(batchEnableAccountsDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量解禁管理员账号 {}", batchDTO);
+        adminService.batchEnableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
 

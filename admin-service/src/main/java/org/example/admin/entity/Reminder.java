@@ -41,11 +41,11 @@ public class Reminder implements Serializable {
     @Schema(description = "标题")
     private String title;
 
-    @Schema(description = "提醒消息内容")
+    @Schema(description = "内容")
     private String content;
 
     @Schema(description = "是否已读：0-未读（默认），1-已读")
-    private Boolean isRead;
+    private Boolean status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Schema(description = "创建时间")

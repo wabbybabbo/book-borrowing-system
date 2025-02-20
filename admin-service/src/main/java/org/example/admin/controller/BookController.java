@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.admin.pojo.dto.BatchDeleteBooksDTO;
+import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
 import org.example.admin.pojo.query.PageQuery;
@@ -93,9 +93,9 @@ public class BookController {
     @Operation(summary = "批量删除书籍信息")
     public Result<Object> batchDeleteBooks(
             @RequestBody @Valid
-            BatchDeleteBooksDTO batchDeleteBooksDTO) {
-        log.info("[log] 批量删除书籍信息 {}", batchDeleteBooksDTO);
-        bookService.batchDeleteBooks(batchDeleteBooksDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量删除书籍信息 {}", batchDTO);
+        bookService.batchDeleteBooks(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

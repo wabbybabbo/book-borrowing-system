@@ -1,6 +1,8 @@
-package org.example;
+package org.example.admin;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +15,11 @@ public class RabbitMQTest {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Test
+    public void test() {
+        System.out.println("[sout] test");
+    }
 
     @Test
     public void simpleQueueTest() {
@@ -62,10 +69,38 @@ public class RabbitMQTest {
     @Test
     public void sendObj2DirectExchangeTest() {
         Map<String, Object> msg = new HashMap<>();
-        msg.put("username", "wabbybabbo");
-        msg.put("password", "123456");
+        msg.put("title", "消息通知标题");
+        msg.put("content", "消息通知内容");
         //发送消息给 example.direct 交换机
-        rabbitTemplate.convertAndSend("example.direct", null, msg);
+        rabbitTemplate.convertAndSend("example.direct", "test", msg);
+    }
+
+    @Test
+    public void createMQ() {
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(rabbitTemplate);
+        //声明消息接收队列
+        Queue queue = new Queue("userId");
+        //声明交换机 Topic
+        TopicExchange topicExchange = new TopicExchange("amq.topic");
+        //声明绑定
+        Binding binding = BindingBuilder.bind(queue).to(topicExchange).with("userId");
+
+        //创建队列
+        rabbitAdmin.declareQueue(queue);
+        //创建交换机
+        rabbitAdmin.declareExchange(topicExchange);
+        //创建绑定关系
+        rabbitAdmin.declareBinding(binding);
+    }
+
+    @Test
+    public void deleteMQ() {
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(rabbitTemplate);
+
+        //删除队列
+        rabbitAdmin.deleteQueue("userId");
+        //删除交换机
+        rabbitAdmin.deleteExchange("amq.topic");
     }
 
 }

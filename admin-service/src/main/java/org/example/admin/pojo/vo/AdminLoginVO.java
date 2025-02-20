@@ -7,17 +7,14 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 管理员登录时响应的数据模型
+ * 管理员登录成功时响应的数据模型
  */
 @Data
-@Schema(description = "管理员登录时响应的数据模型")
+@Schema(description = "管理员登录成功时响应的数据模型")
 public class AdminLoginVO {
 
     @Schema(description = "管理员ID")
     private String id;
-
-    @Schema(description = "头像图片文件路径")
-    private String imgUrl;
 
     @Schema(description = "管理员名称")
     private String name;
@@ -27,6 +24,12 @@ public class AdminLoginVO {
 
     @Schema(description = "密码")
     private String password;
+
+    @Schema(description = "头像图片文件路径")
+    private String imgUrl;
+
+    @Schema(description = "性别：false-男，true-女")
+    private Boolean gender;
 
     @Schema(description = "电话号码")
     private String phone;

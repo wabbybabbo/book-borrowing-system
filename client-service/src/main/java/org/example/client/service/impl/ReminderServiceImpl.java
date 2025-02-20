@@ -61,7 +61,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
             }
         }
         LambdaQueryWrapper<Reminder> lambdaQueryWrapper = queryWrapper.lambda()
-                .select(Reminder::getId, Reminder::getTitle, Reminder::getContent, Reminder::getIsRead, Reminder::getCreateTime)
+                .select(Reminder::getId, Reminder::getTitle, Reminder::getContent, Reminder::getStatus, Reminder::getCreateTime)
                 .eq(Reminder::getUserId, id);
         // 分页查询
         try {
@@ -89,7 +89,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
     @Override
     public Long getUnreadReminderCount() {
         LambdaQueryWrapper<Reminder> queryWrapper = new LambdaQueryWrapper<Reminder>()
-                .eq(Reminder::getIsRead, false);
+                .eq(Reminder::getStatus, false);
         return reminderMapper.selectCount(queryWrapper);
     }
 
@@ -97,7 +97,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
     public void readReminder(String id) {
         Reminder reminder = new Reminder();
         reminder.setId(id);
-        reminder.setIsRead(true);
+        reminder.setStatus(true);
         if (reminderMapper.updateById(reminder) == 0) {
             log.error("[log] 将用户的提醒消息标为已读失败 msg: {}", MessageConstant.RMINDER_NOT_FOUND);
             throw new NotFoundException(MessageConstant.RMINDER_NOT_FOUND);
@@ -107,7 +107,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
     @Override
     public void batchReadReminders(List<String> ids) {
         LambdaUpdateWrapper<Reminder> updateWrapper = new LambdaUpdateWrapper<Reminder>()
-                .set(Reminder::getIsRead, true)
+                .set(Reminder::getStatus, true)
                 .in(Reminder::getId, ids);
         int updates = reminderMapper.update(updateWrapper);
         if (updates == 0) {
@@ -120,7 +120,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
     public void unreadReminder(String id) {
         Reminder reminder = new Reminder();
         reminder.setId(id);
-        reminder.setIsRead(false);
+        reminder.setStatus(false);
         if (reminderMapper.updateById(reminder) == 0) {
             log.error("[log] 将用户的提醒消息标为未读失败 msg: {}", MessageConstant.RMINDER_NOT_FOUND);
             throw new NotFoundException(MessageConstant.RMINDER_NOT_FOUND);
@@ -130,7 +130,7 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
     @Override
     public void batchUnreadReminders(List<String> ids) {
         LambdaUpdateWrapper<Reminder> updateWrapper = new LambdaUpdateWrapper<Reminder>()
-                .set(Reminder::getIsRead, false)
+                .set(Reminder::getStatus, false)
                 .in(Reminder::getId, ids);
         int updates = reminderMapper.update(updateWrapper);
         if (updates == 0) {

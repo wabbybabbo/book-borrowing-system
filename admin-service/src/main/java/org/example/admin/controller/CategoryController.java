@@ -12,7 +12,7 @@ import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.CategoryVO;
 import org.example.admin.entity.Category;
 import org.example.admin.pojo.dto.CreateCategoryDTO;
-import org.example.admin.pojo.dto.BatchDeleteCategoriesDTO;
+import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.UpdateCategoryDTO;
 import org.example.admin.service.ICategoryService;
 import org.example.common.constant.MessageConstant;
@@ -101,9 +101,9 @@ public class CategoryController {
     @Operation(summary = "批量删除书籍类别")
     public Result<Object> batchDeleteCategories(
             @RequestBody @Valid
-            BatchDeleteCategoriesDTO batchDeleteCategoriesDTO) {
-        log.info("[log] 批量删除书籍类别 {}", batchDeleteCategoriesDTO);
-        categoryService.batchDeleteCategories(batchDeleteCategoriesDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量删除书籍类别 {}", batchDTO);
+        categoryService.batchDeleteCategories(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

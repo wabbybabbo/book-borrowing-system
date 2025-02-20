@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.client.pojo.dto.BatchDeleteBorrowsDTO;
+import org.example.client.pojo.dto.BatchDTO;
 import org.example.client.pojo.dto.CreateBorrowDTO;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BorrowVO;
@@ -110,9 +110,9 @@ public class BorrowController {
     @Operation(summary = "批量删除书籍借阅记录")
     public Result<Object> batchDeleteBorrows(
             @RequestBody @Valid
-            BatchDeleteBorrowsDTO batchDeleteBorrowsDTO) {
-        log.info("[log] 批量删除书籍借阅记录 {}", batchDeleteBorrowsDTO);
-        borrowService.batchDeleteBorrows(batchDeleteBorrowsDTO.getIds());
+            BatchDTO batchDTO) {
+        log.info("[log] 批量删除书籍借阅记录 {}", batchDTO);
+        borrowService.batchDeleteBorrows(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
 

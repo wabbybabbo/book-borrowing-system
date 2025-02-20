@@ -33,6 +33,6 @@ services:
       - common-service
 
 # 创建相关镜像、容器、网络、卷并启动容器
-# docker compose -f ./docker-compose.yaml -p cloud-bookstore up -d
+# docker compose -f ./docker-compose.yaml -p bookstore up -d
 # 停止并移除相关容器、网络、卷和通过 docker compose 构建的本地镜像
-# docker compose -f ./docker-compose.yaml -p cloud-bookstore down --rmi local
+# docker compose -f ./docker-compose.yaml -p bookstore down --rmi local

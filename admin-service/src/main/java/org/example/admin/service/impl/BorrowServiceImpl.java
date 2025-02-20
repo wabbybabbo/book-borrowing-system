@@ -18,6 +18,7 @@ import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IBorrowService;
 import org.example.common.constant.BorrowStatusConstant;
 import org.example.common.constant.MessageConstant;
+import org.example.common.constant.RabbitMQConstant;
 import org.example.common.exception.NotFoundException;
 import org.example.common.result.PageResult;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -71,7 +72,6 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         // 分页查询
         try {
             borrowMapper.selectPage(page, queryWrapper);
-            log.info("[log] Records {}", page.getRecords());
         } catch (BadSqlGrammarException e) {
             log.error("[log] 借阅记录分页查询失败 BadSqlGrammarException: {}, msg: {}", e.getMessage(), MessageConstant.FIELD_NOT_FOUND);
             throw new NotFoundException(MessageConstant.FIELD_NOT_FOUND);
@@ -115,7 +115,7 @@ public class BorrowServiceImpl extends ServiceImpl<BorrowMapper, Borrow> impleme
         // 更改借阅状态
         borrowMapper.updateById(borrow);
         // 发送消息，异步调用统计方法
-        rabbitTemplate.convertAndSend("amq.direct", "statistic", "");
+        rabbitTemplate.convertAndSend(RabbitMQConstant.STATISTIC_DIRECT_EXCHANGE, RabbitMQConstant.STATISTIC_ROUTING_KEY, "");
     }
 
     @Override
