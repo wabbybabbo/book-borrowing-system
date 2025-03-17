@@ -17,6 +17,8 @@ public class MessageConstant {
     public static final String ENABLE_ACCOUNT_SUCCESS = "解禁账号成功";
     public static final String DISABLE_ACCOUNT_SUCCESS = "禁用账号成功";
     public static final String SEND_SUCCESS = "发送成功";
+    public static final String SEND_CAPTCHA_SUCCESS = "验证码已成功发送到邮箱";
+    public static final String UPDATE_EMAIL_SUCCESS = "邮箱换绑成功";
 
     public static final String FIELD_NOT_NULL = "不能为空";
     public static final String FIELD_NOT_EMPTY = "不能为空";

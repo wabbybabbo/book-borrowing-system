@@ -44,7 +44,7 @@ public class User implements Serializable {
     @Schema(description = "密码")
     private String password;
 
-    @Schema(description = "头像图片文件路径")
+    @Schema(description = "头像图片访问地址")
     private String imgUrl;
 
     @Schema(description = "性别：0-男，1-女")

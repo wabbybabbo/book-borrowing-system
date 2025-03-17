@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Admin;
@@ -17,6 +19,7 @@ import org.example.admin.pojo.vo.AdminLoginVO;
 import org.example.admin.service.IAdminService;
 import org.example.common.constant.ClaimConstant;
 import org.example.common.constant.MessageConstant;
+import org.example.common.constant.RegexpConstant;
 import org.example.common.result.PageResult;
 import org.example.common.result.Result;
 import org.springdoc.core.annotations.ParameterObject;
@@ -102,6 +105,50 @@ public class AdminController {
         log.info("[log] 更改管理员信息 id: {}, {}", id, updateAdminDTO);
         adminService.updateAdmin(id, updateAdminDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
+    }
+
+    @PutMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE /*指定multipart/form-data*/)
+    @Operation(summary = "更换管理员头像")
+    public Result<String> updateAvatar(
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "管理员ID", required = true, hidden = true)
+            String id,
+            @RequestPart("file")
+            @Parameter(description = "管理员头像图片文件")
+            MultipartFile file) {
+        log.info("[log] 更换管理员头像 id: {}", id);
+        log.info("[log] 更换管理员头像 file: {}", file);
+        String url = adminService.updateAvatar(id, file);
+        return Result.success(MessageConstant.UPDATE_SUCCESS, url);
+    }
+
+    @GetMapping(value = "/email/captcha")
+    @Operation(summary = "发送验证码到邮箱用于换绑邮箱，并设置验证码有效时长")
+    public Result<String> sendCaptcha2Email4UpdateEmail(
+            @Email(regexp = RegexpConstant.EMAIL, message = MessageConstant.INVALID_EMAIL)
+            @Parameter(description = "邮箱", required = true)
+            String email,
+            @PositiveOrZero(message = MessageConstant.INVALID_CAPTCHA_TIMEOUT)
+            @Parameter(description = "验证码有效时长（分钟）", required = true)
+            Long timeout) {
+        log.info("[log] 发送验证码到邮箱用于换绑邮箱，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
+        adminService.sendCaptcha2Email4UpdateEmail(email, timeout);
+        return Result.success(MessageConstant.SEND_CAPTCHA_SUCCESS);
+    }
+
+    @PutMapping("/email")
+    @Operation(summary = "换绑邮箱")
+    public Result<Object> updateEmail(
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id,
+            @RequestBody @Valid
+            UpdateEmailDTO updateEmailDTO) {
+        log.info("[log] 换绑邮箱 {}", updateEmailDTO);
+        adminService.updateEmail(id, updateEmailDTO);
+        return Result.success(MessageConstant.UPDATE_EMAIL_SUCCESS);
     }
 
     @PutMapping("/disable")

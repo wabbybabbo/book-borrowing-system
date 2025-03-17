@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.client.pojo.dto.UpdateEmailDTO;
 import org.example.client.pojo.dto.UpdateUserDTO;
 import org.example.client.pojo.dto.UserLoginDTO;
 import org.example.client.pojo.dto.UserRegisterDTO;
@@ -21,8 +22,10 @@ import org.example.common.constant.MessageConstant;
 import org.example.common.constant.RegexpConstant;
 import org.example.common.result.Result;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -43,17 +46,31 @@ public class UserController {
     private final IUserService userService;
 
     @GetMapping(value = "/register/captcha")
-    @Operation(summary = "发送验证码到用户邮箱，并设置验证码有效时长")
-    public Result<Object> sendCaptchaToEmail(
+    @Operation(summary = "发送验证码到邮箱用于用户注册，并设置验证码有效时长")
+    public Result<String> sendCaptcha2Email4Register(
             @Email(regexp = RegexpConstant.EMAIL, message = MessageConstant.INVALID_EMAIL)
             @Parameter(description = "邮箱", required = true)
             String email,
             @PositiveOrZero(message = MessageConstant.INVALID_CAPTCHA_TIMEOUT)
             @Parameter(description = "验证码有效时长（分钟）", required = true)
             Long timeout) {
-        log.info("[log] 发送验证码到用户邮箱，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
-        userService.sendCaptchaToEmail(email, timeout);
-        return Result.success();
+        log.info("[log] 发送验证码到邮箱用于用户注册，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
+        userService.sendCaptcha2Email4Register(email, timeout);
+        return Result.success(MessageConstant.SEND_CAPTCHA_SUCCESS);
+    }
+
+    @GetMapping(value = "/email/captcha")
+    @Operation(summary = "发送验证码到邮箱用于换绑邮箱，并设置验证码有效时长")
+    public Result<String> sendCaptcha2Email4UpdateEmail(
+            @Email(regexp = RegexpConstant.EMAIL, message = MessageConstant.INVALID_EMAIL)
+            @Parameter(description = "邮箱", required = true)
+            String email,
+            @PositiveOrZero(message = MessageConstant.INVALID_CAPTCHA_TIMEOUT)
+            @Parameter(description = "验证码有效时长（分钟）", required = true)
+            Long timeout) {
+        log.info("[log] 发送验证码到邮箱用于换绑邮箱，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
+        userService.sendCaptcha2Email4UpdateEmail(email, timeout);
+        return Result.success(MessageConstant.SEND_CAPTCHA_SUCCESS);
     }
 
     @PostMapping("/register")
@@ -62,6 +79,20 @@ public class UserController {
         log.info("[log] 用户注册 {}", userRegisterDTO);
         userService.register(userRegisterDTO);
         return Result.success(MessageConstant.REGISTER_SUCCESS);
+    }
+
+    @PutMapping("/email")
+    @Operation(summary = "换绑邮箱")
+    public Result<Object> updateEmail(
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id,
+            @RequestBody @Valid
+            UpdateEmailDTO updateEmailDTO) {
+        log.info("[log] 换绑邮箱 {}", updateEmailDTO);
+        userService.updateEmail(id, updateEmailDTO);
+        return Result.success(MessageConstant.UPDATE_EMAIL_SUCCESS);
     }
 
     @GetMapping(value = "/login/captcha")
@@ -94,6 +125,22 @@ public class UserController {
         log.info("[log] 更改用户信息 id: {}, {}", id, updateUserDTO);
         userService.updateUser(id, updateUserDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
+    }
+
+    @PutMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE /*指定multipart/form-data*/)
+    @Operation(summary = "更换用户头像")
+    public Result<String> updateAvatar(
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id,
+            @RequestPart("file")
+            @Parameter(description = "用户头像图片文件")
+            MultipartFile file) {
+        log.info("[log] 更换用户头像 id: {}", id);
+        log.info("[log] 更换用户头像 file: {}", file);
+        String url = userService.updateAvatar(id, file);
+        return Result.success(MessageConstant.UPDATE_SUCCESS, url);
     }
 
 }

@@ -4,8 +4,11 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.GifCaptcha;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.captcha.generator.MathGenerator;
+import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.mail.MailUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -19,6 +22,7 @@ import org.example.admin.mapper.AdminMapper;
 import org.example.admin.pojo.dto.AdminLoginDTO;
 import org.example.admin.pojo.dto.CreateAdminDTO;
 import org.example.admin.pojo.dto.UpdateAdminDTO;
+import org.example.admin.pojo.dto.UpdateEmailDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.AdminLoginVO;
 import org.example.admin.service.IAdminService;
@@ -55,14 +59,15 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private final CommonClient commonClient;
     private final AdminMapper adminMapper;
     private final RedisTemplate<String, String> redisTemplate;
-    private final CodeGenerator loginCodeGenerator = new MathGenerator(1);
+    private final CodeGenerator randomCodeGenerator = new RandomGenerator(RandomUtil.BASE_NUMBER, 6);
+    private final CodeGenerator mathCodeGenerator = new MathGenerator(1);
 
     @Override
     public void createGifCaptcha(String timestamp, HttpServletResponse response) {
         // 定义动态图形验证码的长、宽
         GifCaptcha gifCaptcha = CaptchaUtil.createGifCaptcha(120, 40);
         // 自定义验证码内容为1位数的四则运算方式
-        gifCaptcha.setGenerator(loginCodeGenerator);
+        gifCaptcha.setGenerator(mathCodeGenerator);
         try {
             // 写出到浏览器（Servlet输出流）
             gifCaptcha.write(response.getOutputStream());
@@ -91,7 +96,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         }
         // 验证码校验
         String adminInputCode = adminLoginDTO.getCode();
-        if (!loginCodeGenerator.verify(code, adminInputCode)) {
+        if (!mathCodeGenerator.verify(code, adminInputCode)) {
             log.info("验证码校验不通过 code: {}, adminInputCode: {}, msg: {}", code, adminInputCode, MessageConstant.CODE_ERROR);
             throw new CheckException(MessageConstant.CODE_ERROR);
         }
@@ -113,7 +118,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         }
         // 判断该账号是否被禁用
         if (!admin.getStatus()) {
-            log.info("[log] 该管理员账号被禁用 status: {}, msg: {}", admin.getStatus(), MessageConstant.ACCOUNT_LOCKED);
+            log.info("[log] 该管理员账号被禁用 status: {}, msg: {}", false, MessageConstant.ACCOUNT_LOCKED);
             throw new CheckException(MessageConstant.ACCOUNT_LOCKED);
         }
 
@@ -249,6 +254,63 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
         BeanUtil.copyProperties(updateAdminDTO, admin);
         admin.setId(id);
         // 更改管理员信息
+        adminMapper.updateById(admin);
+    }
+
+    @Override
+    public String updateAvatar(String id, MultipartFile file) {
+        // 构建管理员对象
+        Admin admin = new Admin();
+        admin.setId(id);
+        // 上传头像图片文件
+        String url = commonClient.upload(file);
+        admin.setImgUrl(url);
+        // 更改管理员信息
+        adminMapper.updateById(admin);
+
+        return url;
+    }
+
+    @Override
+    public void sendCaptcha2Email4UpdateEmail(String email, Long timeout) {
+        // 查询该邮箱是否已被使用
+        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<Admin>()
+                .eq(Admin::getEmail, email);
+        if (adminMapper.exists(queryWrapper)) {
+            throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
+        }
+
+        String code = randomCodeGenerator.generate();
+        String content = "您正在换绑邮箱，验证码是："
+                + "<b style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">"
+                + code + "</b>（请勿泄露），此验证码" + timeout + "分钟内有效。<br><br>如非本人操作，请忽略。";
+        // 将验证码存到redis缓存中，并设置过期时间
+        redisTemplate.opsForValue().set("codeCache:" + email, code, timeout, TimeUnit.MINUTES);
+        // 发送验证码到用户邮箱
+        MailUtil.send(email, "【书店借阅平台】邮箱验证码", content, true);
+    }
+
+    @Override
+    public void updateEmail(String id, UpdateEmailDTO updateEmailDTO) {
+        // 根据邮箱地址获取redis缓存中的验证码
+        String email = updateEmailDTO.getEmail();
+        String code = redisTemplate.opsForValue().get("codeCache:" + email);
+        if (Objects.isNull(code)) {
+            log.info("获取redis缓存中的验证码失败 email: {}, msg: {}", email, MessageConstant.CODE_NOT_FOUND);
+            throw new NotFoundException(MessageConstant.CODE_NOT_FOUND);
+        }
+        // 验证码校验
+        String userInputCode = updateEmailDTO.getCode();
+        if (!randomCodeGenerator.verify(code, userInputCode)) {
+            log.info("验证码校验不通过 code: {}, userInputCode: {}, msg: {}", code, userInputCode, MessageConstant.CODE_ERROR);
+            throw new CheckException(MessageConstant.CODE_ERROR);
+        }
+
+        // 构建用户对象
+        Admin admin = new Admin();
+        admin.setId(id);
+        admin.setEmail(email);
+        // 更改邮箱地址
         adminMapper.updateById(admin);
     }
 

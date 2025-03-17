@@ -2,12 +2,13 @@ package org.example.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.admin.entity.Admin;
 import org.example.admin.pojo.dto.AdminLoginDTO;
+import org.example.admin.pojo.dto.CreateAdminDTO;
 import org.example.admin.pojo.dto.UpdateAdminDTO;
+import org.example.admin.pojo.dto.UpdateEmailDTO;
 import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.pojo.vo.AdminLoginVO;
-import org.example.admin.entity.Admin;
-import org.example.admin.pojo.dto.CreateAdminDTO;
 import org.example.common.result.PageResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,6 +63,31 @@ public interface IAdminService extends IService<Admin> {
      * @param updateAdminDTO {@link UpdateAdminDTO}
      */
     void updateAdmin(String id, UpdateAdminDTO updateAdminDTO);
+
+    /**
+     * 更换管理员头像
+     *
+     * @param id   管理员ID
+     * @param file 头像图片文件
+     * @return 头像图片访问地址
+     */
+    String updateAvatar(String id, MultipartFile file);
+
+    /**
+     * 发送验证码到邮箱用于换绑邮箱
+     *
+     * @param email   用户邮箱
+     * @param timeout 验证码有效时长（分钟）
+     */
+    void sendCaptcha2Email4UpdateEmail(String email, Long timeout);
+
+    /**
+     * 换绑邮箱
+     *
+     * @param id             用户ID
+     * @param updateEmailDTO {@link UpdateEmailDTO}
+     */
+    void updateEmail(String id, UpdateEmailDTO updateEmailDTO);
 
     /**
      * 禁用管理员账号

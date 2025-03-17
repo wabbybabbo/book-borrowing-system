@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.client.entity.User;
 import org.example.client.mapper.UserMapper;
+import org.example.client.pojo.dto.UpdateEmailDTO;
 import org.example.client.pojo.dto.UpdateUserDTO;
 import org.example.client.pojo.dto.UserLoginDTO;
 import org.example.client.pojo.dto.UserRegisterDTO;
@@ -31,6 +32,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -54,15 +56,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private final CommonClient commonClient;
     private final RedisTemplate<String, String> redisTemplate;
     private final RabbitTemplate rabbitTemplate;
-    private final CodeGenerator registerCodeGenerator = new RandomGenerator(RandomUtil.BASE_NUMBER, 6);
-    private final CodeGenerator loginCodeGenerator = new MathGenerator(1);
+    private final CodeGenerator randomCodeGenerator = new RandomGenerator(RandomUtil.BASE_NUMBER, 6);
+    private final CodeGenerator mathCodeGenerator = new MathGenerator(1);
 
     @Override
     public void createGifCaptcha(String timestamp, HttpServletResponse response) {
         // 定义动态图形验证码的长、宽
         GifCaptcha gifCaptcha = CaptchaUtil.createGifCaptcha(120, 40);
         // 自定义验证码内容为1位数的四则运算方式
-        gifCaptcha.setGenerator(loginCodeGenerator);
+        gifCaptcha.setGenerator(mathCodeGenerator);
         try {
             // 写出到浏览器（Servlet输出流）
             gifCaptcha.write(response.getOutputStream());
@@ -91,7 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 验证码校验
         String userInputCode = userLoginDTO.getCode();
-        if (!loginCodeGenerator.verify(code, userInputCode)) {
+        if (!mathCodeGenerator.verify(code, userInputCode)) {
             log.info("验证码校验不通过 code: {}, userInputCode: {}, msg: {}", code, userInputCode, MessageConstant.CODE_ERROR);
             throw new CheckException(MessageConstant.CODE_ERROR);
         }
@@ -113,7 +115,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 判断该用户账号是否被禁用
         if (!user.getStatus()) {
-            log.info("[log] 该用户账号被禁用 status: {}", user.getStatus());
+            log.info("[log] 该用户账号被禁用 status: false");
             throw new NotAllowedException(MessageConstant.ACCOUNT_LOCKED);
         }
 
@@ -132,7 +134,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public void sendCaptchaToEmail(String email, Long timeout) {
+    public void sendCaptcha2Email4Register(String email, Long timeout) {
         // 查询该邮箱是否已被使用
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
                 .eq(User::getEmail, email);
@@ -140,8 +142,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
         }
 
-        String code = registerCodeGenerator.generate();
+        String code = randomCodeGenerator.generate();
         String content = "您正在注册账号，验证码是："
+                + "<b style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">"
+                + code + "</b>（请勿泄露），此验证码" + timeout + "分钟内有效。<br><br>如非本人操作，请忽略。";
+        // 将验证码存到redis缓存中，并设置过期时间
+        redisTemplate.opsForValue().set("codeCache:" + email, code, timeout, TimeUnit.MINUTES);
+        // 发送验证码到用户邮箱
+        MailUtil.send(email, "【书店借阅平台】邮箱验证码", content, true);
+    }
+
+    @Override
+    public void sendCaptcha2Email4UpdateEmail(String email, Long timeout) {
+        // 查询该邮箱是否已被使用
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<User>()
+                .eq(User::getEmail, email);
+        if (userMapper.exists(queryWrapper)) {
+            throw new AlreadyExistsException(MessageConstant.EMAIL_ALREADY_EXISTS);
+        }
+
+        String code = randomCodeGenerator.generate();
+        String content = "您正在换绑邮箱，验证码是："
                 + "<b style=\"color: rgb(92, 128, 128); text-decoration: rgb(92, 128, 128) underline\">"
                 + code + "</b>（请勿泄露），此验证码" + timeout + "分钟内有效。<br><br>如非本人操作，请忽略。";
         // 将验证码存到redis缓存中，并设置过期时间
@@ -161,7 +182,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         // 验证码校验
         String userInputCode = userRegisterDTO.getCode();
-        if (!registerCodeGenerator.verify(code, userInputCode)) {
+        if (!randomCodeGenerator.verify(code, userInputCode)) {
             log.info("验证码校验不通过 code: {}, userInputCode: {}, msg: {}", code, userInputCode, MessageConstant.CODE_ERROR);
             throw new CheckException(MessageConstant.CODE_ERROR);
         }
@@ -259,6 +280,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         BeanUtil.copyProperties(updateUserDTO, user);
         user.setId(id);
         // 更改用户信息
+        userMapper.updateById(user);
+    }
+
+    @Override
+    public String updateAvatar(String id, MultipartFile file) {
+        // 构建用户对象
+        User user = new User();
+        user.setId(id);
+        // 上传头像图片文件
+        String url = commonClient.upload(file);
+        user.setImgUrl(url);
+        // 更改用户信息
+        userMapper.updateById(user);
+
+        return url;
+    }
+
+    @Override
+    public void updateEmail(String id, UpdateEmailDTO updateEmailDTO) {
+        // 根据邮箱地址获取redis缓存中的验证码
+        String email = updateEmailDTO.getEmail();
+        String code = redisTemplate.opsForValue().get("codeCache:" + email);
+        if (Objects.isNull(code)) {
+            log.info("获取redis缓存中的验证码失败 email: {}, msg: {}", email, MessageConstant.CODE_NOT_FOUND);
+            throw new NotFoundException(MessageConstant.CODE_NOT_FOUND);
+        }
+        // 验证码校验
+        String userInputCode = updateEmailDTO.getCode();
+        if (!randomCodeGenerator.verify(code, userInputCode)) {
+            log.info("验证码校验不通过 code: {}, userInputCode: {}, msg: {}", code, userInputCode, MessageConstant.CODE_ERROR);
+            throw new CheckException(MessageConstant.CODE_ERROR);
+        }
+
+        // 构建用户对象
+        User user = new User();
+        user.setId(id);
+        user.setEmail(email);
+        // 更改邮箱地址
         userMapper.updateById(user);
     }
 
