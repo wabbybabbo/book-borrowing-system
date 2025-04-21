@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.SystemNotice;
 import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.CreateSystemNoticeDTO;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
  * @author zhengjunpeng
  * @since 2025-02-16
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -43,7 +41,6 @@ public class SystemNoticeController {
     @GetMapping("/page")
     @Operation(summary = "分页查询系统通知消息")
     public Result<PageResult<SystemNotice>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询系统通知消息 {}", pageQuery);
         PageResult<SystemNotice> pageResult = systemNoticeService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -51,7 +48,6 @@ public class SystemNoticeController {
     @PostMapping
     @Operation(summary = "新建系统通知消息")
     public Result<Object> createSystemNotice(@RequestBody @Valid CreateSystemNoticeDTO createSystemNoticeDTO) {
-        log.info("[log] 新建系统通知消息 {}", createSystemNoticeDTO);
         systemNoticeService.createSystemNotice(createSystemNoticeDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
@@ -59,7 +55,6 @@ public class SystemNoticeController {
     @PutMapping
     @Operation(summary = "更改系统通知消息")
     public Result<Object> updateSystemNotice(@RequestBody @Valid UpdateSystemNoticeDTO updateSystemNoticeDTO) {
-        log.info("[log] 更改系统通知消息 {}", updateSystemNoticeDTO);
         systemNoticeService.updateSystemNotice(updateSystemNoticeDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
@@ -71,7 +66,6 @@ public class SystemNoticeController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "出版社ID", required = true)
             String id) {
-        log.info("[log] 删除系统通知消息 id: {}", id);
         systemNoticeService.deleteSystemNotice(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
@@ -81,7 +75,6 @@ public class SystemNoticeController {
     public Result<Object> batchDeleteSystemNotices(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量删除系统通知消息 {}", batchDTO);
         systemNoticeService.batchDeleteSystemNotices(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
@@ -93,7 +86,6 @@ public class SystemNoticeController {
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             @Parameter(description = "系统通知消息ID", required = true)
             String id) {
-        log.info("[log] 发布系统通知消息给所有用户");
         systemNoticeService.publishSystemNotice(id);
         return Result.success(MessageConstant.SEND_SUCCESS);
     }

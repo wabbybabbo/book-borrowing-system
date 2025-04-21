@@ -44,7 +44,7 @@ public class Book implements Serializable {
     @Schema(description = "书籍名称")
     private String name;
 
-    @Schema(description = "书籍封面图片文件路径")
+    @Schema(description = "书籍封面图片访问地址")
     private String imgUrl;
 
     @Schema(description = "国际标准书号")

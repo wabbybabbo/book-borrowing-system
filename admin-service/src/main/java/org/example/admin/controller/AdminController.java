@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Admin;
 import org.example.admin.pojo.dto.*;
 import org.example.admin.pojo.query.PageQuery;
@@ -38,7 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
  * @author zhengjunpeng
  * @since 2024-12-14
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -54,14 +52,12 @@ public class AdminController {
             @Parameter(description = "时间戳", required = true)
             String timestamp,
             HttpServletResponse response) {
-        log.info("[log] 开始获取动态图形验证码");
         adminService.createGifCaptcha(timestamp, response);
     }
 
     @GetMapping("/login")
     @Operation(summary = "管理员登录")
     public Result<AdminLoginVO> login(@ParameterObject @Valid AdminLoginDTO adminLoginDTO) {
-        log.info("[log] 管理员登录 {}", adminLoginDTO);
         AdminLoginVO adminLoginVO = adminService.login(adminLoginDTO);
         return Result.success(MessageConstant.LOGIN_SUCCESS, adminLoginVO);
     }
@@ -73,7 +69,6 @@ public class AdminController {
             condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @Operation(summary = "分页查询管理员信息")
     public Result<PageResult<Admin>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询管理员信息 {}", pageQuery);
         PageResult<Admin> pageResult = adminService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -87,7 +82,6 @@ public class AdminController {
             MultipartFile file,
             @RequestPart @Valid
             CreateAdminDTO createAdminDTO) {
-        log.info("[log] 新建管理员信息 {}", createAdminDTO);
         adminService.createAdmin(file, createAdminDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
@@ -102,7 +96,6 @@ public class AdminController {
             String id,
             @RequestBody @Valid
             UpdateAdminDTO updateAdminDTO) {
-        log.info("[log] 更改管理员信息 id: {}, {}", id, updateAdminDTO);
         adminService.updateAdmin(id, updateAdminDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
@@ -117,8 +110,6 @@ public class AdminController {
             @RequestPart("file")
             @Parameter(description = "管理员头像图片文件")
             MultipartFile file) {
-        log.info("[log] 更换管理员头像 id: {}", id);
-        log.info("[log] 更换管理员头像 file: {}", file);
         String url = adminService.updateAvatar(id, file);
         return Result.success(MessageConstant.UPDATE_SUCCESS, url);
     }
@@ -132,7 +123,6 @@ public class AdminController {
             @PositiveOrZero(message = MessageConstant.INVALID_CAPTCHA_TIMEOUT)
             @Parameter(description = "验证码有效时长（分钟）", required = true)
             Long timeout) {
-        log.info("[log] 发送验证码到邮箱用于换绑邮箱，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
         adminService.sendCaptcha2Email4UpdateEmail(email, timeout);
         return Result.success(MessageConstant.SEND_CAPTCHA_SUCCESS);
     }
@@ -146,7 +136,6 @@ public class AdminController {
             String id,
             @RequestBody @Valid
             UpdateEmailDTO updateEmailDTO) {
-        log.info("[log] 换绑邮箱 {}", updateEmailDTO);
         adminService.updateEmail(id, updateEmailDTO);
         return Result.success(MessageConstant.UPDATE_EMAIL_SUCCESS);
     }
@@ -159,7 +148,6 @@ public class AdminController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "管理员ID", required = true)
             String id) {
-        log.info("[log] 禁用管理员账号 id: {}", id);
         adminService.disableAccount(id);
         return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
@@ -170,7 +158,6 @@ public class AdminController {
     public Result<Object> batchDisableAccounts(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量禁用管理员账号 {}", batchDTO);
         adminService.batchDisableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
@@ -183,7 +170,6 @@ public class AdminController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "管理员ID", required = true)
             String id) {
-        log.info("[log] 解禁管理员账号 id: {}", id);
         adminService.enableAccount(id);
         return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
@@ -194,7 +180,6 @@ public class AdminController {
     public Result<Object> batchEnableAccounts(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量解禁管理员账号 {}", batchDTO);
         adminService.batchEnableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }

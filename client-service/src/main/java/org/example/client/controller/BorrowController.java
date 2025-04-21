@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.client.pojo.dto.BatchDTO;
 import org.example.client.pojo.dto.CreateBorrowDTO;
 import org.example.client.pojo.query.PageQuery;
@@ -32,7 +31,6 @@ import java.util.List;
  * @author zhengjunpeng
  * @since 2024-04-07
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -51,7 +49,6 @@ public class BorrowController {
             String id,
             @ParameterObject
             PageQuery pageQuery) {
-        log.info("[log] 分页查询用户的借阅记录 id: {}, {}", id, pageQuery);
         PageResult<BorrowVO> pageResult = borrowService.pageQuery(id, pageQuery);
         return Result.success(pageResult);
     }
@@ -63,7 +60,6 @@ public class BorrowController {
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             @Parameter(description = "用户ID", required = true, hidden = true)
             String id) {
-        log.info("[log] 查询用户的所有借阅记录");
         List<BorrowVO> borrows = borrowService.getBorrows(id);
         return Result.success(borrows);
     }
@@ -77,7 +73,6 @@ public class BorrowController {
             String id,
             @RequestBody @Valid
             CreateBorrowDTO createBorrowDTO) {
-        log.info("[log] 新增用户的借阅预约记录 id: {}, {}", id, createBorrowDTO);
         borrowService.createBorrow(id, createBorrowDTO);
         return Result.success(MessageConstant.BORROW_SUCCESS);
     }
@@ -89,7 +84,6 @@ public class BorrowController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "借阅记录ID", required = true)
             String id) {
-        log.info("[log] 取消书籍借阅预约 id: {}", id);
         borrowService.cancelBorrow(id);
         return Result.success(MessageConstant.CANCEL_SUCCESS);
     }
@@ -101,7 +95,6 @@ public class BorrowController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "借阅记录ID", required = true)
             String id) {
-        log.info("[log] 删除书籍借阅记录 id: {}", id);
         borrowService.deleteBorrow(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
@@ -111,7 +104,6 @@ public class BorrowController {
     public Result<Object> batchDeleteBorrows(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量删除书籍借阅记录 {}", batchDTO);
         borrowService.batchDeleteBorrows(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }

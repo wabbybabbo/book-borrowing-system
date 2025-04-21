@@ -7,11 +7,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.entity.User;
 import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.CreateUserDTO;
+import org.example.admin.pojo.query.PageQuery;
 import org.example.admin.service.IUserService;
 import org.example.common.constant.MessageConstant;
 import org.example.common.result.PageResult;
@@ -30,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
  * @author zhengjunpeng
  * @since 2024-04-07
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -43,7 +41,6 @@ public class UserController {
     @GetMapping("/page")
     @Operation(summary = "分页查询用户信息")
     public Result<PageResult<User>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询用户信息 {}", pageQuery);
         PageResult<User> pageResult = userService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -56,7 +53,6 @@ public class UserController {
             MultipartFile file,
             @RequestPart @Valid
             CreateUserDTO createUserDTO) {
-        log.info("[log] 新建用户信息 {}", createUserDTO);
         userService.createUser(file, createUserDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
@@ -68,7 +64,6 @@ public class UserController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "用户ID", required = true)
             String id) {
-        log.info("[log] 禁用用户账号 id: {}", id);
         userService.disableAccount(id);
         return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
@@ -78,7 +73,6 @@ public class UserController {
     public Result<Object> batchDisableAccounts(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量禁用用户账号 {}", batchDTO);
         userService.batchDisableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.DISABLE_ACCOUNT_SUCCESS);
     }
@@ -90,7 +84,6 @@ public class UserController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "用户ID", required = true)
             String id) {
-        log.info("[log] 解禁用户账号 id: {}", id);
         userService.enableAccount(id);
         return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }
@@ -100,7 +93,6 @@ public class UserController {
     public Result<Object> batchEnableAccounts(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量解禁用户账号 {}", batchDTO);
         userService.batchEnableAccounts(batchDTO.getIds());
         return Result.success(MessageConstant.ENABLE_ACCOUNT_SUCCESS);
     }

@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.client.pojo.dto.BatchDTO;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.NoticeVO;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
  * @author zhengjunpeng
  * @since 2025-02-16
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -48,7 +46,6 @@ public class NoticeController {
             String id,
             @ParameterObject
             PageQuery pageQuery) {
-        log.info("[log] 分页查询用户的通知消息 id: {}, {}", id, pageQuery);
         PageResult<NoticeVO> pageResult = userNoticeService.pageQuery(id, pageQuery);
         return Result.success(pageResult);
     }
@@ -64,7 +61,6 @@ public class NoticeController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "系统通知消息ID", required = true)
             String systemNoticeId) {
-        log.info("[log] 新增用户的通知消息 userId: {}, systemNoticeId: {}", userId, systemNoticeId);
         userNoticeService.createNotice(userId, systemNoticeId);
         return Result.success();
     }
@@ -72,7 +68,6 @@ public class NoticeController {
     @GetMapping("/unread/count")
     @Operation(summary = "获取未读通知消息的数量")
     public Result<Long> getUnreadUserNoticeCount() {
-        log.info("[log] 获取未读通知消息的数量");
         Long count = userNoticeService.getUnreadNoticeCount();
         return Result.success(count);
     }
@@ -84,7 +79,6 @@ public class NoticeController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "通知消息ID", required = true)
             String id) {
-        log.info("[log] 将用户的通知消息标为已读 id: {}", id);
         userNoticeService.readNotice(id);
         return Result.success();
     }
@@ -94,7 +88,6 @@ public class NoticeController {
     public Result<Object> batchReadUserNotices(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量将用户的通知消息标为已读 {}", batchDTO);
         userNoticeService.batchReadNotices(batchDTO.getIds());
         return Result.success();
     }
@@ -106,7 +99,6 @@ public class NoticeController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "通知消息ID", required = true)
             String id) {
-        log.info("[log] 将用户的通知消息标为未读 id: {}", id);
         userNoticeService.unreadNotice(id);
         return Result.success();
     }
@@ -116,7 +108,6 @@ public class NoticeController {
     public Result<Object> batchUnreadUserNotices(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量将用户的通知消息标为未读 {}", batchDTO);
         userNoticeService.batchUnreadNotices(batchDTO.getIds());
         return Result.success();
     }
@@ -128,7 +119,6 @@ public class NoticeController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "通知消息ID", required = true)
             String id) {
-        log.info("[log] 删除用户的通知消息 id: {}", id);
         userNoticeService.deleteNotice(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
@@ -138,7 +128,6 @@ public class NoticeController {
     public Result<Object> batchDeleteUserNotices(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量删除用户的通知消息 {}", batchDTO);
         userNoticeService.batchDeleteNotices(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }

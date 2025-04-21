@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author zhengjunpeng
  * @since 2024-04-07
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController

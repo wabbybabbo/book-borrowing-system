@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Publisher;
 import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.CreatePublisherDTO;
@@ -34,7 +33,6 @@ import java.util.List;
  * @author zhengjunpeng
  * @since 2025-02-13
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -51,7 +49,6 @@ public class PublisherController {
             condition = "#pageQuery.filterConditions.empty && #pageQuery.sortBy.blank")
     @Operation(summary = "分页查询出版社信息")
     public Result<PageResult<Publisher>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询出版社信息 {}", pageQuery);
         PageResult<Publisher> pageResult = publisherService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -60,7 +57,6 @@ public class PublisherController {
     @Cacheable(cacheNames = "publisherCache", key = "'admin-service' + ':' + 'publisherVOList'")
     @Operation(summary = "查询所有出版社信息")
     public Result<List<PublisherVO>> getPublishers() {
-        log.info("[log] 查询所有出版社信息");
         List<PublisherVO> categories = publisherService.getPublishers();
         return Result.success(categories);
     }
@@ -69,7 +65,6 @@ public class PublisherController {
     @CacheEvict(cacheNames = "publisherCache", allEntries = true)
     @Operation(summary = "新建出版社信息")
     public Result<Object> createPublisher(@RequestBody @Valid CreatePublisherDTO createPublisherDTO) {
-        log.info("[log] 新建出版社信息 {}", createPublisherDTO);
         publisherService.createPublisher(createPublisherDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
@@ -78,7 +73,6 @@ public class PublisherController {
     @CacheEvict(cacheNames = {"publisherCache", "bookCache"}, allEntries = true)
     @Operation(summary = "更改出版社信息")
     public Result<Object> updatePublisher(@RequestBody @Valid UpdatePublisherDTO updatePublisherDTO) {
-        log.info("[log] 更改出版社信息 {}", updatePublisherDTO);
         publisherService.updatePublisher(updatePublisherDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
@@ -91,7 +85,6 @@ public class PublisherController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "出版社ID", required = true)
             String id) {
-        log.info("[log] 删除出版社信息 id: {}", id);
         publisherService.deletePublisher(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
@@ -102,7 +95,6 @@ public class PublisherController {
     public Result<Object> batchDeletePublishers(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量删除出版社信息 {}", batchDTO);
         publisherService.batchDeletePublishers(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }

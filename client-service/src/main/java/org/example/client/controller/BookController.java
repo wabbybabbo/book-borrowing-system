@@ -4,7 +4,6 @@ package org.example.client.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.BookVO;
 import org.example.client.service.IBookService;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author zhengjunpeng
  * @since 2024-04-07
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -37,7 +35,6 @@ public class BookController {
     @GetMapping("/page")
     @Operation(summary = "分页查询书籍信息")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询书籍信息 {}", pageQuery);
         PageResult<BookVO> pageResult = bookService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }

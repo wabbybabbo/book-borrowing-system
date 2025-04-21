@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.client.pojo.dto.UpdateEmailDTO;
 import org.example.client.pojo.dto.UpdateUserDTO;
 import org.example.client.pojo.dto.UserLoginDTO;
@@ -35,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
  * @author zhengjunpeng
  * @since 2024-04-07
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -54,7 +52,6 @@ public class UserController {
             @PositiveOrZero(message = MessageConstant.INVALID_CAPTCHA_TIMEOUT)
             @Parameter(description = "验证码有效时长（分钟）", required = true)
             Long timeout) {
-        log.info("[log] 发送验证码到邮箱用于用户注册，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
         userService.sendCaptcha2Email4Register(email, timeout);
         return Result.success(MessageConstant.SEND_CAPTCHA_SUCCESS);
     }
@@ -68,7 +65,6 @@ public class UserController {
             @PositiveOrZero(message = MessageConstant.INVALID_CAPTCHA_TIMEOUT)
             @Parameter(description = "验证码有效时长（分钟）", required = true)
             Long timeout) {
-        log.info("[log] 发送验证码到邮箱用于换绑邮箱，并设置验证码有效时长（分钟） email: {}, timeout: {}", email, timeout);
         userService.sendCaptcha2Email4UpdateEmail(email, timeout);
         return Result.success(MessageConstant.SEND_CAPTCHA_SUCCESS);
     }
@@ -76,7 +72,6 @@ public class UserController {
     @PostMapping("/register")
     @Operation(summary = "用户注册")
     public Result<Object> register(@RequestBody @Valid UserRegisterDTO userRegisterDTO /*@RequestBody用于接收请求体的内容(JSON)，并将其转换为Java对象绑定到方法的参数上。*/) {
-        log.info("[log] 用户注册 {}", userRegisterDTO);
         userService.register(userRegisterDTO);
         return Result.success(MessageConstant.REGISTER_SUCCESS);
     }
@@ -90,7 +85,6 @@ public class UserController {
             String id,
             @RequestBody @Valid
             UpdateEmailDTO updateEmailDTO) {
-        log.info("[log] 换绑邮箱 {}", updateEmailDTO);
         userService.updateEmail(id, updateEmailDTO);
         return Result.success(MessageConstant.UPDATE_EMAIL_SUCCESS);
     }
@@ -101,14 +95,12 @@ public class UserController {
             @Parameter(description = "时间戳", required = true)
             String timestamp,
             HttpServletResponse response) {
-        log.info("[log] 获取动态图形验证码");
         userService.createGifCaptcha(timestamp, response);
     }
 
     @GetMapping("/login")
     @Operation(summary = "用户登录")
     public Result<UserVO> login(@ParameterObject @Valid UserLoginDTO userLoginDTO) {
-        log.info("[log] 用户登录 {}", userLoginDTO);
         UserVO userVO = userService.login(userLoginDTO);
         return Result.success(MessageConstant.LOGIN_SUCCESS, userVO);
     }
@@ -122,7 +114,6 @@ public class UserController {
             String id,
             @RequestBody @Valid
             UpdateUserDTO updateUserDTO) {
-        log.info("[log] 更改用户信息 id: {}, {}", id, updateUserDTO);
         userService.updateUser(id, updateUserDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
@@ -137,8 +128,6 @@ public class UserController {
             @RequestPart("file")
             @Parameter(description = "用户头像图片文件")
             MultipartFile file) {
-        log.info("[log] 更换用户头像 id: {}", id);
-        log.info("[log] 更换用户头像 file: {}", file);
         String url = userService.updateAvatar(id, file);
         return Result.success(MessageConstant.UPDATE_SUCCESS, url);
     }

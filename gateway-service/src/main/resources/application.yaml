@@ -20,6 +20,8 @@ spring:
             - Path=/admin-service/**
           filters:
             - StripPrefix=1
+  autoconfigure:
+    exclude: org.example.common.aspect.AopLog
 
 auth:
   exclude-paths:

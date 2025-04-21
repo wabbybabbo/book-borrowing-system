@@ -11,14 +11,14 @@
     <description>公共微服务的相关业务实现</description>
 
     <dependencies>
-        <!--包含SpringMVC、validation、swagger3、hutool-->
+        <!--包含SpringMVC、Validation、AOP、Swagger3、Hutool-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
-        <!--包含OpenFeign、loadbalancer 负载均衡-->
+        <!--包含OpenFeign、Loadbalancer-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>common-api</artifactId>
@@ -32,13 +32,13 @@
             </exclusions>
         </dependency>
 
-        <!--Nacos 服务注册与发现-->
+        <!--Nacos服务注册与发现-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
 
-        <!--nacos配置中心-->
+        <!--Nacos配置中心-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>

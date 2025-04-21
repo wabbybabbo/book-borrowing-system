@@ -38,10 +38,10 @@ public class MessageConstant {
     public static final String PUBLISHER_ALREADY_EXISTS = "出版社已存在";
     public static final String ISBN_ALREADY_EXISTS = "ISBN已存在";
     public static final String ACCOUNT_ALREADY_EXISTS = "账号已存在";
-    public static final String PHONE_ALREADY_EXISTS = "电话号码已存在";
+    public static final String PHONE_ALREADY_EXISTS = "手机号码已存在";
 
     public static final String INVALID_ISBN = "ISBN应为978或979开头的13位数字";
-    public static final String INVALID_PHONE = "电话号码应为以1开头的11位数字，并且第二位数字不能为012";
+    public static final String INVALID_PHONE = "手机号码应为以1开头的11位数字，并且第二位数字不能为012";
     public static final String INVALID_EMAIL = "电子邮箱格式不正确";
     public static final String INVALID_ADMIN_NAME = "管理员名称应为2~16位，并且不含空白字符";
     public static final String INVALID_USER_NAME = "用户名应为2~16位，并且不含空白字符";

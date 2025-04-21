@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.admin.entity.Borrow;
 import org.example.admin.pojo.dto.ReturnRegisterDTO;
 import org.example.admin.pojo.query.PageQuery;
@@ -29,7 +28,6 @@ import java.util.List;
  * @author zhengjunpeng
  * @since 2024-04-07
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -42,7 +40,6 @@ public class BorrowController {
     @GetMapping("/page")
     @Operation(summary = "分页查询借阅记录")
     public Result<PageResult<Borrow>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询借阅记录 {}", pageQuery);
         PageResult<Borrow> pageResult = borrowService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -53,7 +50,6 @@ public class BorrowController {
             @Parameter(description = "用户ID")
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             String id) {
-        log.info("[log] 查询用户的所有借阅记录，id: {}", id);
         List<Borrow> borrows = borrowService.getBorrows(id);
         return Result.success(borrows);
     }
@@ -65,7 +61,6 @@ public class BorrowController {
             @NotNull(message = MessageConstant.FIELD_NOT_NULL)
             @Parameter(description = "书籍借阅记录ID", required = true)
             String id) {
-        log.info("[log] 借阅登记 id: {}", id);
         borrowService.borrowRegister(id);
         return Result.success(MessageConstant.BORROW_REGISTER_SUCCESS);
     }
@@ -73,7 +68,6 @@ public class BorrowController {
     @PutMapping("/register/returned")
     @Operation(summary = "归还登记")
     public Result<Object> returnRegister(@RequestBody @Valid ReturnRegisterDTO returnRegisterDTO) {
-        log.info("[log] 归还登记 {}", returnRegisterDTO);
         borrowService.returnRegister(returnRegisterDTO);
         return Result.success(MessageConstant.RETURN_REGISTER_SUCCESS);
     }
@@ -81,7 +75,6 @@ public class BorrowController {
     @PutMapping("/task/update-borrows")
     @Operation(summary = "触发定时任务-更新借阅记录的状态")
     public void updateBorrows() {
-        log.info("[log] 触发定时任务-更新借阅记录的状态");
         borrowService.updateBorrowingBorrows();
         borrowService.updateReservedBorrows();
     }

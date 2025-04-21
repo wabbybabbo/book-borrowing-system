@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.admin.pojo.dto.BatchDTO;
 import org.example.admin.pojo.dto.CreateBookDTO;
 import org.example.admin.pojo.dto.UpdateBookDTO;
@@ -32,7 +31,6 @@ import org.springframework.web.multipart.MultipartFile;
  * @author zhengjunpeng
  * @since 2024-04-07
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -45,7 +43,6 @@ public class BookController {
     @GetMapping("/page")
     @Operation(summary = "分页查询书籍信息")
     public Result<PageResult<BookVO>> pageQuery(@ParameterObject PageQuery pageQuery) {
-        log.info("[log] 分页查询书籍信息 {}", pageQuery);
         PageResult<BookVO> pageResult = bookService.pageQuery(pageQuery);
         return Result.success(pageResult);
     }
@@ -59,7 +56,6 @@ public class BookController {
             MultipartFile file,
             @RequestPart @Valid
             CreateBookDTO createBookDTO) {
-        log.info("[log] 新建书籍信息 {}", createBookDTO);
         bookService.createBook(file, createBookDTO);
         return Result.success(MessageConstant.CREATE_SUCCESS);
     }
@@ -72,7 +68,6 @@ public class BookController {
             MultipartFile file,
             @RequestPart @Valid
             UpdateBookDTO updateBookDTO) {
-        log.info("[log] 更改书籍信息 {}", updateBookDTO);
         bookService.updateBook(file, updateBookDTO);
         return Result.success(MessageConstant.UPDATE_SUCCESS);
     }
@@ -84,7 +79,6 @@ public class BookController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "书籍ID", required = true)
             String id) {
-        log.info("[log] 删除书籍信息 id: {}", id);
         bookService.deleteBook(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
@@ -94,7 +88,6 @@ public class BookController {
     public Result<Object> batchDeleteBooks(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量删除书籍信息 {}", batchDTO);
         bookService.batchDeleteBooks(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }

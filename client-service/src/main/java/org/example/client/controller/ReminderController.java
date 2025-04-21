@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.client.pojo.dto.BatchDTO;
 import org.example.client.pojo.query.PageQuery;
 import org.example.client.pojo.vo.ReminderVO;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
  * @author zhengjunpeng
  * @since 2025-02-13
  */
-@Slf4j
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -48,7 +46,6 @@ public class ReminderController {
             String id,
             @ParameterObject
             PageQuery pageQuery) {
-        log.info("[log] 分页查询用户的提醒消息 id: {}, {}", id, pageQuery);
         PageResult<ReminderVO> pageResult = reminderService.pageQuery(id, pageQuery);
         return Result.success(pageResult);
     }
@@ -56,7 +53,6 @@ public class ReminderController {
     @GetMapping("/unread/count")
     @Operation(summary = "获取未读提醒消息的数量")
     public Result<Long> getUnreadReminderCount() {
-        log.info("[log] 获取未读提醒消息的数量");
         Long count = reminderService.getUnreadReminderCount();
         return Result.success(count);
     }
@@ -68,7 +64,6 @@ public class ReminderController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "提醒消息ID", required = true)
             String id) {
-        log.info("[log] 将用户的提醒消息标为已读 id: {}", id);
         reminderService.readReminder(id);
         return Result.success();
     }
@@ -78,7 +73,6 @@ public class ReminderController {
     public Result<Object> batchReadReminders(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量将用户的提醒消息标为已读 {}", batchDTO);
         reminderService.batchReadReminders(batchDTO.getIds());
         return Result.success();
     }
@@ -90,7 +84,6 @@ public class ReminderController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "提醒消息ID", required = true)
             String id) {
-        log.info("[log] 将用户的提醒消息标为未读 id: {}", id);
         reminderService.unreadReminder(id);
         return Result.success();
     }
@@ -100,7 +93,6 @@ public class ReminderController {
     public Result<Object> batchUnreadReminders(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量将用户的提醒消息标为未读 {}", batchDTO);
         reminderService.batchUnreadReminders(batchDTO.getIds());
         return Result.success();
     }
@@ -112,7 +104,6 @@ public class ReminderController {
             @NotBlank(message = MessageConstant.FIELD_NOT_BLANK)
             @Parameter(description = "提醒消息ID", required = true)
             String id) {
-        log.info("[log] 删除用户的提醒消息 id: {}", id);
         reminderService.deleteReminder(id);
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
@@ -122,7 +113,6 @@ public class ReminderController {
     public Result<Object> batchDeleteReminders(
             @RequestBody @Valid
             BatchDTO batchDTO) {
-        log.info("[log] 批量删除用户的提醒消息 {}", batchDTO);
         reminderService.batchDeleteReminders(batchDTO.getIds());
         return Result.success(MessageConstant.DELETE_SUCCESS);
     }
