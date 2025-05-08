@@ -67,8 +67,12 @@ public class NoticeController {
 
     @GetMapping("/unread/count")
     @Operation(summary = "获取未读通知消息的数量")
-    public Result<Long> getUnreadUserNoticeCount() {
-        Long count = userNoticeService.getUnreadNoticeCount();
+    public Result<Long> getUnreadUserNoticeCount(
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id) {
+        Long count = userNoticeService.getUnreadNoticeCount(id);
         return Result.success(count);
     }
 

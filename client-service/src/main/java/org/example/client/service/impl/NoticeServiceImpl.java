@@ -90,9 +90,10 @@ public class NoticeServiceImpl extends ServiceImpl<NoticeMapper, Notice> impleme
     }
 
     @Override
-    public Long getUnreadNoticeCount() {
+    public Long getUnreadNoticeCount(String id) {
         LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper<Notice>()
-                .eq(Notice::getStatus, false);
+                .eq(Notice::getStatus, false)
+                .eq(Notice::getUserId, id);;
         return noticeMapper.selectCount(queryWrapper);
     }
 

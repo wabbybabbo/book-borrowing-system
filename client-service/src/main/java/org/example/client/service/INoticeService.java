@@ -30,9 +30,10 @@ public interface INoticeService extends IService<Notice> {
     /**
      * 获取未读通知消息的数量
      *
+     * @param id        用户ID
      * @return 未读通知消息的数量
      */
-    Long getUnreadNoticeCount();
+    Long getUnreadNoticeCount(String id);
 
     /**
      * 将用户的通知消息标为已读

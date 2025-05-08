@@ -30,9 +30,10 @@ public interface IReminderService extends IService<Reminder> {
     /**
      * 获取未读提醒消息的数量
      *
+     * @param id        用户ID
      * @return 未读提醒消息的数量
      */
-    Long getUnreadReminderCount();
+    Long getUnreadReminderCount(String id);
 
     /**
      * 将用户的提醒消息标为已读

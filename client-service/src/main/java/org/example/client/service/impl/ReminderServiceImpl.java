@@ -87,9 +87,10 @@ public class ReminderServiceImpl extends ServiceImpl<ReminderMapper, Reminder> i
     }
 
     @Override
-    public Long getUnreadReminderCount() {
+    public Long getUnreadReminderCount(String id) {
         LambdaQueryWrapper<Reminder> queryWrapper = new LambdaQueryWrapper<Reminder>()
-                .eq(Reminder::getStatus, false);
+                .eq(Reminder::getStatus, false)
+                .eq(Reminder::getUserId, id);
         return reminderMapper.selectCount(queryWrapper);
     }
 

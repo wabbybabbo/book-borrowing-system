@@ -52,8 +52,12 @@ public class ReminderController {
 
     @GetMapping("/unread/count")
     @Operation(summary = "获取未读提醒消息的数量")
-    public Result<Long> getUnreadReminderCount() {
-        Long count = reminderService.getUnreadReminderCount();
+    public Result<Long> getUnreadReminderCount(
+            @RequestHeader(ClaimConstant.CLIENT_ID)
+            @NotNull(message = MessageConstant.FIELD_NOT_NULL)
+            @Parameter(description = "用户ID", required = true, hidden = true)
+            String id) {
+        Long count = reminderService.getUnreadReminderCount(id);
         return Result.success(count);
     }
 
