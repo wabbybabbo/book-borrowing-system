@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * 全局异常处理器
  * "@ControllerAdvice"默认只会处理Controller层抛出的异常，
- * 如果需要处理Service层的异常，可以自定义一个BaseException来继承RuntimeException类，然后使用@ExceptionHandler捕获BaseException即可。
+ * 如果需要处理Service层的异常，可以自定义一个ServiceException来继承RuntimeException类，然后使用@ExceptionHandler捕获ServiceException即可。
  */
 @Slf4j
 @RestControllerAdvice //定义一个全局的异常处理类
