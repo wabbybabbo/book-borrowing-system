@@ -1,12 +1,12 @@
 shared:
   jdbc:
     db: bookstore
-    host: 172.20.10.9
+    host: 172.25.72.90
   nacos:
-    host: 172.20.10.9
+    host: 172.25.72.90
   sentinel-dashboard:
-    host: 172.20.10.9
+    host: 172.25.72.90
   redis:
-    host: 172.20.10.9
+    host: 172.25.72.90
   rabbitmq:
-    host: 172.20.10.9
+    host: 172.25.72.90
